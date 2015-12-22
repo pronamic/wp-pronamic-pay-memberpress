@@ -14,9 +14,16 @@ class Pronamic_WP_Pay_Extensions_MemberPress_IDealGateway extends MeprBaseRealGa
 	 * Constructs and initialize iDEAL gateway.
 	 */
 	public function __construct() {
+		// Set the name of this gateway.
+		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L12-13
 		$this->name = __( 'iDEAL', 'pronamic_ideal' );
+
+		// Set the default settings.
+		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L72-73
 		$this->set_defaults();
 
+		// Set the capabilities of this gateway.
+		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L36-37
 		$this->capabilities = array(
 			//'process-payments',
 			//'create-subscriptions',
@@ -31,11 +38,23 @@ class Pronamic_WP_Pay_Extensions_MemberPress_IDealGateway extends MeprBaseRealGa
 		$this->notifiers = array();
 	}
 
+	/**
+	 * Load the specified settings.
+	 *
+	 * @param array $settings
+	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L69-70
+	 */
 	public function load( $settings ) {
 		$this->settings = (object) $settings;
+
 		$this->set_defaults();
 	}
 
+	/** 
+	 * Set the default settings.
+	 *
+	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L72-73
+	 */
 	protected function set_defaults() {
 		if ( ! isset( $this->settings ) ) {
 			$this->settings = array();
@@ -69,97 +88,125 @@ class Pronamic_WP_Pay_Extensions_MemberPress_IDealGateway extends MeprBaseRealGa
 		//$this->recurrence_type = $this->settings->recurrence_type;
 	}
 
-  /** Used to send data to a given payment gateway. In gateways which redirect
-    * before this step is necessary this method should just be left blank.
-    */
-  public function process_payment($txn) {
-    if(isset($txn) && $txn instanceof MeprTransaction) {
-      $usr = new MeprUser($txn->user_id);
-      $prd = new MeprProduct($txn->product_id);
-    }
-    else
-      return;
+	/**
+	 * Process payment.
+	 *
+	 * @param MeprTransaction $txn
+	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L119-122
+	 */
+	public function process_payment( $txn ) {
+		if ( isset( $txn ) && $txn instanceof MeprTransaction ) {
+			$usr = new MeprUser( $txn->user_id );
+			$prd = new MeprProduct( $txn->product_id );
+		} else {
+			return;
+		}
 
-    $upgrade = $txn->is_upgrade();
-    $downgrade = $txn->is_downgrade();
+		$upgrade   = $txn->is_upgrade();
+		$downgrade = $txn->is_downgrade();
 
-    $txn->maybe_cancel_old_sub();
+		$txn->maybe_cancel_old_sub();
 
-    if($upgrade) {
-      $this->upgraded_sub($txn);
-      $this->send_upgraded_txn_notices($txn);
-    }
-    elseif($downgrade) {
-      $this->downgraded_sub($txn);
-      $this->send_downgraded_txn_notices($txn);
-    }
-    else {
-      $this->new_sub($txn);
-    }
+		if ( $upgrade ) {
+			$this->upgraded_sub( $txn );
+			$this->send_upgraded_txn_notices( $txn );
+		} elseif( $downgrade ) {
+			$this->downgraded_sub( $txn );
+			$this->send_downgraded_txn_notices( $txn );
+		} else {
+			$this->new_sub( $txn );
+		}
 
-    $txn->gateway = $this->id;
-    $txn->trans_num = 't_' . uniqid();
+		$txn->gateway   = $this->id;
+		$txn->trans_num = 't_' . uniqid();
 
-    if(!$this->settings->manually_complete == 'on' and !$this->settings->manually_complete == true) {
-      $txn->status = MeprTransaction::$complete_str;
-      $this->send_transaction_receipt_notices($txn);
-    }
+		if ( ! $this->settings->manually_complete == 'on' and ! $this->settings->manually_complete == true ) {
+			$txn->status = MeprTransaction::$complete_str;
+			$this->send_transaction_receipt_notices($txn);
+		}
 
-    $txn->store();
+		$txn->store();
 
-    $this->send_product_welcome_notices($txn);
-    $this->send_signup_notices($txn);
+		$this->send_product_welcome_notices($txn);
+		$this->send_signup_notices($txn);
 
-    return $txn;
-  }
+		return $txn;
+	}
 
-  /** Used to record a successful recurring payment by the given gateway. It
-    * should have the ability to record a successful payment or a failure. It is
-    * this method that should be used when receiving an IPN from PayPal or a
-    * Silent Post from Authorize.net.
-    */
-  public function record_subscription_payment() {
-    // Doesn't happen in test mode ... no need
-  }
+	/**
+	 * Record subscription payment.
+	 *
+	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L140-145
+	 */
+	public function record_subscription_payment() {
 
-  /** Used to record a declined payment. */
-  public function record_payment_failure() {
-    // No need for this here
-  }
+	}
 
-  /** Used to record a successful payment by the given gateway. It should have
-    * the ability to record a successful payment or a failure. It is this method
-    * that should be used when receiving an IPN from PayPal or a Silent Post
-    * from Authorize.net.
-    */
-  public function record_payment() {
-    // This happens manually in test mode
-  }
+	/**
+	 * Record payment failure.
+	 *
+	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L147-148
+	 */
+	public function record_payment_failure() {
 
-  /** This method should be used by the class to record a successful refund from
-    * the gateway. This method should also be used by any IPN requests or Silent Posts.
-    */
-  public function process_refund(MeprTransaction $txn) {
-    // This happens manually in test mode
-  }
+	}
 
-  /** This method should be used by the class to record a successful refund from
-    * the gateway. This method should also be used by any IPN requests or Silent Posts.
-    */
-  public function record_refund() {
-    // This happens manually in test mode
-  }
+	/**
+	 * Record payment.
+	 *
+	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L124-129
+	 */
+	public function record_payment() {
 
-  //Not needed in the Artificial gateway
-  public function process_trial_payment($transaction) { }
-  public function record_trial_payment($transaction) { }
+	}
 
-  /** Used to send subscription data to a given payment gateway. In gateways
-    * which redirect before this step is necessary this method should just be
-    * left blank.
-    */
-  public function process_create_subscription($txn) {
-    if(isset($txn) && $txn instanceof MeprTransaction) {
+	/**
+	 * Process refund.
+	 *
+	 * @param MeprTransaction $txn
+	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L131-133
+	 */
+	public function process_refund( MeprTransaction $txn ) {
+
+	}
+
+	/**
+	 * Record refund.
+	 *
+	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L135-138
+	 */
+	public function record_refund() {
+
+	}
+
+	/**
+	 * Process trial payment.
+	 *
+	 * @param $transaction
+	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L150-157
+	 */
+	public function process_trial_payment( $transaction ) {
+
+	}
+
+	/**
+	 * Reord trial payment.
+	 *
+	 * @param $transaction
+	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L159-161
+	 */
+	public function record_trial_payment( $transaction ) {
+
+	}
+
+	/**
+	 * Process create subscription.
+	 *
+	 * @param $txn
+	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L163-167
+	 */
+	public function process_create_subscription($txn) {
+		if(isset($txn) && $txn instanceof MeprTransaction) {
       $usr = new MeprUser($txn->user_id);
       $prd = new MeprProduct($txn->product_id);
     }
