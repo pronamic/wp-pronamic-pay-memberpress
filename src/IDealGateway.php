@@ -1,62 +1,73 @@
 <?php
 
+/**
+ * Title: WordPress pay MemberPress iDEAL gateway
+ * Description:
+ * Copyright: Copyright (c) 2005 - 2015
+ * Company: Pronamic
+ * @author Remco Tolsma
+ * @version 1.0.0
+ * @since 1.0.0
+ */
 class Pronamic_WP_Pay_Extensions_MemberPress_IDealGateway extends MeprBaseRealGateway {
-  /** Used in the view to identify the gateway */
-  public function __construct() {
-    $this->name = __('iDEAL', 'memberpress');
-    $this->set_defaults();
+	/**
+	 * Constructs and initialize iDEAL gateway.
+	 */
+	public function __construct() {
+		$this->name = __( 'iDEAL', 'pronamic_ideal' );
+		$this->set_defaults();
 
-    $this->capabilities = array(
-      //'process-payments',
-      //'create-subscriptions',
-      //'process-refunds',
-      'cancel-subscriptions', //Yup we can cancel them here - needed for upgrade/downgrades
-      //'update-subscriptions',
-      //'suspend-subscriptions',
-      //'send-cc-expirations'
-    );
+		$this->capabilities = array(
+			//'process-payments',
+			//'create-subscriptions',
+			//'process-refunds',
+			'cancel-subscriptions', //Yup we can cancel them here - needed for upgrade/downgrades
+			//'update-subscriptions',
+			//'suspend-subscriptions',
+			//'send-cc-expirations'
+		);
 
-    // Setup the notification actions for this gateway
-    $this->notifiers = array();
-  }
+		// Setup the notification actions for this gateway
+		$this->notifiers = array();
+	}
 
-  public function load($settings) {
-    $this->settings = (object)$settings;
-    $this->set_defaults();
-  }
+	public function load( $settings ) {
+		$this->settings = (object) $settings;
+		$this->set_defaults();
+	}
 
-  protected function set_defaults() {
-    if(!isset($this->settings)) {
-      $this->settings = array();
-    }
+	protected function set_defaults() {
+		if ( ! isset( $this->settings ) ) {
+			$this->settings = array();
+		}
 
-    $this->settings = (object)array_merge(
-      array(
-        'gateway' => 'MeprIDealGateway',
-        'id' => $this->generate_id(),
-        'label' => '',
-        'use_label' => true,
-        'icon' => '',
-        'use_icon' => true,
-        'desc' => '',
-        'use_desc' => true,
-        'manually_complete' => false,
-        'email' => '',
-        'sandbox' => false,
-        'debug' => false
-      ),
-      (array)$this->settings
-    );
+		$this->settings = (object) array_merge(
+			array(
+				'gateway'           => 'MeprIDealGateway',
+				'id'                => $this->generate_id(),
+				'label'             => '',
+				'use_label'         => true,
+				'icon'              => '',
+				'use_icon'          => true,
+				'desc'              => '',
+				'use_desc'          => true,
+				'manually_complete' => false,
+				'email'             => '',
+				'sandbox'           => false,
+				'debug'             => false
+			),
+			(array) $this->settings
+		);
 
-    $this->id = $this->settings->id;
-    $this->label = $this->settings->label;
-    $this->use_label = $this->settings->use_label;
-    $this->icon = $this->settings->icon;
-    $this->use_icon = $this->settings->use_icon;
-    $this->desc = $this->settings->desc;
-    $this->use_desc = $this->settings->use_desc;
-    //$this->recurrence_type = $this->settings->recurrence_type;
-  }
+		$this->id        = $this->settings->id;
+		$this->label     = $this->settings->label;
+		$this->use_label = $this->settings->use_label;
+		$this->icon      = $this->settings->icon;
+		$this->use_icon  = $this->settings->use_icon;
+		$this->desc      = $this->settings->desc;
+		$this->use_desc  = $this->settings->use_desc;
+		//$this->recurrence_type = $this->settings->recurrence_type;
+	}
 
   /** Used to send data to a given payment gateway. In gateways which redirect
     * before this step is necessary this method should just be left blank.
