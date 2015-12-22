@@ -1,0 +1,42 @@
+{
+	"name": "wp-pay-extensions/memberpress",
+	"description": "MemberPress driver for the WordPress payment processing library.",
+	"keywords": ["wordpress", "wp", "pay", "memberpress", "extension", "pronamic"],
+	"homepage": "http://www.wp-pay.org/extensions/memberpress/",
+	"license": "GPL-3.0+",
+	"authors": [
+		{
+			"name": "Pronamic",
+			"email": "info@pronamic.eu",
+			"homepage": "http://www.pronamic.eu/",
+			"role": "Company"
+		},
+		{
+			"name": "Remco Tolsma",
+			"email": "info@remcotolsma.nl",
+			"homepage": "http://www.remcotolsma.nl/",
+			"role": "Developer"
+		}
+	],
+	"support": {
+		"email": "support@wp-pay.org",
+		"issues": "https://github.com/wp-pay-extensions/memberpress/issues",
+		"source": "https://github.com/wp-pay-extensions/memberpress"
+	},
+	"autoload": {
+		"classmap": ["src/"]
+	},
+	"repositories":[
+		{
+			"type": "composer",
+			"url": "http://wpackagist.org/"
+		}
+	],
+	"require": {
+		"php": ">=5.2.4",
+		"wp-pay/core": ">=1.0.1"
+	},
+	"require-dev": {
+		"satooshi/php-coveralls": "dev-master"
+	}
+}
