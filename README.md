@@ -5,4 +5,3 @@
 ## Links
 
 *	[MemberPress](https://www.memberpress.com/)
-*	[WordPress.org](https://wordpress.org/plugins/membership/)
