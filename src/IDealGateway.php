@@ -86,37 +86,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_IDealGateway extends MeprBaseRealGa
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L119-122
 	 */
 	public function process_payment( $txn ) {
-		if ( isset( $txn ) && $txn instanceof MeprTransaction ) {
-			$usr = new MeprUser( $txn->user_id );
-			$prd = new MeprProduct( $txn->product_id );
-		} else {
-			return;
-		}
-
-		$upgrade   = $txn->is_upgrade();
-		$downgrade = $txn->is_downgrade();
-
-		$txn->maybe_cancel_old_sub();
-
-		if ( $upgrade ) {
-			$this->upgraded_sub( $txn );
-			$this->send_upgraded_txn_notices( $txn );
-		} elseif ( $downgrade ) {
-			$this->downgraded_sub( $txn );
-			$this->send_downgraded_txn_notices( $txn );
-		} else {
-			$this->new_sub( $txn );
-		}
-
-		$txn->gateway   = $this->id;
-		$txn->trans_num = 't_' . uniqid();
-
-		$txn->store();
-
-		$this->send_product_welcome_notices( $txn );
-		$this->send_signup_notices( $txn );
-
-		return $txn;
+		
 	}
 
 	/**
@@ -192,63 +162,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_IDealGateway extends MeprBaseRealGa
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L163-167
 	 */
 	public function process_create_subscription( $txn ) {
-		if ( isset( $txn ) && $txn instanceof MeprTransaction ) {
-			$usr = new MeprUser( $txn->user_id );
-
-			$prd = new MeprProduct( $txn->product_id );
-		} else {
-			return;
-		}
-
-		$sub = $txn->subscription();
-
-		// Not super thrilled about this but there are literally
-		// no automated recurring profiles when paying offline
-		$sub->subscr_id  = 'ts_' . uniqid();
-		$sub->status     = MeprSubscription::$active_str;
-		$sub->created_at = date( 'c' );
-		$sub->gateway    = $this->id;
-
-		// If this subscription has a paid trail, we need to change the price of this transaction to the trial price duh
-		if ( $sub->trial ) {
-			$txn->set_subtotal( MeprUtils::format_float( $sub->trial_amount ) );
-
-			$expires_ts = time() + MeprUtils::days( $sub->trial_days );
-
-			$txn->expires_at = date( 'c', $expires_ts );
-		}
-
-		// This will only work before maybe_cancel_old_sub is run
-		$upgrade   = $sub->is_upgrade();
-		$downgrade = $sub->is_downgrade();
-
-		$sub->maybe_cancel_old_sub();
-
-		if ( $upgrade ) {
-			$this->upgraded_sub( $sub );
-			$this->send_upgraded_sub_notices( $sub );
-		} elseif ( $downgrade ) {
-			$this->downgraded_sub( $sub );
-			$this->send_downgraded_sub_notices( $sub );
-		} else {
-			$this->new_sub( $sub );
-			$this->send_new_sub_notices( $sub );
-		}
-
-		$sub->store();
-
-		$txn->gateway = $this->id;
-		$txn->trans_num = 't_' . uniqid();
-
-		$txn->store();
-
-		$this->send_product_welcome_notices( $txn );
-		$this->send_signup_notices( $txn );
-
-		return array(
-			'subscription' => $sub,
-			'transaction'  => $txn,
-		);
+		
 	}
 
 	/**
@@ -394,20 +308,24 @@ class Pronamic_WP_Pay_Extensions_MemberPress_IDealGateway extends MeprBaseRealGa
 
 		echo $invoice; // WPCS: XSS ok.
 
-		?>
-		<div class="mp_wrapper">
-			<form action="" method="post" id="payment-form" class="mepr-form" novalidate>
-				<input type="hidden" name="mepr_process_payment_form" value="Y" />
-				<input type="hidden" name="mepr_transaction_id" value="<?php echo esc_attr( $txn_id ); ?>" />
+		// Gateway
+		$config_id = $this->settings->config_id;
 
-				<div class="mepr_spacer">&nbsp;</div>
+		$gateway = Pronamic_WP_Pay_Plugin::get_gateway( $config_id );
 
-				<input type="submit" class="mepr-submit" value="<?php esc_attr_e( 'Submit', 'pronamic_ideal' ); ?>" />
+		if ( $gateway ) {
+			// Data
+			$data = new Pronamic_WP_Pay_Extensions_MemberPress_PaymentData( $amount, $user, $product, $txn_id );
 
-				<?php MeprView::render( '/shared/has_errors', get_defined_vars() ); ?>
-			</form>
-		</div>
-		<?php
+			$payment = Pronamic_WP_Pay_Plugin::start( $config_id, $gateway, $data );
+
+			$error = $gateway->get_error();
+
+			if ( ! is_wp_error( $error ) ) {
+				// Redirect
+				$gateway->redirect( $payment );
+			}
+		}
 	}
 
 	/**
