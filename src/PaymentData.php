@@ -32,6 +32,10 @@ class Pronamic_WP_Pay_Extensions_MemberPress_PaymentData extends Pronamic_WP_Pay
 		return $this->txn_id;
 	}
 
+	public function get_order_id() {
+		return $this->txn_id;
+	}
+
 	public function get_description() {
 		return $this->product->post_title;
 	}
@@ -40,7 +44,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_PaymentData extends Pronamic_WP_Pay
 		$items = new Pronamic_IDeal_Items();
 
 		$item = new Pronamic_IDeal_Item();
-		$item->setNumber( $this->get_source_id() );
+		$item->setNumber( $this->get_order_id() );
 		$item->setDescription( $this->get_description() );
 		$item->setPrice( $this->amount );
 		$item->setQuantity( 1 );

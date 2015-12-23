@@ -49,7 +49,6 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 		return $paths;
 	}
 
-
 	//////////////////////////////////////////////////
 
 	/**
@@ -59,19 +58,34 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 	 * @param Pronamic_Pay_Payment $payment
 	 */
 	public static function status_update( Pronamic_Pay_Payment $payment, $can_redirect = false ) {
+		global $transaction;
+
 		$transaction_id = $payment->get_source_id();
+
+		$transaction = new MeprTransaction( $transaction_id );
+
+		$mepr_options = MeprOptions::fetch();
+
+		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprOptions.php#L768-782
+		$url = $mepr_options->thankyou_page_url( 'trans_num=' . $transaction_id );
+
+		$gateway = new Pronamic_WP_Pay_Extensions_MemberPress_Gateway();
 
 		switch ( $payment->get_status() ) {
 			case Pronamic_WP_Pay_Statuses::CANCELLED :
+				$gateway->record_payment_failure();
 
 				break;
 			case Pronamic_WP_Pay_Statuses::EXPIRED :
+				$gateway->record_payment_failure();
 
 				break;
 			case Pronamic_WP_Pay_Statuses::FAILURE :
+				$gateway->record_payment_failure();
 
 				break;
 			case Pronamic_WP_Pay_Statuses::SUCCESS :
+				$gateway->record_payment();
 
 				break;
 			case Pronamic_WP_Pay_Statuses::OPEN :
