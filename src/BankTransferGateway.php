@@ -9,7 +9,7 @@
  * @version 1.0.0
  * @since 1.0.0
  */
-class Pronamic_WP_Pay_Extensions_MemberPress_IDealGateway extends Pronamic_WP_Pay_Extensions_MemberPress_Gateway {
+class Pronamic_WP_Pay_Extensions_MemberPress_BankTransferGateway extends Pronamic_WP_Pay_Extensions_MemberPress_Gateway {
 	/**
 	 * Constructs and initialize iDEAL gateway.
 	 */
