@@ -97,7 +97,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L119-122
 	 */
 	public function process_payment( $txn ) {
-		
+
 	}
 
 	/**
@@ -138,12 +138,12 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 		$transaction->status = MeprTransaction::$complete_str;
 		$transaction->store();
 
- 		$this->send_product_welcome_notices( $transaction );
-        $this->send_signup_notices( $transaction );
+		$this->send_product_welcome_notices( $transaction );
+		$this->send_signup_notices( $transaction );
 
-        $this->send_transaction_receipt_notices( $transaction );
+		$this->send_transaction_receipt_notices( $transaction );
 
-        return $transaction;
+		return $transaction;
 	}
 
 	/**
@@ -192,7 +192,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L163-167
 	 */
 	public function process_create_subscription( $txn ) {
-		
+
 	}
 
 	/**
