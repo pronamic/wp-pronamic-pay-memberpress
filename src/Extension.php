@@ -3,8 +3,9 @@
 /**
  * Title: WordPress pay MemberPress extension
  * Description:
- * Copyright: Copyright (c) 2005 - 2015
+ * Copyright: Copyright (c) 2005 - 2016
  * Company: Pronamic
+ *
  * @author Remco Tolsma
  * @version 1.0.0
  * @since 1.0.0
@@ -17,66 +18,36 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 	 */
 	const SLUG = 'memberpress';
 
-	/**
-	 * Indiactor for the config id options
-	 *
-	 * @var string
-	 */
-	const OPTION_CONFIG_ID = 'pronamic_pay_membership_config_id';
-
 	//////////////////////////////////////////////////
 
 	/**
 	 * Bootstrap
 	 */
 	public static function bootstrap() {
-		add_action( 'plugins_loaded', array( __CLASS__, 'plugins_loaded' ) );
-
-		// The gateways are loaded directly when the Membership plugin file is included
-		// @see https://github.com/pronamic-wpmudev/membership-premium/blob/3.5.1.3/membershippremium.php#L234
-		// @see https://github.com/WordPress/WordPress/blob/3.8.2/wp-includes/option.php#L91
-		add_filter( 'option_membership_activated_gateways', array( __CLASS__, 'option_membership_activated_gateways' ) );
+		new self();
 	}
 
-	//////////////////////////////////////////////////
+	/**
+	 * Constructs and initializes the MemberPress extension.
+	 */
+	public function __construct() {
+		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprGatewayFactory.php#L48-50
+		add_filter( 'mepr-gateway-paths', array( $this, 'gateway_paths' ) );
+
+		add_action( 'pronamic_payment_status_update_' . self::SLUG, array( __CLASS__, 'status_update' ), 10, 2 );
+		add_filter( 'pronamic_payment_source_text_' . self::SLUG,   array( __CLASS__, 'source_text' ), 10, 2 );
+	}
 
 	/**
-	 * Plugins loaded
+	 * Gateway paths
+	 *
+	 * @param array $paths
+	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprGatewayFactory.php#L48-50
 	 */
-	public static function plugins_loaded() {
-		if ( Pronamic_WP_Pay_Extensions_WPMUDEV_Membership_Membership::is_active() ) {
-			// Backwards compatibility Membership <= 3.4
-			$class_aliases = array(
-				'M_Gateway'      => 'Membership_Gateway',
-				'M_Subscription' => 'Membership_Model_Subscription',
-				'M_Membership'   => 'Membership_Model_Member',
-			);
+	public function gateway_paths( $paths ) {
+		$paths[] = dirname( __FILE__ ) . '/../gateways/';
 
-			foreach ( $class_aliases as $orignal => $alias ) {
-				if ( class_exists( $orignal ) && ! class_exists( $alias ) ) {
-					// http://www.php.net/manual/en/function.class-alias.php
-					class_alias( $orignal, $alias );
-				}
-			}
-
-			// Register the Membership iDEAL gateway
-			// Membership < 3.5
-			if ( function_exists( 'M_register_gateway' ) ) {
-				M_register_gateway( 'pronamic_ideal', 'Pronamic_WP_Pay_Extensions_WPMUDEV_Membership_IDealGateway' );
-			}
-
-			// Membership >= 3.5
-			if ( method_exists( 'Membership_Gateway', 'register_gateway' ) ) {
-				Membership_Gateway::register_gateway( 'pronamic_ideal', 'Pronamic_WP_Pay_Extensions_WPMUDEV_Membership_IDealGateway' );
-			}
-
-			add_action( 'pronamic_payment_status_update_' . self::SLUG, array( __CLASS__, 'status_update' ), 10, 2 );
-			add_filter( 'pronamic_payment_source_text_' . self::SLUG,   array( __CLASS__, 'source_text' ), 10, 2 );
-
-			if ( is_admin() ) {
-				$admin = new Pronamic_WP_Pay_Extensions_WPMUDEV_Membership_Admin();
-			}
-		}
+		return $paths;
 	}
 
 	//////////////////////////////////////////////////
@@ -84,22 +55,48 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 	/**
 	 * Update lead status of the specified payment
 	 *
+	 * @see https://github.com/Charitable/Charitable/blob/1.1.4/includes/gateways/class-charitable-gateway-paypal.php#L229-L357
 	 * @param Pronamic_Pay_Payment $payment
 	 */
 	public static function status_update( Pronamic_Pay_Payment $payment, $can_redirect = false ) {
-		$status = $payment->get_status();
+		global $transaction;
 
-		$url = M_get_returnurl_permalink();
+		$transaction_id = $payment->get_source_id();
 
-		switch ( $status ) {
-			case Pronamic_WP_Pay_Statuses::SUCCESS:
-				$url = M_get_registrationcompleted_permalink();
+		$transaction = new MeprTransaction( $transaction_id );
+
+		$mepr_options = MeprOptions::fetch();
+
+		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprOptions.php#L768-782
+		$url = $mepr_options->thankyou_page_url( 'trans_num=' . $transaction_id );
+
+		$gateway = new Pronamic_WP_Pay_Extensions_MemberPress_Gateway();
+
+		switch ( $payment->get_status() ) {
+			case Pronamic_WP_Pay_Statuses::CANCELLED :
+				$gateway->record_payment_failure();
+
+				break;
+			case Pronamic_WP_Pay_Statuses::EXPIRED :
+				$gateway->record_payment_failure();
+
+				break;
+			case Pronamic_WP_Pay_Statuses::FAILURE :
+				$gateway->record_payment_failure();
+
+				break;
+			case Pronamic_WP_Pay_Statuses::SUCCESS :
+				$gateway->record_payment();
+
+				break;
+			case Pronamic_WP_Pay_Statuses::OPEN :
+			default:
 
 				break;
 		}
 
-		if ( $url && $can_redirect ) {
-			wp_redirect( $url, 303 );
+		if ( $can_redirect ) {
+			wp_redirect( $url );
 
 			exit;
 		}
@@ -108,48 +105,23 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 	//////////////////////////////////////////////////
 
 	/**
-	 * Source text
-	 *
-	 * @param text $text
-	 * @param Pronamic_Pay_Payment $payment
-	 * @return string
+	 * Source column
 	 */
-	public static function source_text( $text, Pronamic_Pay_Payment $payment ) {
+	public static function source_text( $text, Pronamic_WP_Pay_Payment $payment ) {
 		$text  = '';
 
-		$text .= __( 'Membership', 'pronamic_ideal' ) . '<br />';
+		$text .= __( 'MemberPress', 'pronamic_ideal' ) . '<br />';
 
 		$text .= sprintf(
 			'<a href="%s">%s</a>',
 			add_query_arg( array(
-				'page'    => 'membershipgateways',
-				'action'  => 'transactions',
-				'gateway' => 'pronamic_ideal',
+				'page'   => 'memberpress-trans',
+				'action' => 'edit',
+				'id'     => $payment->source_id,
 			), admin_url( 'admin.php' ) ),
-			sprintf( __( 'Transaction #%s', 'pronamic_ideal' ), $payment->get_id() )
+			sprintf( __( 'Transaction %s', 'pronamic_ideal' ), $payment->source_id )
 		);
 
 		return $text;
-	}
-
-	//////////////////////////////////////////////////
-
-	/**
-	 * Add the Pronamic iDEAL gateway to the activated gateways array if the
-	 * config option is not empty
-	 *
-	 * @param array $gateways
-	 * @return array
-	 */
-	public static function option_membership_activated_gateways( $gateways ) {
-		if ( is_array( $gateways ) ) {
-			$config_id = get_option( self::OPTION_CONFIG_ID );
-
-			if ( ! empty( $config_id ) ) {
-				$gateways[] = 'pronamic_ideal';
-			}
-		}
-
-		return $gateways;
 	}
 }

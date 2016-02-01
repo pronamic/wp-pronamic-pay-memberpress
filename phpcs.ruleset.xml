@@ -2,6 +2,8 @@
 
 <ruleset name="WordPress Pay MemberPress rules">
 	<rule ref="WordPress">	
-		<exclude name="WordPress.XSS.EscapeOutput" />
+		<exclude name="Generic.Files.LowercasedFilename.NotFound" />
+
+		<exclude name="Squiz.Commenting" />
 	</rule>
 </ruleset>
