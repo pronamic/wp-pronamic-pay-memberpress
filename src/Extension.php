@@ -70,19 +70,51 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprOptions.php#L768-782
 		$url = $mepr_options->thankyou_page_url( 'trans_num=' . $transaction_id );
 
+		$product = $transaction->product();
+
 		$gateway = new Pronamic_WP_Pay_Extensions_MemberPress_Gateway();
 
 		switch ( $payment->get_status() ) {
 			case Pronamic_WP_Pay_Statuses::CANCELLED :
 				$gateway->record_payment_failure();
 
+				$url = add_query_arg(
+					array(
+						'action' => 'payment_form',
+						'txn' => $transaction->trans_num,
+					),
+					$product->url()
+				);
+
+				$url = wp_nonce_url( $url, 'mepr_payment_form' );
+
 				break;
 			case Pronamic_WP_Pay_Statuses::EXPIRED :
 				$gateway->record_payment_failure();
 
+				$url = add_query_arg(
+					array(
+						'action' => 'payment_form',
+						'txn' => $transaction->trans_num,
+					),
+					$product->url()
+				);
+
+				$url = wp_nonce_url( $url, 'mepr_payment_form' );
+
 				break;
 			case Pronamic_WP_Pay_Statuses::FAILURE :
 				$gateway->record_payment_failure();
+
+				$url = add_query_arg(
+					array(
+						'action' => 'payment_form',
+						'txn' => $transaction->trans_num,
+					),
+					$product->url()
+				);
+
+				$url = wp_nonce_url( $url, 'mepr_payment_form' );
 
 				break;
 			case Pronamic_WP_Pay_Statuses::SUCCESS :
