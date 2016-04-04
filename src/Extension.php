@@ -82,11 +82,10 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 					array(
 						'action' => 'payment_form',
 						'txn' => $transaction->trans_num,
+						'_wpnonce' => wp_create_nonce( 'mepr_payment_form' ),
 					),
 					$product->url()
 				);
-
-				$url = wp_nonce_url( $url, 'mepr_payment_form' );
 
 				break;
 			case Pronamic_WP_Pay_Statuses::EXPIRED :
@@ -96,11 +95,10 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 					array(
 						'action' => 'payment_form',
 						'txn' => $transaction->trans_num,
+						'_wpnonce' => wp_create_nonce( 'mepr_payment_form' ),
 					),
 					$product->url()
 				);
-
-				$url = wp_nonce_url( $url, 'mepr_payment_form' );
 
 				break;
 			case Pronamic_WP_Pay_Statuses::FAILURE :
@@ -110,11 +108,10 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 					array(
 						'action' => 'payment_form',
 						'txn' => $transaction->trans_num,
+						'_wpnonce' => wp_create_nonce( 'mepr_payment_form' ),
 					),
 					$product->url()
 				);
-
-				$url = wp_nonce_url( $url, 'mepr_payment_form' );
 
 				break;
 			case Pronamic_WP_Pay_Statuses::SUCCESS :
