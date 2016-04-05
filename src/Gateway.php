@@ -139,9 +139,29 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 		$transaction->status = MeprTransaction::$complete_str;
 		$transaction->store();
 
-		$this->send_product_welcome_notices( $transaction );
-		$this->send_signup_notices( $transaction );
+		$reflection = new ReflectionClass( 'MeprBaseRealGateway' );
 
+		if ( 3 === $reflection->getMethod( 'send_product_welcome_notices' )->getNumberOfParameters() ) {
+			$uemail = MeprEmailFactory::fetch(
+				'MeprUserProductWelcomeEmail',
+				'MeprBaseProductEmail',
+				array(
+					array( 
+						'product_id' => $transaction->product_id,
+					),
+				)
+			);
+
+			$this->send_product_welcome_notices(
+				$uemail,
+				MeprTransactionsHelper::get_email_params( $transaction ),
+				$transaction->user()
+			);
+		} else {
+			$this->send_product_welcome_notices( $transaction );
+		}
+
+		$this->send_signup_notices( $transaction );
 		$this->send_transaction_receipt_notices( $transaction );
 
 		return $transaction;
