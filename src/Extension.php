@@ -34,7 +34,9 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprGatewayFactory.php#L48-50
 		add_filter( 'mepr-gateway-paths', array( $this, 'gateway_paths' ) );
 
-		add_action( 'pronamic_payment_status_update_' . self::SLUG, array( __CLASS__, 'status_update' ), 10, 2 );
+		add_filter( 'pronamic_payment_redirect_url_' . self::SLUG, array( __CLASS__, 'redirect_url' ), 10, 2 );
+		add_action( 'pronamic_payment_status_update_' . self::SLUG, array( __CLASS__, 'status_update' ), 10, 1 );
+
 		add_filter( 'pronamic_payment_source_text_' . self::SLUG,   array( __CLASS__, 'source_text' ), 10, 2 );
 	}
 
@@ -53,56 +55,28 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 	//////////////////////////////////////////////////
 
 	/**
-	 * Update lead status of the specified payment
+	 * Payment redirect URL fitler.
 	 *
-	 * @see https://github.com/Charitable/Charitable/blob/1.1.4/includes/gateways/class-charitable-gateway-paypal.php#L229-L357
+	 * @since 1.0.1
+	 * @param string               $url
 	 * @param Pronamic_Pay_Payment $payment
+	 * @return string
 	 */
-	public static function status_update( Pronamic_Pay_Payment $payment, $can_redirect = false ) {
+	public static function redirect_url( $url, $payment ) {
 		global $transaction;
 
 		$transaction_id = $payment->get_source_id();
 
 		$transaction = new MeprTransaction( $transaction_id );
 
-		$mepr_options = MeprOptions::fetch();
-
 		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprOptions.php#L768-782
-		$url = $mepr_options->thankyou_page_url( 'trans_num=' . $transaction_id );
-
-		$product = $transaction->product();
-
-		$gateway = new Pronamic_WP_Pay_Extensions_MemberPress_Gateway();
+		$mepr_options = MeprOptions::fetch();
 
 		switch ( $payment->get_status() ) {
 			case Pronamic_WP_Pay_Statuses::CANCELLED :
-				$gateway->record_payment_failure();
-
-				$url = add_query_arg(
-					array(
-						'action' => 'payment_form',
-						'txn' => $transaction->trans_num,
-						'_wpnonce' => wp_create_nonce( 'mepr_payment_form' ),
-					),
-					$product->url()
-				);
-
-				break;
 			case Pronamic_WP_Pay_Statuses::EXPIRED :
-				$gateway->record_payment_failure();
-
-				$url = add_query_arg(
-					array(
-						'action' => 'payment_form',
-						'txn' => $transaction->trans_num,
-						'_wpnonce' => wp_create_nonce( 'mepr_payment_form' ),
-					),
-					$product->url()
-				);
-
-				break;
 			case Pronamic_WP_Pay_Statuses::FAILURE :
-				$gateway->record_payment_failure();
+				$product = $transaction->product();
 
 				$url = add_query_arg(
 					array(
@@ -115,7 +89,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 
 				break;
 			case Pronamic_WP_Pay_Statuses::SUCCESS :
-				$gateway->record_payment();
+				$url = $mepr_options->thankyou_page_url( 'trans_num=' . $transaction_id );
 
 				break;
 			case Pronamic_WP_Pay_Statuses::OPEN :
@@ -124,10 +98,48 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 				break;
 		}
 
-		if ( $can_redirect ) {
-			wp_redirect( $url );
+		return $url;
+	}
 
-			exit;
+	//////////////////////////////////////////////////
+
+	/**
+	 * Update lead status of the specified payment
+	 *
+	 * @see https://github.com/Charitable/Charitable/blob/1.1.4/includes/gateways/class-charitable-gateway-paypal.php#L229-L357
+	 * @param Pronamic_Pay_Payment $payment
+	 */
+	public static function status_update( Pronamic_Pay_Payment $payment ) {
+		global $transaction;
+
+		$transaction_id = $payment->get_source_id();
+
+		$transaction = new MeprTransaction( $transaction_id );
+
+		$should_update = ! Pronamic_WP_Pay_Extensions_MemberPress_MemberPress::transaction_has_status( $transaction, array(
+			MeprTransaction::$failed_str,
+			MeprTransaction::$complete_str
+		) );
+
+		if ( $should_update ) {
+			$gateway = new Pronamic_WP_Pay_Extensions_MemberPress_Gateway();
+
+			switch ( $payment->get_status() ) {
+				case Pronamic_WP_Pay_Statuses::CANCELLED :
+				case Pronamic_WP_Pay_Statuses::EXPIRED :
+				case Pronamic_WP_Pay_Statuses::FAILURE :
+					$gateway->record_payment_failure();
+
+					break;
+				case Pronamic_WP_Pay_Statuses::SUCCESS :
+					$gateway->record_payment();
+
+					break;
+				case Pronamic_WP_Pay_Statuses::OPEN :
+				default:
+
+					break;
+			}
 		}
 	}
 
