@@ -69,9 +69,6 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 
 		$transaction = new MeprTransaction( $transaction_id );
 
-		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprOptions.php#L768-782
-		$mepr_options = MeprOptions::fetch();
-
 		switch ( $payment->get_status() ) {
 			case Pronamic_WP_Pay_Statuses::CANCELLED :
 			case Pronamic_WP_Pay_Statuses::EXPIRED :
@@ -89,6 +86,9 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 
 				break;
 			case Pronamic_WP_Pay_Statuses::SUCCESS :
+				// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprOptions.php#L768-782
+				$mepr_options = MeprOptions::fetch();
+
 				$url = $mepr_options->thankyou_page_url( 'trans_num=' . $transaction_id );
 
 				break;
