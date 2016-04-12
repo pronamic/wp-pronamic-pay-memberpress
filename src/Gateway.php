@@ -366,7 +366,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 
 		if ( $gateway ) {
 			// Data
-			$data = new Pronamic_WP_Pay_Extensions_MemberPress_PaymentData( $amount, $user, $product, $txn_id );
+			$data = new Pronamic_WP_Pay_Extensions_MemberPress_PaymentData( $txn->total, $user, $product, $txn_id );
 
 			$payment = Pronamic_WP_Pay_Plugin::start( $config_id, $gateway, $data, $this->payment_method );
 
