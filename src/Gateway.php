@@ -347,8 +347,6 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L230-233
 	 */
 	public function display_payment_form( $amount, $user, $product_id, $txn_id ) {
-		$mepr_options = MeprOptions::fetch();
-
 		$product = new MeprProduct( $product_id );
 
 		$coupon = false;
