@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.0.0
+ * @version 1.0.1
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway {
@@ -135,13 +135,40 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	public function record_payment() {
 		global $transaction;
 
-		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprTransaction.php#L51
+		/*
+		 * For some reasons the `send_product_welcome_notices` function accepts 1 or 3 arguments. We are not sure
+		 * if this is a difference in the 'Business' and 'Developer' edition or between version `1.2.4` and `1.2.7`.
+		 *
+		 * @see https://github.com/wp-premium/memberpress-developer/blob/1.2.4/app/lib/MeprBaseGateway.php#L596-L612
+		 * @see https://github.com/wp-premium/memberpress-business/blob/1.2.7/app/lib/MeprBaseGateway.php#L609-L619
+		 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprTransaction.php#L51
+		 */
 		$transaction->status = MeprTransaction::$complete_str;
 		$transaction->store();
 
-		$this->send_product_welcome_notices( $transaction );
-		$this->send_signup_notices( $transaction );
+		$reflection = new ReflectionClass( 'MeprBaseRealGateway' );
 
+		if ( 3 === $reflection->getMethod( 'send_product_welcome_notices' )->getNumberOfParameters() ) {
+			$uemail = MeprEmailFactory::fetch(
+				'MeprUserProductWelcomeEmail',
+				'MeprBaseProductEmail',
+				array(
+					array(
+						'product_id' => $transaction->product_id,
+					),
+				)
+			);
+
+			$this->send_product_welcome_notices(
+				$uemail,
+				MeprTransactionsHelper::get_email_params( $transaction ),
+				$transaction->user()
+			);
+		} else {
+			$this->send_product_welcome_notices( $transaction );
+		}
+
+		$this->send_signup_notices( $transaction );
 		$this->send_transaction_receipt_notices( $transaction );
 
 		return $transaction;
@@ -320,8 +347,6 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L230-233
 	 */
 	public function display_payment_form( $amount, $user, $product_id, $txn_id ) {
-		$mepr_options = MeprOptions::fetch();
-
 		$product = new MeprProduct( $product_id );
 
 		$coupon = false;
@@ -346,7 +371,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 
 		if ( $gateway ) {
 			// Data
-			$data = new Pronamic_WP_Pay_Extensions_MemberPress_PaymentData( $amount, $user, $product, $txn_id );
+			$data = new Pronamic_WP_Pay_Extensions_MemberPress_PaymentData( $txn->total, $user, $product, $txn_id );
 
 			$payment = Pronamic_WP_Pay_Plugin::start( $config_id, $gateway, $data, $this->payment_method );
 

@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.0.0
+ * @version 1.0.1
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Extensions_MemberPress_PaymentData extends Pronamic_WP_Pay_PaymentData {
@@ -74,19 +74,19 @@ class Pronamic_WP_Pay_Extensions_MemberPress_PaymentData extends Pronamic_WP_Pay
 		return $this->user->user_email;
 	}
 
-	public function getCustomerName() {
+	public function get_customer_name() {
 		return '';
 	}
 
-	public function getOwnerAddress() {
+	public function get_address() {
 		return '';
 	}
 
-	public function getOwnerCity() {
+	public function get_city() {
 		return '';
 	}
 
-	public function getOwnerZip() {
+	public function get_zip() {
 		return '';
 	}
 
