@@ -153,7 +153,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 				'MeprUserProductWelcomeEmail',
 				'MeprBaseProductEmail',
 				array(
-					array( 
+					array(
 						'product_id' => $transaction->product_id,
 					),
 				)

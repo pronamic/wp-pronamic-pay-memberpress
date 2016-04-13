@@ -118,7 +118,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 
 		$should_update = ! Pronamic_WP_Pay_Extensions_MemberPress_MemberPress::transaction_has_status( $transaction, array(
 			MeprTransaction::$failed_str,
-			MeprTransaction::$complete_str
+			MeprTransaction::$complete_str,
 		) );
 
 		if ( $should_update ) {
