@@ -319,13 +319,88 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	}
 
 	/**
+	 * Payment redirect.
+	 *
+	 * @param $txn
+	 */
+	public function payment_redirect( $txn ) {
+		$product = $txn->product();
+
+		$txn = new MeprTransaction( $txn->id );
+
+		// Artificially set the price of the $prd in case a coupon was used
+		if ( $product->price !== $txn->amount ) {
+			$product->price = $txn->amount;
+		}
+
+		$invoice = MeprTransactionsHelper::get_invoice( $txn );
+
+		echo $invoice; // WPCS: XSS ok.
+
+		// Gateway
+		$config_id = $this->settings->config_id;
+
+		$gateway = Pronamic_WP_Pay_Plugin::get_gateway( $config_id );
+
+		if ( $gateway ) {
+			// Data
+			$data = new Pronamic_WP_Pay_Extensions_MemberPress_PaymentData( $txn->total, $txn->user(), $product, $txn->id );
+
+			$payment = Pronamic_WP_Pay_Plugin::start( $config_id, $gateway, $data, $this->payment_method );
+
+			$error = $gateway->get_error();
+
+			if ( ! is_wp_error( $error ) ) {
+				// Redirect
+				$gateway->redirect( $payment );
+			}
+		}
+	}
+
+	/**
 	 * Display payment page.
 	 *
 	 * @param $txn
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L219-223
 	 */
 	public function display_payment_page( $txn ) {
+		if ( ! $txn instanceof MeprTransaction ) {
+			return false;
+		}
 
+		// Gateway
+		$config_id = $this->settings->config_id;
+
+		$gateway = Pronamic_WP_Pay_Plugin::get_gateway( $config_id );
+
+		if ( $gateway && '' === $gateway->get_input_html() ) {
+			$this->payment_redirect( $txn );
+		}
+	}
+
+	/**
+	 * Process payment form.
+	 *
+	 * @param $txn
+	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L239-289
+	 */
+	public function process_payment_form( $txn ) {
+		if ( ! $txn instanceof MeprTransaction ) {
+			return false;
+		}
+
+		if ( ! filter_has_var( INPUT_POST, 'pronamic_pay_memberpress_pay' ) ) {
+			return false;
+		}
+
+		// Gateway
+		$config_id = $this->settings->config_id;
+
+		$gateway = Pronamic_WP_Pay_Plugin::get_gateway( $config_id );
+
+		if ( $gateway ) {
+			$this->payment_redirect( $txn );
+		}
 	}
 
 	/**
@@ -355,8 +430,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 
 		// Artifically set the price of the $prd in case a coupon was used
 		if ( $product->price !== $amount ) {
-			$coupon = true;
-
+			$coupon         = true;
 			$product->price = $amount;
 		}
 
@@ -364,24 +438,38 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 
 		echo $invoice; // WPCS: XSS ok.
 
-		// Gateway
-		$config_id = $this->settings->config_id;
+		?>
+		<div class="mp_wrapper mp_payment_form_wrapper">
+			<form action="" method="post" id="payment-form" class="mepr-form" novalidate>
+				<input type="hidden" name="mepr_process_payment_form" value="Y" />
+				<input type="hidden" name="mepr_transaction_id" value="<?php echo $txn_id; ?>" />
+				<input type="hidden" name="pronamic_pay_memberpress_pay" value="1" />
 
-		$gateway = Pronamic_WP_Pay_Plugin::get_gateway( $config_id );
+				<div class="mepr_spacer">&nbsp;</div>
 
-		if ( $gateway ) {
-			// Data
-			$data = new Pronamic_WP_Pay_Extensions_MemberPress_PaymentData( $txn->total, $user, $product, $txn_id );
+				<?php
 
-			$payment = Pronamic_WP_Pay_Plugin::start( $config_id, $gateway, $data, $this->payment_method );
+				// Gateway
+				$config_id = $this->settings->config_id;
 
-			$error = $gateway->get_error();
+				$gateway = Pronamic_WP_Pay_Plugin::get_gateway( $config_id );
 
-			if ( ! is_wp_error( $error ) ) {
-				// Redirect
-				$gateway->redirect( $payment );
-			}
-		}
+				if ( $gateway ) {
+					echo $gateway->get_input_html();
+				}
+
+				?>
+
+				<div class="mepr_spacer">&nbsp;</div>
+
+				<input type="submit" class="mepr-submit" value="<?php _e('Pay', 'pronamic_ideal'); ?>" />
+				<img src="<?php echo admin_url('images/loading.gif'); ?>" style="display: none;" class="mepr-loading-gif" />
+				<?php MeprView::render('/shared/has_errors', get_defined_vars()); ?>
+
+				<noscript><p class="mepr_nojs"><?php _e('Javascript is disabled in your browser. You will not be able to complete your purchase until you either enable JavaScript in your browser, or switch to a browser that supports it.', 'memberpress'); ?></p></noscript>
+			</form>
+		</div>
+		<?php
 	}
 
 	/**
