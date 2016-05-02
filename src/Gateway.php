@@ -50,6 +50,20 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 		$this->set_defaults();
 	}
 
+	/**
+	 * Get icon function, please not that this is not a MemberPress function.
+	 *
+	 * @return string
+	 */
+	protected function get_icon() {
+		return '';
+	}
+
+	/**
+	 * Get class alias name.
+	 *
+	 * @return string
+	 */
 	public function get_alias() {
 		return 'MeprPronamicGateway';
 	}
@@ -70,7 +84,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 				'id'        => $this->generate_id(),
 				'label'     => '',
 				'use_label' => true,
-				'icon'      => '',
+				'icon'      => $this->get_icon(),
 				'use_icon'  => true,
 				'desc'      => '',
 				'use_desc'  => true,
