@@ -14,13 +14,13 @@ class Pronamic_WP_Pay_Extensions_MemberPress_PaymentData extends Pronamic_WP_Pay
 	/**
 	 * Constructs and initialize payment data object.
 	 */
-	public function __construct( $amount, $user, MeprProduct $product, $txn_id ) {
+	public function __construct( MeprTransaction $txn ) {
 		parent::__construct();
 
-		$this->amount  = $amount;
-		$this->user    = $user;
-		$this->product = $product;
-		$this->txn_id  = $txn_id;
+		$this->amount  = $txn->total;
+		$this->user    = $txn->user();
+		$this->product = $txn->product();
+		$this->txn_id  = $txn->id;
 	}
 
 	//////////////////////////////////////////////////

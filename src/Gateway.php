@@ -338,14 +338,8 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * @param $txn
 	 */
 	public function payment_redirect( $txn ) {
-		$product = $txn->product();
 
 		$txn = new MeprTransaction( $txn->id );
-
-		// Artificially set the price of the $prd in case a coupon was used
-		if ( $product->price !== $txn->amount ) {
-			$product->price = $txn->amount;
-		}
 
 		$invoice = MeprTransactionsHelper::get_invoice( $txn );
 
@@ -358,7 +352,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 
 		if ( $gateway ) {
 			// Data
-			$data = new Pronamic_WP_Pay_Extensions_MemberPress_PaymentData( $txn->total, $txn->user(), $product, $txn->id );
+			$data = new Pronamic_WP_Pay_Extensions_MemberPress_PaymentData( $txn );
 
 			$payment = Pronamic_WP_Pay_Plugin::start( $config_id, $gateway, $data, $this->payment_method );
 
