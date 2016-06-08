@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.0.1
+ * @version 1.0.2
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway {
@@ -53,6 +53,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	/**
 	 * Get icon function, please not that this is not a MemberPress function.
 	 *
+	 * @since 1.0.2
 	 * @return string
 	 */
 	protected function get_icon() {
@@ -335,6 +336,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	/**
 	 * Payment redirect.
 	 *
+	 * @since 1.0.2
 	 * @param $txn
 	 */
 	public function payment_redirect( $txn ) {

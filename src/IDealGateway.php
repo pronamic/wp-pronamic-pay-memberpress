@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.0.0
+ * @version 1.0.2
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Extensions_MemberPress_IDealGateway extends Pronamic_WP_Pay_Extensions_MemberPress_Gateway {
@@ -26,6 +26,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_IDealGateway extends Pronamic_WP_Pa
 	/**
 	 * Get icon function, please not that this is not a MemberPress function.
 	 *
+	 * @since 1.0.2
 	 * @return string
 	 */
 	protected function get_icon() {
