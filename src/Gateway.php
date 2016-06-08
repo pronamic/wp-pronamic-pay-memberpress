@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.0.1
+ * @version 1.0.2
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway {
@@ -50,6 +50,21 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 		$this->set_defaults();
 	}
 
+	/**
+	 * Get icon function, please not that this is not a MemberPress function.
+	 *
+	 * @since 1.0.2
+	 * @return string
+	 */
+	protected function get_icon() {
+		return '';
+	}
+
+	/**
+	 * Get class alias name.
+	 *
+	 * @return string
+	 */
 	public function get_alias() {
 		return 'MeprPronamicGateway';
 	}
@@ -70,7 +85,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 				'id'        => $this->generate_id(),
 				'label'     => '',
 				'use_label' => true,
-				'icon'      => '',
+				'icon'      => $this->get_icon(),
 				'use_icon'  => true,
 				'desc'      => '',
 				'use_desc'  => true,
@@ -319,13 +334,83 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	}
 
 	/**
+	 * Payment redirect.
+	 *
+	 * @since 1.0.2
+	 * @param $txn
+	 */
+	public function payment_redirect( $txn ) {
+
+		$txn = new MeprTransaction( $txn->id );
+
+		$invoice = MeprTransactionsHelper::get_invoice( $txn );
+
+		echo $invoice; // WPCS: XSS ok.
+
+		// Gateway
+		$config_id = $this->settings->config_id;
+
+		$gateway = Pronamic_WP_Pay_Plugin::get_gateway( $config_id );
+
+		if ( $gateway ) {
+			// Data
+			$data = new Pronamic_WP_Pay_Extensions_MemberPress_PaymentData( $txn );
+
+			$payment = Pronamic_WP_Pay_Plugin::start( $config_id, $gateway, $data, $this->payment_method );
+
+			$error = $gateway->get_error();
+
+			if ( ! is_wp_error( $error ) ) {
+				// Redirect
+				$gateway->redirect( $payment );
+			}
+		}
+	}
+
+	/**
 	 * Display payment page.
 	 *
 	 * @param $txn
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L219-223
 	 */
 	public function display_payment_page( $txn ) {
+		if ( ! $txn instanceof MeprTransaction ) {
+			return false;
+		}
 
+		// Gateway
+		$config_id = $this->settings->config_id;
+
+		$gateway = Pronamic_WP_Pay_Plugin::get_gateway( $config_id );
+
+		if ( $gateway && '' === $gateway->get_input_html() ) {
+			$this->payment_redirect( $txn );
+		}
+	}
+
+	/**
+	 * Process payment form.
+	 *
+	 * @param $txn
+	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L239-289
+	 */
+	public function process_payment_form( $txn ) {
+		if ( ! $txn instanceof MeprTransaction ) {
+			return false;
+		}
+
+		if ( ! filter_has_var( INPUT_POST, 'pronamic_pay_memberpress_pay' ) ) {
+			return false;
+		}
+
+		// Gateway
+		$config_id = $this->settings->config_id;
+
+		$gateway = Pronamic_WP_Pay_Plugin::get_gateway( $config_id );
+
+		if ( $gateway ) {
+			$this->payment_redirect( $txn );
+		}
 	}
 
 	/**
@@ -355,8 +440,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 
 		// Artifically set the price of the $prd in case a coupon was used
 		if ( $product->price !== $amount ) {
-			$coupon = true;
-
+			$coupon         = true;
 			$product->price = $amount;
 		}
 
@@ -364,24 +448,38 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 
 		echo $invoice; // WPCS: XSS ok.
 
-		// Gateway
-		$config_id = $this->settings->config_id;
+		?>
+		<div class="mp_wrapper mp_payment_form_wrapper">
+			<form action="" method="post" id="payment-form" class="mepr-form" novalidate>
+				<input type="hidden" name="mepr_process_payment_form" value="Y" />
+				<input type="hidden" name="mepr_transaction_id" value="<?php echo esc_attr( $txn_id ); ?>" />
+				<input type="hidden" name="pronamic_pay_memberpress_pay" value="1" />
 
-		$gateway = Pronamic_WP_Pay_Plugin::get_gateway( $config_id );
+				<div class="mepr_spacer">&nbsp;</div>
 
-		if ( $gateway ) {
-			// Data
-			$data = new Pronamic_WP_Pay_Extensions_MemberPress_PaymentData( $txn->total, $user, $product, $txn_id );
+				<?php
 
-			$payment = Pronamic_WP_Pay_Plugin::start( $config_id, $gateway, $data, $this->payment_method );
+				// Gateway
+				$config_id = $this->settings->config_id;
 
-			$error = $gateway->get_error();
+				$gateway = Pronamic_WP_Pay_Plugin::get_gateway( $config_id );
 
-			if ( ! is_wp_error( $error ) ) {
-				// Redirect
-				$gateway->redirect( $payment );
-			}
-		}
+				if ( $gateway ) {
+					echo $gateway->get_input_html(); // WPCS: XSS ok.
+				}
+
+				?>
+
+				<div class="mepr_spacer">&nbsp;</div>
+
+				<input type="submit" class="mepr-submit" value="<?php esc_attr_e( 'Pay', 'pronamic_ideal' ); ?>" />
+				<img src="<?php echo esc_attr( admin_url( 'images/loading.gif' ) ); ?>" style="display: none;" class="mepr-loading-gif" />
+				<?php MeprView::render( '/shared/has_errors', get_defined_vars() ); ?>
+
+				<noscript><p class="mepr_nojs"><?php esc_html_e( 'JavaScript is disabled in your browser. You will not be able to complete your purchase until you either enable JavaScript in your browser, or switch to a browser that supports it.', 'pronamic_ideal' ); ?></p></noscript>
+			</form>
+		</div>
+		<?php
 	}
 
 	/**
