@@ -452,7 +452,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 		<div class="mp_wrapper mp_payment_form_wrapper">
 			<form action="" method="post" id="payment-form" class="mepr-form" novalidate>
 				<input type="hidden" name="mepr_process_payment_form" value="Y" />
-				<input type="hidden" name="mepr_transaction_id" value="<?php echo $txn_id; ?>" />
+				<input type="hidden" name="mepr_transaction_id" value="<?php echo esc_attr( $txn_id ); ?>" />
 				<input type="hidden" name="pronamic_pay_memberpress_pay" value="1" />
 
 				<div class="mepr_spacer">&nbsp;</div>
@@ -465,18 +465,18 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 				$gateway = Pronamic_WP_Pay_Plugin::get_gateway( $config_id );
 
 				if ( $gateway ) {
-					echo $gateway->get_input_html();
+					echo $gateway->get_input_html(); // WPCS: XSS ok.
 				}
 
 				?>
 
 				<div class="mepr_spacer">&nbsp;</div>
 
-				<input type="submit" class="mepr-submit" value="<?php _e('Pay', 'pronamic_ideal'); ?>" />
-				<img src="<?php echo admin_url('images/loading.gif'); ?>" style="display: none;" class="mepr-loading-gif" />
-				<?php MeprView::render('/shared/has_errors', get_defined_vars()); ?>
+				<input type="submit" class="mepr-submit" value="<?php esc_attr_e( 'Pay', 'pronamic_ideal' ); ?>" />
+				<img src="<?php echo esc_attr( admin_url( 'images/loading.gif' ) ); ?>" style="display: none;" class="mepr-loading-gif" />
+				<?php MeprView::render( '/shared/has_errors', get_defined_vars() ); ?>
 
-				<noscript><p class="mepr_nojs"><?php _e('Javascript is disabled in your browser. You will not be able to complete your purchase until you either enable JavaScript in your browser, or switch to a browser that supports it.', 'memberpress'); ?></p></noscript>
+				<noscript><p class="mepr_nojs"><?php esc_html_e( 'JavaScript is disabled in your browser. You will not be able to complete your purchase until you either enable JavaScript in your browser, or switch to a browser that supports it.', 'pronamic_ideal' ); ?></p></noscript>
 			</form>
 		</div>
 		<?php
