@@ -19,8 +19,8 @@ class Pronamic_WP_Pay_Extensions_MemberPress_MisterCashGateway extends Pronamic_
 
 		// Set the name of this gateway.
 		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L12-13
-		$this->name           = __( 'Bancontact/Mister Cash', 'pronamic_ideal' );
-		$this->payment_method = Pronamic_WP_Pay_PaymentMethods::MISTER_CASH;
+		$this->name           = __( 'Bancontact', 'pronamic_ideal' );
+		$this->payment_method = Pronamic_WP_Pay_PaymentMethods::BANCONTACT;
 	}
 
 	public function get_alias() {
