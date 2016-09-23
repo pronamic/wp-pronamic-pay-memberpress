@@ -89,7 +89,10 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 				// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprOptions.php#L768-782
 				$mepr_options = MeprOptions::fetch();
 
-				$url = $mepr_options->thankyou_page_url( 'trans_num=' . $transaction->trans_num );
+				$product         = new MeprProduct( $transaction->product_id );
+				$sanitized_title = sanitize_title( $product->post_title );
+
+				$url = $mepr_options->thankyou_page_url( 'membership=' . $sanitized_title . '&trans_num=' . $transaction->trans_num );
 
 				break;
 			case Pronamic_WP_Pay_Statuses::OPEN :
