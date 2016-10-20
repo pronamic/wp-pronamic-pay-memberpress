@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.0.2
+ * @version 1.0.3
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway {
@@ -159,6 +159,12 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 		 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprTransaction.php#L51
 		 */
 		$transaction->status = MeprTransaction::$complete_str;
+
+		// This will only work before maybe_cancel_old_sub is run
+		$upgrade = $transaction->is_upgrade();
+		$downgrade = $transaction->is_downgrade();
+
+		$transaction->maybe_cancel_old_sub();
 		$transaction->store();
 
 		$reflection = new ReflectionClass( 'MeprBaseRealGateway' );
@@ -181,6 +187,15 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 			);
 		} else {
 			$this->send_product_welcome_notices( $transaction );
+		}
+
+		// Send upgrade/downgrade notices
+		if ( $upgrade ) {
+			$this->upgraded_sub( $transaction );
+			$this->send_upgraded_txn_notices( $transaction );
+		} elseif ( $downgrade ) {
+			$this->downgraded_sub( $transaction );
+			$this->send_downgraded_txn_notices( $transaction );
 		}
 
 		$this->send_signup_notices( $transaction );
