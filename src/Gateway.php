@@ -51,6 +51,30 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	}
 
 	/**
+	 * Send MemberPress transaction notices.
+	 *
+	 * @param $transaction
+	 * @param $method
+	 *
+	 * @return mixed|void
+	 */
+	public function send_transaction_notices( $transaction, $method ) {
+		$class = 'MeprUtils';
+
+		if ( ! Pronamic_WP_Pay_Class::method_exists( $class, $method ) ) {
+			$class = $this;
+		}
+
+		if ( 'MeprUtils' === $class && 'send_product_welcome_notices' === $method ) {
+			// `send_product_welcome_notices` is called from `send_signup_notices` in newer versions.
+
+			return;
+		}
+
+		return call_user_func( array( $class, $method ), $transaction );
+	}
+
+	/**
 	 * Get icon function, please not that this is not a MemberPress function.
 	 *
 	 * @since 1.0.2
@@ -137,7 +161,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 		$transaction->status = MeprTransaction::$failed_str;
 		$transaction->store();
 
-		$this->send_failed_txn_notices( $transaction );
+		$this->send_transaction_notices( $transaction, 'send_failed_txn_notices' );
 
 		return $transaction;
 	}
@@ -167,9 +191,17 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 		$transaction->maybe_cancel_old_sub();
 		$transaction->store();
 
+		$subscription = $transaction->subscription();
+
+		if ( $subscription ) {
+			$subscription->status     = MeprSubscription::$active_str;
+			$subscription->created_at = $transaction->created_at;
+			$subscription->store();
+		}
+
 		$reflection = new ReflectionClass( 'MeprBaseRealGateway' );
 
-		if ( 3 === $reflection->getMethod( 'send_product_welcome_notices' )->getNumberOfParameters() ) {
+		if ( $reflection->hasMethod( 'send_product_welcome_notices' ) && 3 === $reflection->getMethod( 'send_product_welcome_notices' )->getNumberOfParameters() ) {
 			$uemail = MeprEmailFactory::fetch(
 				'MeprUserProductWelcomeEmail',
 				'MeprBaseProductEmail',
@@ -186,20 +218,20 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 				$transaction->user()
 			);
 		} else {
-			$this->send_product_welcome_notices( $transaction );
+			$this->send_transaction_notices( $transaction, 'send_product_welcome_notices' );
 		}
 
 		// Send upgrade/downgrade notices
 		if ( $upgrade ) {
 			$this->upgraded_sub( $transaction );
-			$this->send_upgraded_txn_notices( $transaction );
+			$this->send_transaction_notices( $transaction, 'send_upgraded_txn_notices' );
 		} elseif ( $downgrade ) {
 			$this->downgraded_sub( $transaction );
-			$this->send_downgraded_txn_notices( $transaction );
+			$this->send_transaction_notices( $transaction, 'send_downgraded_txn_notices' );
 		}
 
-		$this->send_signup_notices( $transaction );
-		$this->send_transaction_receipt_notices( $transaction );
+		$this->send_transaction_notices( $transaction, 'send_signup_notices' );
+		$this->send_transaction_notices( $transaction, 'send_transaction_receipt_notices' );
 
 		return $transaction;
 	}
