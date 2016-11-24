@@ -387,12 +387,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * @param $txn
 	 */
 	public function payment_redirect( $txn ) {
-
 		$txn = new MeprTransaction( $txn->id );
-
-		$invoice = MeprTransactionsHelper::get_invoice( $txn );
-
-		echo $invoice; // WPCS: XSS ok.
 
 		// Gateway
 		$config_id = $this->settings->config_id;
