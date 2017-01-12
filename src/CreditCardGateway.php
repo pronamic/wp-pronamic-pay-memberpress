@@ -24,6 +24,6 @@ class Pronamic_WP_Pay_Extensions_MemberPress_CreditCardGateway extends Pronamic_
 	}
 
 	public function get_alias() {
-		return 'MeprSofortGateway';
+		return 'MeprCreditCardGateway';
 	}
 }
