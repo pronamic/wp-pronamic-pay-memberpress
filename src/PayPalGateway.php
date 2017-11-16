@@ -23,6 +23,21 @@ class Pronamic_WP_Pay_Extensions_MemberPress_PayPalGateway extends Pronamic_WP_P
 		$this->payment_method = Pronamic_WP_Pay_PaymentMethods::PAYPAL;
 	}
 
+	/**
+	 * Get icon function, please not that this is not a MemberPress function.
+	 *
+	 * @since 1.0.2
+	 * @return string
+	 */
+	protected function get_icon() {
+		return plugins_url( 'images/paypal/icon-32x32.png', Pronamic_WP_Pay_Plugin::$file );
+	}
+
+	/**
+	 * Get class alias name.
+	 *
+	 * @return string
+	 */
 	public function get_alias() {
 		return 'MeprPronamicPayPalGateway';
 	}
