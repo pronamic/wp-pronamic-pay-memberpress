@@ -7,7 +7,7 @@
  * Company: Pronamic
  *
  * @author Remco Tolsma
- * @version 1.0.2
+ * @version 1.0.5
  * @since 1.0.0
  */
 class Pronamic_WP_Pay_Extensions_MemberPress_IDealGateway extends Pronamic_WP_Pay_Extensions_MemberPress_Gateway {
