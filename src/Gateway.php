@@ -1,4 +1,5 @@
 <?php
+use Pronamic\WordPress\Pay\Plugin;
 
 /**
  * Title: WordPress pay MemberPress gateway
@@ -425,13 +426,13 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 		// Gateway
 		$config_id = $this->settings->config_id;
 
-		$gateway = Pronamic_WP_Pay_Plugin::get_gateway( $config_id );
+		$gateway = Plugin::get_gateway( $config_id );
 
 		if ( $gateway ) {
 			// Data
 			$data = new Pronamic_WP_Pay_Extensions_MemberPress_PaymentData( $txn );
 
-			$payment = Pronamic_WP_Pay_Plugin::start( $config_id, $gateway, $data, $this->payment_method );
+			$payment = Plugin::start( $config_id, $gateway, $data, $this->payment_method );
 
 			$error = $gateway->get_error();
 
@@ -456,7 +457,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 		// Gateway
 		$config_id = $this->settings->config_id;
 
-		$gateway = Pronamic_WP_Pay_Plugin::get_gateway( $config_id );
+		$gateway = Plugin::get_gateway( $config_id );
 
 		if ( $gateway && '' === $gateway->get_input_html() ) {
 			$this->payment_redirect( $txn );
@@ -481,7 +482,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 		// Gateway
 		$config_id = $this->settings->config_id;
 
-		$gateway = Pronamic_WP_Pay_Plugin::get_gateway( $config_id );
+		$gateway = Plugin::get_gateway( $config_id );
 
 		if ( $gateway ) {
 			$this->payment_redirect( $txn );
@@ -537,7 +538,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 				// Gateway
 				$config_id = $this->settings->config_id;
 
-				$gateway = Pronamic_WP_Pay_Plugin::get_gateway( $config_id );
+				$gateway = Plugin::get_gateway( $config_id );
 
 				if ( $gateway ) {
 					echo $gateway->get_input_html(); // WPCS: XSS ok.
@@ -597,7 +598,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 					<select name="<?php echo esc_attr( $name ); ?>">
 						<?php
 
-						foreach ( Pronamic_WP_Pay_Plugin::get_config_select_options( $this->payment_method ) as $value => $label ) {
+						foreach ( Plugin::get_config_select_options( $this->payment_method ) as $value => $label ) {
 							printf(
 								'<option value="%s" %s>%s</option>',
 								esc_attr( $value ),

@@ -1,4 +1,5 @@
 <?php
+use Pronamic\WordPress\Pay\Payments\Payment;
 
 /**
  * Title: WordPress pay MemberPress extension
@@ -200,7 +201,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 	/**
 	 * Source column
 	 */
-	public static function source_text( $text, Pronamic_WP_Pay_Payment $payment ) {
+	public static function source_text( $text, Payment $payment ) {
 		$text = __( 'MemberPress', 'pronamic_ideal' ) . '<br />';
 
 		$text .= sprintf(

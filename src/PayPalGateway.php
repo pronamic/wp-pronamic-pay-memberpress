@@ -1,4 +1,5 @@
 <?php
+use Pronamic\WordPress\Pay\Plugin;
 
 /**
  * Title: WordPress pay MemberPress PayPal gateway
@@ -30,7 +31,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_PayPalGateway extends Pronamic_WP_P
 	 * @return string
 	 */
 	protected function get_icon() {
-		return plugins_url( 'images/paypal/icon-32x32.png', Pronamic_WP_Pay_Plugin::$file );
+		return plugins_url( 'images/paypal/icon-32x32.png', Plugin::$file );
 	}
 
 	/**

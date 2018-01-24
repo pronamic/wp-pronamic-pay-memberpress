@@ -1,4 +1,5 @@
 <?php
+use Pronamic\WordPress\Pay\Plugin;
 
 /**
  * Title: WordPress pay MemberPress Direct Debit mandate via iDEAL gateway
@@ -30,7 +31,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_DirectDebitIDealGateway extends Pro
 	 * @return string
 	 */
 	protected function get_icon() {
-		return plugins_url( 'images/icon-24x24.png', Pronamic_WP_Pay_Plugin::$file );
+		return plugins_url( 'images/icon-24x24.png', Plugin::$file );
 	}
 
 	/**

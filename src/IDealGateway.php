@@ -1,4 +1,5 @@
 <?php
+use Pronamic\WordPress\Pay\Plugin;
 
 /**
  * Title: WordPress pay MemberPress iDEAL gateway
@@ -30,7 +31,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_IDealGateway extends Pronamic_WP_Pa
 	 * @return string
 	 */
 	protected function get_icon() {
-		return plugins_url( 'images/icon-32x32.png', Pronamic_WP_Pay_Plugin::$file );
+		return plugins_url( 'images/icon-32x32.png', Plugin::$file );
 	}
 
 	/**
