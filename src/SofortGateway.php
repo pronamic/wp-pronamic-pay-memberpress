@@ -1,4 +1,5 @@
 <?php
+use Pronamic\WordPress\Pay\Core\PaymentMethods;
 
 /**
  * Title: WordPress pay MemberPress Sofort gateway
@@ -20,7 +21,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_SofortGateway extends Pronamic_WP_P
 		// Set the name of this gateway.
 		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L12-13
 		$this->name           = __( 'SOFORT Banking', 'pronamic_ideal' );
-		$this->payment_method = Pronamic_WP_Pay_PaymentMethods::SOFORT;
+		$this->payment_method = PaymentMethods::SOFORT;
 	}
 
 	public function get_alias() {

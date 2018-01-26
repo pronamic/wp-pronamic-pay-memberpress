@@ -1,4 +1,5 @@
 <?php
+use Pronamic\WordPress\Pay\Core\Statuses;
 use Pronamic\WordPress\Pay\Payments\Payment;
 
 /**
@@ -76,9 +77,9 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 		$transaction = new MeprTransaction( $transaction_id );
 
 		switch ( $payment->get_status() ) {
-			case Pronamic_WP_Pay_Statuses::CANCELLED :
-			case Pronamic_WP_Pay_Statuses::EXPIRED :
-			case Pronamic_WP_Pay_Statuses::FAILURE :
+			case Statuses::CANCELLED :
+			case Statuses::EXPIRED :
+			case Statuses::FAILURE :
 				$product = $transaction->product();
 
 				$url = add_query_arg(
@@ -91,7 +92,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 				);
 
 				break;
-			case Pronamic_WP_Pay_Statuses::SUCCESS :
+			case Statuses::SUCCESS :
 				// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprOptions.php#L768-782
 				$mepr_options = MeprOptions::fetch();
 
@@ -107,7 +108,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 				$url = $mepr_options->thankyou_page_url( http_build_query( $args ) );
 
 				break;
-			case Pronamic_WP_Pay_Statuses::OPEN :
+			case Statuses::OPEN :
 			default:
 
 				break;
@@ -174,13 +175,13 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 			$gateway->mp_txn = $transaction;
 
 			switch ( $payment->get_status() ) {
-				case Pronamic_WP_Pay_Statuses::CANCELLED :
-				case Pronamic_WP_Pay_Statuses::EXPIRED :
-				case Pronamic_WP_Pay_Statuses::FAILURE :
+				case Statuses::CANCELLED :
+				case Statuses::EXPIRED :
+				case Statuses::FAILURE :
 					$gateway->record_payment_failure();
 
 					break;
-				case Pronamic_WP_Pay_Statuses::SUCCESS :
+				case Statuses::SUCCESS :
 					if ( $payment->get_recurring() ) {
 						$gateway->record_subscription_payment();
 					} else {
@@ -188,7 +189,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 					}
 
 					break;
-				case Pronamic_WP_Pay_Statuses::OPEN :
+				case Statuses::OPEN :
 				default:
 
 					break;

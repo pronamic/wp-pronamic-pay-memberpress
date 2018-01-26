@@ -1,5 +1,8 @@
 <?php
+use Pronamic\WordPress\Pay\Core\Util;
 use Pronamic\WordPress\Pay\Payments\PaymentData;
+use Pronamic\WordPress\Pay\Payments\Item;
+use Pronamic\WordPress\Pay\Payments\Items;
 
 /**
  * Title: WordPress pay MemberPress payment data
@@ -56,9 +59,9 @@ class Pronamic_WP_Pay_Extensions_MemberPress_PaymentData extends PaymentData {
 	}
 
 	public function get_items() {
-		$items = new Pronamic_IDeal_Items();
+		$items = new Items();
 
-		$item = new Pronamic_IDeal_Item();
+		$item = new Item();
 		$item->setNumber( $this->get_order_id() );
 		$item->setDescription( $this->get_description() );
 		$item->setPrice( $this->txn->total );
@@ -170,7 +173,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_PaymentData extends PaymentData {
 		$subscription                  = new Pronamic_Pay_Subscription();
 		$subscription->frequency       = $frequency;
 		$subscription->interval        = $product->period;
-		$subscription->interval_period = Pronamic_WP_Pay_Util::to_period( $product->period_type );
+		$subscription->interval_period = Util::to_period( $product->period_type );
 		$subscription->amount          = $this->txn->total;
 		$subscription->currency        = $this->get_currency();
 		$subscription->description     = sprintf(

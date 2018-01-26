@@ -1,4 +1,6 @@
 <?php
+use Pronamic\WordPress\Pay\Core\Pronamic_WP_Pay_Class;
+use Pronamic\WordPress\Pay\Core\Util;
 use Pronamic\WordPress\Pay\Plugin;
 
 /**
@@ -69,7 +71,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	public function send_transaction_notices( $transaction, $method ) {
 		$class = 'MeprUtils';
 
-		if ( ! Pronamic_WP_Pay_Class::method_exists( $class, $method ) ) {
+		if ( ! Util::class_method_exists( $class, $method ) ) {
 			$class = $this;
 		}
 

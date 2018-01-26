@@ -1,4 +1,5 @@
 <?php
+use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Plugin;
 
 /**
@@ -21,7 +22,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_IDealGateway extends Pronamic_WP_Pa
 		// Set the name of this gateway.
 		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L12-13
 		$this->name           = __( 'iDEAL', 'pronamic_ideal' );
-		$this->payment_method = Pronamic_WP_Pay_PaymentMethods::IDEAL;
+		$this->payment_method = PaymentMethods::IDEAL;
 	}
 
 	/**

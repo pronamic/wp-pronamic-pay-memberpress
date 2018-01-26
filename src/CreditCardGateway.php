@@ -1,4 +1,5 @@
 <?php
+use Pronamic\WordPress\Pay\Core\PaymentMethods;
 
 /**
  * Title: WordPress pay MemberPress credit card gateway
@@ -20,7 +21,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_CreditCardGateway extends Pronamic_
 		// Set the name of this gateway.
 		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L12-13
 		$this->name           = __( 'Credit Card', 'pronamic_ideal' );
-		$this->payment_method = Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD;
+		$this->payment_method = PaymentMethods::CREDIT_CARD;
 
 		$this->capabilities = array(
 			'process-payments',
