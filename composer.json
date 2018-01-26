@@ -3,7 +3,7 @@
 	"description": "MemberPress driver for the WordPress payment processing library.",
 	"keywords": ["wordpress", "wp", "pay", "memberpress", "extension", "pronamic"],
 	"homepage": "http://www.wp-pay.org/extensions/memberpress/",
-	"license": "GPL-3.0+",
+	"license": "GPL-3.0-or-later",
 	"authors": [
 		{
 			"name": "Pronamic",
