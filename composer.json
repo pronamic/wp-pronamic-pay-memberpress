@@ -24,7 +24,9 @@
 		"source": "https://github.com/wp-pay-extensions/memberpress"
 	},
 	"autoload": {
-		"classmap": ["src/"]
+		"psr-4": {
+			"Pronamic\\WordPress\\Pay\\Extensions\\MemberPress\\": "src/"
+		}
 	},
 	"require": {
 		"php": ">=5.2.4",

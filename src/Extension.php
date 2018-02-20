@@ -1,4 +1,10 @@
 <?php
+
+namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
+
+use MeprOptions;
+use MeprProduct;
+use MeprTransaction;
 use Pronamic\WordPress\Pay\Core\Statuses;
 use Pronamic\WordPress\Pay\Payments\Payment;
 
@@ -8,11 +14,11 @@ use Pronamic\WordPress\Pay\Payments\Payment;
  * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
- * @author Remco Tolsma
+ * @author  Remco Tolsma
  * @version 1.0.5
- * @since 1.0.0
+ * @since   1.0.0
  */
-class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
+class Extension {
 	/**
 	 * The slug of this addon
 	 *
@@ -62,14 +68,16 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 	//////////////////////////////////////////////////
 
 	/**
-	 * Payment redirect URL fitler.
+	 * Payment redirect URL filter.
 	 *
 	 * @since 1.0.1
-	 * @param string               $url
-	 * @param Pronamic_Pay_Payment $payment
+	 *
+	 * @param string  $url
+	 * @param Payment $payment
+	 *
 	 * @return string
 	 */
-	public static function redirect_url( $url, $payment ) {
+	public static function redirect_url( $url, Payment $payment ) {
 		global $transaction;
 
 		$transaction_id = $payment->get_source_id();
@@ -110,7 +118,6 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 				break;
 			case Statuses::OPEN :
 			default:
-
 				break;
 		}
 
@@ -123,9 +130,10 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 	 * Update lead status of the specified payment
 	 *
 	 * @see https://github.com/Charitable/Charitable/blob/1.1.4/includes/gateways/class-charitable-gateway-paypal.php#L229-L357
-	 * @param Pronamic_Pay_Payment $payment
+	 *
+	 * @param Payment $payment
 	 */
-	public static function status_update( Pronamic_Pay_Payment $payment ) {
+	public static function status_update( Payment $payment ) {
 		global $transaction;
 
 		$transaction_id = $payment->get_source_id();
@@ -164,13 +172,13 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 			}
 		}
 
-		$should_update = ! Pronamic_WP_Pay_Extensions_MemberPress_MemberPress::transaction_has_status( $transaction, array(
+		$should_update = ! MemberPress::transaction_has_status( $transaction, array(
 			MeprTransaction::$failed_str,
 			MeprTransaction::$complete_str,
 		) );
 
 		if ( $should_update ) {
-			$gateway = new Pronamic_WP_Pay_Extensions_MemberPress_Gateway();
+			$gateway = new Gateway();
 
 			$gateway->mp_txn = $transaction;
 
@@ -191,7 +199,6 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 					break;
 				case Statuses::OPEN :
 				default:
-
 					break;
 			}
 		}
@@ -200,7 +207,12 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 	//////////////////////////////////////////////////
 
 	/**
-	 * Source column
+	 * Source text.
+	 *
+	 * @param string  $text
+	 * @param Payment $payment
+	 *
+	 * @return string
 	 */
 	public static function source_text( $text, Payment $payment ) {
 		$text = __( 'MemberPress', 'pronamic_ideal' ) . '<br />';
@@ -220,17 +232,25 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 
 	/**
 	 * Source description.
+	 *
+	 * @param string  $description
+	 * @param Payment $payment
+	 *
+	 * @return string
 	 */
-	public static function source_description( $description, Pronamic_Pay_Payment $payment ) {
-		$description = __( 'MemberPress Transaction', 'pronamic_ideal' );
-
-		return $description;
+	public static function source_description( $description, Payment $payment ) {
+		return __( 'MemberPress Transaction', 'pronamic_ideal' );
 	}
 
 	/**
 	 * Source URL.
+	 *
+	 * @param string  $url
+	 * @param Payment $payment
+	 *
+	 * @return string
 	 */
-	public static function source_url( $url, Pronamic_Pay_Payment $payment ) {
+	public static function source_url( $url, Payment $payment ) {
 		$url = add_query_arg( array(
 			'page'   => 'memberpress-trans',
 			'action' => 'edit',

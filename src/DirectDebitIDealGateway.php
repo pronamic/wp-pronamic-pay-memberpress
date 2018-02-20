@@ -1,4 +1,7 @@
 <?php
+
+namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
+
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Plugin;
 
@@ -8,22 +11,19 @@ use Pronamic\WordPress\Pay\Plugin;
  * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
- * @author Reüel van der Steege
+ * @author  Reüel van der Steege
  * @version 1.0.0
- * @since unreleased
+ * @since   unreleased
  */
-class Pronamic_WP_Pay_Extensions_MemberPress_DirectDebitIDealGateway extends Pronamic_WP_Pay_Extensions_MemberPress_Gateway {
+class DirectDebitIDealGateway extends Gateway {
 	/**
-	 * Constructs and initialize Direct Debit mandate via iDEAL gateway.
+	 * Payment method.
+	 *
+	 * @var string
 	 */
-	public function __construct() {
-		parent::__construct();
+	protected $payment_method = PaymentMethods::DIRECT_DEBIT_IDEAL;
 
-		// Set the name of this gateway.
-		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L12-13
-		$this->name           = __( 'Direct Debit (mandate via iDEAL)', 'pronamic_ideal' );
-		$this->payment_method = PaymentMethods::DIRECT_DEBIT_IDEAL;
-	}
+	/////////////////////////////////////////////////
 
 	/**
 	 * Get icon function, please note that this is not a MemberPress function.
@@ -32,7 +32,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_DirectDebitIDealGateway extends Pro
 	 * @return string
 	 */
 	protected function get_icon() {
-		return plugins_url( 'images/icon-24x24.png', Plugin::$file );
+		return plugins_url( 'images/sepa-ideal/icon-24x24.png', Plugin::$file );
 	}
 
 	/**

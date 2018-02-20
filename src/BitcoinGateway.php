@@ -1,4 +1,7 @@
 <?php
+
+namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
+
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 
 /**
@@ -7,22 +10,19 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
  * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
- * @author Reüel van der Steege
+ * @author  Reüel van der Steege
  * @version 1.0.5
- * @since 1.0.5
+ * @since   1.0.5
  */
-class Pronamic_WP_Pay_Extensions_MemberPress_BitcoinGateway extends Pronamic_WP_Pay_Extensions_MemberPress_Gateway {
+class BitcoinGateway extends Gateway {
 	/**
-	 * Constructs and initialize Bitcoin gateway.
+	 * Payment method.
+	 *
+	 * @var string
 	 */
-	public function __construct() {
-		parent::__construct();
+	protected $payment_method = PaymentMethods::BITCOIN;
 
-		// Set the name of this gateway.
-		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L12-13
-		$this->name           = __( 'Bitcoin', 'pronamic_ideal' );
-		$this->payment_method = PaymentMethods::BITCOIN;
-	}
+	/////////////////////////////////////////////////
 
 	public function get_alias() {
 		return 'MeprBitcoinGateway';

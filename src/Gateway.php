@@ -1,7 +1,19 @@
 <?php
-use Pronamic\WordPress\Pay\Core\Pronamic_WP_Pay_Class;
-use Pronamic\WordPress\Pay\Core\Util;
+
+namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
+
+use MeprBaseRealGateway;
+use MeprEmailFactory;
+use MeprOptions;
+use MeprProduct;
+use MeprSubscription;
+use MeprTransaction;
+use MeprTransactionsHelper;
+use MeprView;
+use Pronamic\WordPress\Pay\Core\PaymentMethods;
+use Pronamic\WordPress\Pay\Core\Util as Core_Util;
 use Pronamic\WordPress\Pay\Plugin;
+use ReflectionClass;
 
 /**
  * Title: WordPress pay MemberPress gateway
@@ -9,11 +21,11 @@ use Pronamic\WordPress\Pay\Plugin;
  * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
- * @author Remco Tolsma
+ * @author  Remco Tolsma
  * @version 1.0.4
- * @since 1.0.0
+ * @since   1.0.0
  */
-class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway {
+class Gateway extends MeprBaseRealGateway {
 	/**
 	 * The payment method
 	 *
@@ -32,9 +44,14 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * Constructs and initialize iDEAL gateway.
 	 */
 	public function __construct() {
+
 		// Set the name of this gateway.
 		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L12-13
 		$this->name = __( 'Pronamic', 'pronamic_ideal' );
+
+		if ( ! empty( $this->payment_method ) ) {
+			$this->name = PaymentMethods::get_name( $this->payment_method );
+		}
 
 		// Set the default settings.
 		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L72-73
@@ -52,6 +69,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * Load the specified settings.
 	 *
 	 * @param array $settings
+	 *
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L69-70
 	 */
 	public function load( $settings ) {
@@ -66,18 +84,17 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * @param $transaction
 	 * @param $method
 	 *
-	 * @return mixed|void
+	 * @return mixed
 	 */
 	public function send_transaction_notices( $transaction, $method ) {
 		$class = 'MeprUtils';
 
-		if ( ! Util::class_method_exists( $class, $method ) ) {
+		if ( ! Core_Util::class_method_exists( $class, $method ) ) {
 			$class = $this;
 		}
 
 		if ( 'MeprUtils' === $class && 'send_product_welcome_notices' === $method ) {
 			// `send_product_welcome_notices` is called from `send_signup_notices` in newer versions.
-
 			return;
 		}
 
@@ -85,7 +102,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	}
 
 	/**
-	 * Get icon function, please not that this is not a MemberPress function.
+	 * Get icon function (this is not a MemberPress function).
 	 *
 	 * @since 1.0.2
 	 * @return string
@@ -144,6 +161,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * Process payment.
 	 *
 	 * @param MeprTransaction $txn
+	 *
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L119-122
 	 */
 	public function process_payment( $txn ) {
@@ -276,6 +294,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * Process refund.
 	 *
 	 * @param MeprTransaction $txn
+	 *
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L131-133
 	 */
 	public function process_refund( MeprTransaction $txn ) {
@@ -295,6 +314,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * Process trial payment.
 	 *
 	 * @param $transaction
+	 *
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L150-157
 	 */
 	public function process_trial_payment( $transaction ) {
@@ -305,6 +325,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * Reord trial payment.
 	 *
 	 * @param $transaction
+	 *
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L159-161
 	 */
 	public function record_trial_payment( $transaction ) {
@@ -315,6 +336,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * Process create subscription.
 	 *
 	 * @param $txn
+	 *
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L163-167
 	 */
 	public function process_create_subscription( $txn ) {
@@ -334,6 +356,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * Process update subscription.
 	 *
 	 * @param int $sub_id
+	 *
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L176
 	 */
 	public function process_update_subscription( $sub_id ) {
@@ -353,6 +376,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * Process suspend subscription.
 	 *
 	 * @param int $sub_id
+	 *
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L184-186
 	 */
 	public function process_suspend_subscription( $sub_id ) {
@@ -372,6 +396,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * Process resume subscription.
 	 *
 	 * @param int $sub_id
+	 *
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L193-195
 	 */
 	public function process_resume_subscription( $sub_id ) {
@@ -391,6 +416,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * Process cancel subscription.
 	 *
 	 * @param int $sub_id
+	 *
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L202-206
 	 */
 	public function process_cancel_subscription( $sub_id ) {
@@ -410,6 +436,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * Process signup form.
 	 *
 	 * @param $txn
+	 *
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L214-217
 	 */
 	public function process_signup_form( $txn ) {
@@ -420,6 +447,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * Payment redirect.
 	 *
 	 * @since 1.0.2
+	 *
 	 * @param $txn
 	 */
 	public function payment_redirect( $txn ) {
@@ -430,18 +458,20 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 
 		$gateway = Plugin::get_gateway( $config_id );
 
-		if ( $gateway ) {
-			// Data
-			$data = new Pronamic_WP_Pay_Extensions_MemberPress_PaymentData( $txn );
+		if ( ! $gateway ) {
+			return;
+		}
 
-			$payment = Plugin::start( $config_id, $gateway, $data, $this->payment_method );
+		// Data
+		$data = new PaymentData( $txn );
 
-			$error = $gateway->get_error();
+		$payment = Plugin::start( $config_id, $gateway, $data, $this->payment_method );
 
-			if ( ! is_wp_error( $error ) ) {
-				// Redirect
-				$gateway->redirect( $payment );
-			}
+		$error = $gateway->get_error();
+
+		if ( ! is_wp_error( $error ) ) {
+			// Redirect
+			$gateway->redirect( $payment );
 		}
 	}
 
@@ -449,7 +479,10 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * Display payment page.
 	 *
 	 * @param $txn
+	 *
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L219-223
+	 *
+	 * @return bool
 	 */
 	public function display_payment_page( $txn ) {
 		if ( ! $txn instanceof MeprTransaction ) {
@@ -470,7 +503,10 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * Process payment form.
 	 *
 	 * @param $txn
+	 *
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L239-289
+	 *
+	 * @return bool
 	 */
 	public function process_payment_form( $txn ) {
 		if ( ! $txn instanceof MeprTransaction ) {
@@ -507,6 +543,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * @param       $user
 	 * @param int   $product_id
 	 * @param int   $txn_id
+	 *
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L230-233
 	 */
 	public function display_payment_form( $amount, $user, $product_id, $txn_id ) {
@@ -529,9 +566,9 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 		?>
 		<div class="mp_wrapper mp_payment_form_wrapper">
 			<form action="" method="post" id="payment-form" class="mepr-form" novalidate>
-				<input type="hidden" name="mepr_process_payment_form" value="Y" />
-				<input type="hidden" name="mepr_transaction_id" value="<?php echo esc_attr( $txn_id ); ?>" />
-				<input type="hidden" name="pronamic_pay_memberpress_pay" value="1" />
+				<input type="hidden" name="mepr_process_payment_form" value="Y"/>
+				<input type="hidden" name="mepr_transaction_id" value="<?php echo esc_attr( $txn_id ); ?>"/>
+				<input type="hidden" name="pronamic_pay_memberpress_pay" value="1"/>
 
 				<div class="mepr_spacer">&nbsp;</div>
 
@@ -550,11 +587,15 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 
 				<div class="mepr_spacer">&nbsp;</div>
 
-				<input type="submit" class="mepr-submit" value="<?php esc_attr_e( 'Pay', 'pronamic_ideal' ); ?>" />
-				<img src="<?php echo esc_attr( admin_url( 'images/loading.gif' ) ); ?>" style="display: none;" class="mepr-loading-gif" />
+				<input type="submit" class="mepr-submit" value="<?php esc_attr_e( 'Pay', 'pronamic_ideal' ); ?>"/>
+				<img src="<?php echo esc_attr( admin_url( 'images/loading.gif' ) ); ?>" style="display: none;" class="mepr-loading-gif"/>
 				<?php MeprView::render( '/shared/has_errors', get_defined_vars() ); ?>
 
-				<noscript><p class="mepr_nojs"><?php esc_html_e( 'JavaScript is disabled in your browser. You will not be able to complete your purchase until you either enable JavaScript in your browser, or switch to a browser that supports it.', 'pronamic_ideal' ); ?></p></noscript>
+				<noscript>
+					<p class="mepr_nojs">
+						<?php esc_html_e( 'JavaScript is disabled in your browser. You will not be able to complete your purchase until you either enable JavaScript in your browser, or switch to a browser that supports it.', 'pronamic_ideal' ); ?>
+					</p>
+				</noscript>
 			</form>
 		</div>
 		<?php
@@ -564,6 +605,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * Validate payment form.
 	 *
 	 * @param $errors
+	 *
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L235-236
 	 */
 	public function validate_payment_form( $errors ) {
@@ -621,7 +663,10 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * Validate options form.
 	 *
 	 * @param $errors
+	 *
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L294-295
+	 *
+	 * @return array
 	 */
 	public function validate_options_form( $errors ) {
 		return $errors;
@@ -642,6 +687,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * @param int    $sub_id
 	 * @param array  $errors
 	 * @param string $message
+	 *
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L365-366
 	 */
 	public function display_update_account_form( $sub_id, $errors = array(), $message = '' ) {
@@ -652,7 +698,10 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * Validate update account form.
 	 *
 	 * @param array $errors
+	 *
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L368-369
+	 *
+	 * @return array
 	 */
 	public function validate_update_account_form( $errors = array() ) {
 		return $errors;
@@ -662,6 +711,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * Process update account form.
 	 *
 	 * @param int $sub_id
+	 *
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L371-372
 	 */
 	public function process_update_account_form( $sub_id ) {
