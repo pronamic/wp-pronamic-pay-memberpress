@@ -23,8 +23,6 @@ class IDealGateway extends Gateway {
 	 */
 	protected $payment_method = PaymentMethods::IDEAL;
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Get icon function, please not that this is not a MemberPress function.
 	 *

@@ -23,8 +23,6 @@ class DirectDebitBancontactGateway extends Gateway {
 	 */
 	protected $payment_method = PaymentMethods::DIRECT_DEBIT_BANCONTACT;
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Get icon function, please note that this is not a MemberPress function.
 	 *

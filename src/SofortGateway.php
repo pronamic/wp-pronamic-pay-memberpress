@@ -22,8 +22,6 @@ class SofortGateway extends Gateway {
 	 */
 	protected $payment_method = PaymentMethods::SOFORT;
 
-	/////////////////////////////////////////////////
-
 	public function get_alias() {
 		return 'MeprSofortGateway';
 	}

@@ -22,8 +22,6 @@ class BankTransferGateway extends Gateway {
 	 */
 	protected $payment_method = PaymentMethods::BANK_TRANSFER;
 
-	/////////////////////////////////////////////////
-
 	public function get_alias() {
 		return 'MeprBankTransferGateway';
 	}

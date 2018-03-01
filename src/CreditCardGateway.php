@@ -22,8 +22,6 @@ class CreditCardGateway extends Gateway {
 	 */
 	protected $payment_method = PaymentMethods::CREDIT_CARD;
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Constructs and initialize credit card gateway
 	 */

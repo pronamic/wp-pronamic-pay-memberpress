@@ -26,8 +26,6 @@ class Extension {
 	 */
 	const SLUG = 'memberpress';
 
-	//////////////////////////////////////////////////
-
 	/**
 	 * Bootstrap
 	 */
@@ -64,8 +62,6 @@ class Extension {
 
 		return $paths;
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Payment redirect URL filter.
@@ -123,8 +119,6 @@ class Extension {
 
 		return $url;
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Update lead status of the specified payment
@@ -203,8 +197,6 @@ class Extension {
 			}
 		}
 	}
-
-	//////////////////////////////////////////////////
 
 	/**
 	 * Source text.

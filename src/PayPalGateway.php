@@ -23,8 +23,6 @@ class PayPalGateway extends Gateway {
 	 */
 	protected $payment_method = PaymentMethods::PAYPAL;
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Get icon function, please not that this is not a MemberPress function.
 	 *

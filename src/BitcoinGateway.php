@@ -22,8 +22,6 @@ class BitcoinGateway extends Gateway {
 	 */
 	protected $payment_method = PaymentMethods::BITCOIN;
 
-	/////////////////////////////////////////////////
-
 	public function get_alias() {
 		return 'MeprBitcoinGateway';
 	}

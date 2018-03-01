@@ -47,8 +47,6 @@ class PaymentData extends Pay_PaymentData {
 		$this->recurring = ( $txn->subscription() && $txn->subscription()->txn_count > 1 );
 	}
 
-	//////////////////////////////////////////////////
-
 	public function get_source() {
 		return 'memberpress';
 	}
@@ -79,20 +77,12 @@ class PaymentData extends Pay_PaymentData {
 		return $items;
 	}
 
-	//////////////////////////////////////////////////
-	// Currency
-	//////////////////////////////////////////////////
-
 	public function get_currency_alphabetic_code() {
 		$mepr_options = MeprOptions::fetch();
 
 		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprOptions.php#L136-137
 		return $mepr_options->currency_code;
 	}
-
-	//////////////////////////////////////////////////
-	// Customer
-	//////////////////////////////////////////////////
 
 	public function get_email() {
 		if ( $this->member instanceof MeprUser ) {
@@ -129,8 +119,6 @@ class PaymentData extends Pay_PaymentData {
 	public function get_zip() {
 		return '';
 	}
-
-	//////////////////
 
 	public function get_normal_return_url() {
 		$mepr_options = MeprOptions::fetch();

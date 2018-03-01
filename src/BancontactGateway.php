@@ -22,8 +22,6 @@ class BancontactGateway extends Gateway {
 	 */
 	protected $payment_method = PaymentMethods::BANCONTACT;
 
-	/////////////////////////////////////////////////
-
 	public function get_alias() {
 		return 'MeprMisterCashGateway';
 	}

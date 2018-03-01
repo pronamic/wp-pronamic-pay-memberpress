@@ -22,8 +22,6 @@ class DirectDebitGateway extends Gateway {
 	 */
 	protected $payment_method = PaymentMethods::DIRECT_DEBIT;
 
-	/////////////////////////////////////////////////
-
 	public function get_alias() {
 		return 'MeprDirectDebitGateway';
 	}

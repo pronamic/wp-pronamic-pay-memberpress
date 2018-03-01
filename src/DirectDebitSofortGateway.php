@@ -23,8 +23,6 @@ class DirectDebitSofortGateway extends Gateway {
 	 */
 	protected $payment_method = PaymentMethods::DIRECT_DEBIT_SOFORT;
 
-	/////////////////////////////////////////////////
-
 	/**
 	 * Get icon function, please note that this is not a MemberPress function.
 	 *
