@@ -31,7 +31,6 @@ class CreditCardGateway extends Gateway {
 		// Capabilities
 		$this->capabilities = array(
 			'process-payments',
-			//'process-refunds',
 			'create-subscriptions',
 			'cancel-subscriptions',
 			'update-subscriptions',

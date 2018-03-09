@@ -81,9 +81,9 @@ class Extension {
 		$transaction = new MeprTransaction( $transaction_id );
 
 		switch ( $payment->get_status() ) {
-			case Statuses::CANCELLED :
-			case Statuses::EXPIRED :
-			case Statuses::FAILURE :
+			case Statuses::CANCELLED:
+			case Statuses::EXPIRED:
+			case Statuses::FAILURE:
 				$product = $transaction->product();
 
 				$url = add_query_arg(
@@ -96,7 +96,7 @@ class Extension {
 				);
 
 				break;
-			case Statuses::SUCCESS :
+			case Statuses::SUCCESS:
 				// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprOptions.php#L768-782
 				$mepr_options = MeprOptions::fetch();
 
@@ -112,7 +112,7 @@ class Extension {
 				$url = $mepr_options->thankyou_page_url( http_build_query( $args ) );
 
 				break;
-			case Statuses::OPEN :
+			case Statuses::OPEN:
 			default:
 				break;
 		}
@@ -177,13 +177,13 @@ class Extension {
 			$gateway->mp_txn = $transaction;
 
 			switch ( $payment->get_status() ) {
-				case Statuses::CANCELLED :
-				case Statuses::EXPIRED :
-				case Statuses::FAILURE :
+				case Statuses::CANCELLED:
+				case Statuses::EXPIRED:
+				case Statuses::FAILURE:
 					$gateway->record_payment_failure();
 
 					break;
-				case Statuses::SUCCESS :
+				case Statuses::SUCCESS:
 					if ( $payment->get_recurring() ) {
 						$gateway->record_subscription_payment();
 					} else {
@@ -191,7 +191,7 @@ class Extension {
 					}
 
 					break;
-				case Statuses::OPEN :
+				case Statuses::OPEN:
 				default:
 					break;
 			}
@@ -216,6 +216,7 @@ class Extension {
 				'action' => 'edit',
 				'id'     => $payment->source_id,
 			), admin_url( 'admin.php' ) ),
+			/* translators: %s: payment source id */
 			sprintf( __( 'Transaction %s', 'pronamic_ideal' ), $payment->source_id )
 		);
 
