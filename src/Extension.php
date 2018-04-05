@@ -137,26 +137,38 @@ class Extension {
 		if ( $payment->get_recurring() ) {
 			$sub = $transaction->subscription();
 
+			// Same source ID and first transaction ID for recurring payment means we need to add a new transaction.
 			if ( $payment->get_source_id() === $sub->first_txn_id ) {
-				// Same source ID and first transaction ID for recurring payment means we need to add a new transaction
+				// First transaction.
+				$first_txn = $sub->first_txn();
 
+				if ( false === $first_txn || ! ( $first_txn instanceof MeprTransaction ) ) {
+					$first_txn             = new MeprTransaction();
+					$first_txn->user_id    = $sub->user_id;
+					$first_txn->product_id = $sub->product_id;
+					$first_txn->coupon_id  = $sub->coupon_id;
+				}
+
+				// Transaction number.
 				$trans_num = $payment->get_transaction_id();
 
 				if ( empty( $trans_num ) ) {
 					$trans_num = uniqid();
 				}
 
-				// New transaction
+				// New transaction.
 				$txn                  = new MeprTransaction();
 				$txn->created_at      = $payment->post->post_date_gmt;
-				$txn->user_id         = $sub->user_id;
-				$txn->product_id      = $sub->product_id;
-				$txn->coupon_id       = $sub->coupon_id;
+				$txn->user_id         = $first_txn->user_id;
+				$txn->product_id      = $first_txn->product_id;
+				$txn->coupon_id       = $first_txn->coupon_id;
 				$txn->gateway         = $transaction->gateway;
 				$txn->trans_num       = $trans_num;
 				$txn->txn_type        = MeprTransaction::$payment_str;
 				$txn->status          = MeprTransaction::$pending_str;
 				$txn->subscription_id = $sub->id;
+
+				$txn->set_gross( $payment->get_amount() );
 
 				$txn->store();
 
