@@ -5,6 +5,7 @@ namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 use MeprOptions;
 use MeprProduct;
 use MeprTransaction;
+use MeprSubscription;
 use Pronamic\WordPress\Pay\Core\Statuses;
 use Pronamic\WordPress\Pay\Payments\Payment;
 
@@ -46,6 +47,8 @@ class Extension {
 		add_filter( 'pronamic_payment_source_text_' . self::SLUG, array( __CLASS__, 'source_text' ), 10, 2 );
 		add_filter( 'pronamic_payment_source_description_' . self::SLUG, array( __CLASS__, 'source_description' ), 10, 2 );
 		add_filter( 'pronamic_payment_source_url_' . self::SLUG, array( __CLASS__, 'source_url' ), 10, 2 );
+
+		add_action( 'mepr_subscription_pre_delete', array( $this, 'subscription_pre_delete' ), 10, 1 );
 	}
 
 	/**
@@ -207,6 +210,37 @@ class Extension {
 				default:
 					break;
 			}
+		}
+	}
+
+	/**
+	 * Subscription deleted.
+	 *
+	 * @param int $subscription_id MemberPress subscription id.
+	 *
+	 * @return void
+	 */
+	public function subscription_pre_delete( $subscription_id ) {
+		$subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_memberpress_subscription_id', $subscription_id );
+
+		if ( ! $subscription ) {
+			return;
+		}
+
+		// Add note.
+		$note = sprintf(
+			/* translators: %s: MemberPress */
+			__( '%s subscription deleted.', 'pronamic_ideal' ),
+			__( 'MemberPress', 'pronamic_ideal' )
+		);
+
+		$subscription->add_note( $note );
+
+		// The status of canceled or completed subscriptions will not be changed automatically.
+		if ( ! in_array( $subscription->get_status(), array( Statuses::CANCELLED, Statuses::COMPLETED ), true ) ) {
+			$subscription->set_status( Statuses::CANCELLED );
+
+			$subscription->save();
 		}
 	}
 
