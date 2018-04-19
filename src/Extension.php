@@ -171,7 +171,7 @@ class Extension {
 				$txn->status          = MeprTransaction::$pending_str;
 				$txn->subscription_id = $sub->id;
 
-				$txn->set_gross( $payment->get_amount() );
+				$txn->set_gross( $payment->get_amount()->get_amount() );
 
 				$txn->store();
 
