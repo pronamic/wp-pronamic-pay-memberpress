@@ -5,6 +5,7 @@ namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 use MeprOptions;
 use MeprTransaction;
 use MeprUser;
+use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Pay\Core\Util as Core_Util;
 use Pronamic\WordPress\Pay\Payments\PaymentData as Pay_PaymentData;
 use Pronamic\WordPress\Pay\Payments\Item;
@@ -169,13 +170,16 @@ class PaymentData extends Pay_PaymentData {
 		$subscription->frequency       = $frequency;
 		$subscription->interval        = $product->period;
 		$subscription->interval_period = Core_Util::to_period( $product->period_type );
-		$subscription->amount          = $this->txn->total;
-		$subscription->currency        = $this->get_currency();
 		$subscription->description     = sprintf(
 			'Order #%s - %s',
 			$this->get_source_id(),
 			$this->get_description()
 		);
+
+		$subscription->set_amount( new Money(
+			$this->txn->total,
+			$this->get_currency_alphabetic_code()
+		) );
 
 		return $subscription;
 	}
