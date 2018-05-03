@@ -159,7 +159,7 @@ class PaymentData extends Pay_PaymentData {
 			return false;
 		}
 
-		$frequency = null;
+		$frequency = '';
 
 		if ( $mp_subscription->limit_cycles ) {
 			$frequency = $mp_subscription->limit_cycles;
