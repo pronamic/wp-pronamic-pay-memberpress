@@ -19,7 +19,7 @@ use Pronamic\WordPress\Pay\Subscriptions\Subscription;
  * Company: Pronamic
  *
  * @author  Remco Tolsma
- * @version 1.0.2
+ * @version 2.0.0
  * @since   1.0.0
  */
 class PaymentData extends Pay_PaymentData {
@@ -143,7 +143,7 @@ class PaymentData extends Pay_PaymentData {
 	/**
 	 * Get subscription.
 	 *
-	 * @since unreleased
+	 * @since 2.0.0
 	 *
 	 * @return Subscription|bool
 	 */
@@ -187,7 +187,7 @@ class PaymentData extends Pay_PaymentData {
 	/**
 	 * Get subscription source ID.
 	 *
-	 * @since unreleased
+	 * @since 2.0.0
 	 * @return string
 	 */
 	public function get_subscription_source_id() {

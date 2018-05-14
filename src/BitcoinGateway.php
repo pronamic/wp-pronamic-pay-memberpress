@@ -11,7 +11,7 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
  * Company: Pronamic
  *
  * @author  Reüel van der Steege
- * @version 1.0.5
+ * @version 2.0.0
  * @since   1.0.5
  */
 class BitcoinGateway extends Gateway {

@@ -12,7 +12,7 @@ use Pronamic\WordPress\Pay\Plugin;
  * Company: Pronamic
  *
  * @author  Reüel van der Steege
- * @version 1.0.6
+ * @version 2.0.0
  * @since   1.0.6
  */
 class DirectDebitBancontactGateway extends Gateway {
@@ -26,7 +26,7 @@ class DirectDebitBancontactGateway extends Gateway {
 	/**
 	 * Get icon function, please note that this is not a MemberPress function.
 	 *
-	 * @since unreleased
+	 * @since 2.0.0
 	 * @return string
 	 */
 	protected function get_icon() {
