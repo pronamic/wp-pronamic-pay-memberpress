@@ -5,7 +5,7 @@ namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 
 /**
- * Title: WordPress pay MemberPress Sofort gateway
+ * Title: WordPress pay MemberPress Bancontact/Mister Cash gateway
  * Description:
  * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
@@ -14,15 +14,15 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
  * @version 2.0.0
  * @since   1.0.0
  */
-class SofortGateway extends Gateway {
+class BancontactGateway extends Gateway {
 	/**
 	 * Payment method.
 	 *
 	 * @var string
 	 */
-	protected $payment_method = PaymentMethods::SOFORT;
+	protected $payment_method = PaymentMethods::BANCONTACT;
 
 	public function get_alias() {
-		return 'MeprSofortGateway';
+		return 'MeprMisterCashGateway';
 	}
 }

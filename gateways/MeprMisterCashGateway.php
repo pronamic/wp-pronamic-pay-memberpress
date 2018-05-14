@@ -1,3 +1,3 @@
 <?php
 
-class_alias( 'Pronamic_WP_Pay_Extensions_MemberPress_MisterCashGateway', 'MeprMisterCashGateway' );
+class_alias( 'Pronamic\WordPress\Pay\Extensions\MemberPress\BancontactGateway', 'MeprMisterCashGateway' );

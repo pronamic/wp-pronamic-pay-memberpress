@@ -6,31 +6,31 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Plugin;
 
 /**
- * Title: WordPress pay MemberPress iDEAL gateway
+ * Title: WordPress pay MemberPress Direct Debit mandate via Sofort gateway
  * Description:
  * Copyright: Copyright (c) 2005 - 2018
  * Company: Pronamic
  *
- * @author  Remco Tolsma
+ * @author  Reüel van der Steege
  * @version 2.0.0
- * @since   1.0.0
+ * @since   1.0.6
  */
-class IDealGateway extends Gateway {
+class DirectDebitSofortGateway extends Gateway {
 	/**
 	 * Payment method.
 	 *
 	 * @var string
 	 */
-	protected $payment_method = PaymentMethods::IDEAL;
+	protected $payment_method = PaymentMethods::DIRECT_DEBIT_SOFORT;
 
 	/**
-	 * Get icon function, please not that this is not a MemberPress function.
+	 * Get icon function, please note that this is not a MemberPress function.
 	 *
-	 * @since 1.0.2
+	 * @since 2.0.0
 	 * @return string
 	 */
 	protected function get_icon() {
-		return plugins_url( 'images/ideal/icon-32x32.png', Plugin::$file );
+		return plugins_url( 'images/sepa-sofort/icon-24x24.png', Plugin::$file );
 	}
 
 	/**
@@ -39,6 +39,6 @@ class IDealGateway extends Gateway {
 	 * @return string
 	 */
 	public function get_alias() {
-		return 'MeprIDealGateway';
+		return 'MeprDirectDebitSofortGateway';
 	}
 }

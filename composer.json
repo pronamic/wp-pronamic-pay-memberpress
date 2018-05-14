@@ -3,7 +3,7 @@
 	"description": "MemberPress driver for the WordPress payment processing library.",
 	"keywords": ["wordpress", "wp", "pay", "memberpress", "extension", "pronamic"],
 	"homepage": "http://www.wp-pay.org/extensions/memberpress/",
-	"license": "GPL-3.0+",
+	"license": "GPL-3.0-or-later",
 	"authors": [
 		{
 			"name": "Pronamic",
@@ -24,21 +24,25 @@
 		"source": "https://github.com/wp-pay-extensions/memberpress"
 	},
 	"autoload": {
-		"classmap": ["src/"]
+		"psr-4": {
+			"Pronamic\\WordPress\\Pay\\Extensions\\MemberPress\\": "src/"
+		}
+	},
+	"config": {
+		"platform": {
+			"php": "5.3.3"
+		}
 	},
 	"require": {
-		"php": ">=5.2.4",
-		"wp-pay/core": "^1.3"
+		"php": "^5.3",
+		"wp-pay/core": "^2.0"
 	},
 	"require-dev": {
 		"php-coveralls/php-coveralls": "^1.0",
 		"squizlabs/php_codesniffer": "^2.7",
-		"wp-coding-standards/wpcs": "^0.10.0",
-		"phpmd/phpmd": "^2.4"
-	},
-    "scripts": {
-        "post-autoload-dump": [
-            "if [[ -d vendor/wp-coding-standards/wpcs ]]; then vendor/bin/phpcs --config-set installed_paths vendor/wp-coding-standards/wpcs; fi"
-        ]
-    }
+		"wp-coding-standards/wpcs": "^0.14.1",
+		"phpmd/phpmd": "^2.4",
+		"phpunit/phpunit": "^4.8",
+		"wimg/php-compatibility": "^8.1"
+	}
 }

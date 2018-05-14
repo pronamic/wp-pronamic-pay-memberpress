@@ -1,3 +1,3 @@
 <?php
 
-class_alias( 'Pronamic_WP_Pay_Extensions_MemberPress_BitcoinGateway', 'MeprBitcoinGateway' );
+class_alias( 'Pronamic\WordPress\Pay\Extensions\MemberPress\BitcoinGateway', 'MeprBitcoinGateway' );
