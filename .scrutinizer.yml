@@ -1,0 +1,6 @@
+checks:
+  php:
+    coding_standard:
+      name: WordPress
+    code_rating: true
+    duplication: true
