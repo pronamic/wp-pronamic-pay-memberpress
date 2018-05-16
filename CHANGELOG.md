@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [2.0.0] - 2018-05-14
+- Switched to PHP namespaces.
+
 ## [1.0.5] - 2017-12-12
 - Added Pronamic gateway.
 - Fixed MemberPress v1.3.18 redirect URL compatibility.
@@ -39,7 +42,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/1.0.5...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.0...HEAD
+[2.0.0]: https://github.com/wp-pay-extensions/memberpress/compare/1.0.5...2.0.0
 [1.0.5]: https://github.com/wp-pay-extensions/memberpress/compare/1.0.4...1.0.5
 [1.0.4]: https://github.com/wp-pay-extensions/memberpress/compare/1.0.3...1.0.4
 [1.0.3]: https://github.com/wp-pay-extensions/memberpress/compare/1.0.2...1.0.3
