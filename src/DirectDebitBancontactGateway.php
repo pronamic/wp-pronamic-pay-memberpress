@@ -14,10 +14,7 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Plugin;
 
 /**
- * Title: WordPress pay MemberPress Direct Debit mandate via Bancontact gateway
- * Description:
- * Copyright: Copyright (c) 2005 - 2018
- * Company: Pronamic
+ * WordPress pay MemberPress Direct Debit mandate via Bancontact gateway
  *
  * @author  Reüel van der Steege
  * @version 2.0.0
@@ -42,7 +39,7 @@ class DirectDebitBancontactGateway extends Gateway {
 	}
 
 	/**
-	 * Get class alias name.
+	 * Get alias class name of this gateway.
 	 *
 	 * @return string
 	 */

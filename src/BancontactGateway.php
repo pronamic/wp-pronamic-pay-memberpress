@@ -13,10 +13,7 @@ namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 
 /**
- * Title: WordPress pay MemberPress Bancontact/Mister Cash gateway
- * Description:
- * Copyright: Copyright (c) 2005 - 2018
- * Company: Pronamic
+ * WordPress pay MemberPress Bancontact/Mister Cash gateway
  *
  * @author  Remco Tolsma
  * @version 2.0.0
@@ -30,6 +27,11 @@ class BancontactGateway extends Gateway {
 	 */
 	protected $payment_method = PaymentMethods::BANCONTACT;
 
+	/**
+	 * Get alias class name of this gateway.
+	 *
+	 * @return string
+	 */
 	public function get_alias() {
 		return 'MeprMisterCashGateway';
 	}

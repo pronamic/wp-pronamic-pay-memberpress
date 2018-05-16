@@ -18,10 +18,7 @@ use Pronamic\WordPress\Pay\Core\Statuses;
 use Pronamic\WordPress\Pay\Payments\Payment;
 
 /**
- * Title: WordPress pay MemberPress extension
- * Description:
- * Copyright: Copyright (c) 2005 - 2018
- * Company: Pronamic
+ * WordPress pay MemberPress extension
  *
  * @author  Remco Tolsma
  * @version 2.0.0
@@ -60,12 +57,11 @@ class Extension {
 	}
 
 	/**
-	 * Gateway paths
-	 *
-	 * @param array $paths
+	 * Gateway paths.
 	 *
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprGatewayFactory.php#L48-50
 	 *
+	 * @param array $paths Array with gateway paths.
 	 * @return array
 	 */
 	public function gateway_paths( $paths ) {
@@ -79,8 +75,8 @@ class Extension {
 	 *
 	 * @since 1.0.1
 	 *
-	 * @param string  $url
-	 * @param Payment $payment
+	 * @param string  $url     Payment redirect URL.
+	 * @param Payment $payment Payment to redirect for.
 	 *
 	 * @return string
 	 */
@@ -132,11 +128,11 @@ class Extension {
 	}
 
 	/**
-	 * Update lead status of the specified payment
+	 * Update lead status of the specified payment.
 	 *
 	 * @see https://github.com/Charitable/Charitable/blob/1.1.4/includes/gateways/class-charitable-gateway-paypal.php#L229-L357
 	 *
-	 * @param Payment $payment
+	 * @param Payment $payment The payment whose status is updated.
 	 */
 	public static function status_update( Payment $payment ) {
 		global $transaction;
@@ -225,8 +221,6 @@ class Extension {
 	 * Subscription deleted.
 	 *
 	 * @param int $subscription_id MemberPress subscription id.
-	 *
-	 * @return void
 	 */
 	public function subscription_pre_delete( $subscription_id ) {
 		$subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_memberpress_subscription_id', $subscription_id );
@@ -255,8 +249,8 @@ class Extension {
 	/**
 	 * Source text.
 	 *
-	 * @param string  $text
-	 * @param Payment $payment
+	 * @param string  $text    Source text.
+	 * @param Payment $payment Payment to create the source text for.
 	 *
 	 * @return string
 	 */
@@ -280,8 +274,8 @@ class Extension {
 	/**
 	 * Source description.
 	 *
-	 * @param string  $description
-	 * @param Payment $payment
+	 * @param string  $description Description.
+	 * @param Payment $payment     Payment to create the description for.
 	 *
 	 * @return string
 	 */
@@ -292,8 +286,8 @@ class Extension {
 	/**
 	 * Source URL.
 	 *
-	 * @param string  $url
-	 * @param Payment $payment
+	 * @param string  $url     URL.
+	 * @param Payment $payment The payment to create the source URL for.
 	 *
 	 * @return string
 	 */
