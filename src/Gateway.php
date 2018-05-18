@@ -92,7 +92,7 @@ class Gateway extends MeprBaseRealGateway {
 	 * @see https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprTransaction.php
 	 *
 	 * @param MeprTransaction $transaction MemberPress transaction object.
-	 * @param sring           $method      PHP function name to call.
+	 * @param string          $method      PHP function name to call.
 	 *
 	 * @return mixed
 	 */
