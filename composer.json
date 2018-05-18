@@ -28,12 +28,6 @@
 			"Pronamic\\WordPress\\Pay\\Extensions\\MemberPress\\": "src/"
 		}
 	},
-    "repositories": [
-        {
-            "type": "vcs",
-            "url":  "git@github.com:wp-premium/memberpress-basic.git"
-        }
-    ],
 	"config": {
 		"platform": {
 			"php": "5.3.3"
@@ -53,6 +47,6 @@
 		"wimg/php-compatibility": "^8.1",
 		"wp-phpunit/wp-phpunit": "^4.9",
 		"johnpbloch/wordpress": "^4.9",
-		"wp-premium/memberpress-basic": "dev-master#1.3.18"
+		"wp-premium/memberpress-basic": "^1.3"
 	}
 }
