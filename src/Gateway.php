@@ -17,6 +17,7 @@ use MeprProduct;
 use MeprSubscription;
 use MeprTransaction;
 use MeprTransactionsHelper;
+use MeprUser;
 use MeprUtils;
 use MeprView;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
