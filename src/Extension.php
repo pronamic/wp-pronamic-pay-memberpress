@@ -54,6 +54,8 @@ class Extension {
 		add_filter( 'pronamic_payment_source_url_' . self::SLUG, array( __CLASS__, 'source_url' ), 10, 2 );
 
 		add_action( 'mepr_subscription_pre_delete', array( $this, 'subscription_pre_delete' ), 10, 1 );
+
+		add_action( 'mepr_subscription_transition_status', array( $this, 'memberpress_subscription_transition_status' ), 10, 3 );
 	}
 
 	/**
@@ -299,5 +301,30 @@ class Extension {
 		), admin_url( 'admin.php' ) );
 
 		return $url;
+	}
+
+	/**
+	 * MemberPress update subscription.
+	 *
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/controllers/MeprSubscriptionsCtrl.php#L92-L111
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprSubscription.php#L100-L123
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprSubscription.php#L112
+	 *
+	 * @param string           $status_old               Old status identifier.
+	 * @param string           $status_new               New status identifier.
+	 * @param MeprSubscription $memberpress_subscription MemberPress subscription object.
+	 */
+	public function memberpress_subscription_transition_status( $status_old, $status_new, $memberpress_subscription ) {
+		$pronamic_subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_memberpress_subscription_id', $memberpress_subscription->id );
+
+		if ( empty( $pronamic_subscription ) ) {
+			return;
+		}
+
+		$pronamic_status = SubscriptionStatuses::transform( $status_new );
+
+		$pronamic_subscription->set_status( $pronamic_status );
+
+		$pronamic_subscription->save();
 	}
 }
