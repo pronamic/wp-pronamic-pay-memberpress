@@ -72,6 +72,7 @@ install:
   - composer install
   # Test on specific WordPress version.
   - if [ "$WP_VERSION" ]; then composer require wp-phpunit/wp-phpunit:$WP_VERSION --dev; fi
+  - if [ "$WP_VERSION" ]; then composer require johnpbloch/wordpress:$WP_VERSION --dev; fi
 
 script:
   - if [[ -z "$GRUNT" ]]; then grunt phpunit; fi
