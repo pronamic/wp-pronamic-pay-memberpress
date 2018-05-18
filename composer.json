@@ -41,7 +41,8 @@
 	},
 	"require": {
 		"php": "^5.3",
-		"wp-pay/core": "^2.0"
+		"wp-pay/core": "^2.0",
+		"pronamic/wp-money": "^1.0"
 	},
 	"require-dev": {
 		"php-coveralls/php-coveralls": "^1.0",
