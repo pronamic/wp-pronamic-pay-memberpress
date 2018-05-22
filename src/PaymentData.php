@@ -138,7 +138,7 @@ class PaymentData extends Pay_PaymentData {
 	public function get_currency_alphabetic_code() {
 		$mepr_options = MeprOptions::fetch();
 
-		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprOptions.php#L136-137
+		// @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprOptions.php#L136-137
 		return $mepr_options->currency_code;
 	}
 

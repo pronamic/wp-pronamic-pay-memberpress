@@ -644,8 +644,7 @@ class Gateway extends MeprBaseRealGateway {
 	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/controllers/MeprCheckoutCtrl.php#L290
 	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/gateways/MeprPayPalGateway.php#L775-L850
 	 *
-	 * @param  MeprTransaction $txn MemberPress transaction object.
-	 * @return bool
+	 * @param MeprTransaction $txn MemberPress transaction object.
 	 */
 	public function display_payment_page( $txn ) {
 		// Gateway.

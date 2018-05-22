@@ -26,7 +26,7 @@ class SubscriptionStatuses {
 	 *
 	 * @link https://github.com/wp-premium/memberpress-basic/blob/master/app/models/MeprSubscription.php#L5-L9
 	 *
-	 * @param string $status
+	 * @param string $status MemberPress subscription status value.
 	 */
 	public static function transform( $status ) {
 		switch ( $status ) {
