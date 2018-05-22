@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "6e097e5bb9d0cfa0be6cc0768ee70326",
+    "content-hash": "21cf560796a740cbe22b6559602da0b4",
     "packages": [
         {
             "name": "pronamic/wp-money",
@@ -63,34 +63,40 @@
         },
         {
             "name": "wp-pay/core",
-            "version": "2.0.0",
+            "version": "dev-develop",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wp-pay/core.git",
-                "reference": "19f1669cacdc54cff404ce3024102bc13c8e4ed2"
+                "reference": "1b5d51ffa9a0c63636f65df2c274747a405a87c3"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wp-pay/core/zipball/19f1669cacdc54cff404ce3024102bc13c8e4ed2",
-                "reference": "19f1669cacdc54cff404ce3024102bc13c8e4ed2",
+                "url": "https://api.github.com/repos/wp-pay/core/zipball/1b5d51ffa9a0c63636f65df2c274747a405a87c3",
+                "reference": "1b5d51ffa9a0c63636f65df2c274747a405a87c3",
                 "shasum": ""
             },
             "require": {
                 "php": "^5.3"
             },
             "require-dev": {
+                "johnpbloch/wordpress": "^4.9",
                 "php-coveralls/php-coveralls": "^1.0",
                 "phpmd/phpmd": "^2.4",
                 "phpunit/phpunit": "^4.5",
                 "squizlabs/php_codesniffer": "^2.7",
                 "wimg/php-compatibility": "^8.0",
-                "wp-coding-standards/wpcs": "^0.14.0"
+                "wp-coding-standards/wpcs": "^0.14.0",
+                "wp-phpunit/wp-phpunit": "^4.9"
             },
             "type": "library",
             "autoload": {
                 "psr-4": {
-                    "Pronamic\\WordPress\\Pay\\Core\\": "src/"
-                }
+                    "Pronamic\\WordPress\\Pay\\": "src/"
+                },
+                "files": [
+                    "includes/functions.php",
+                    "includes/xmlseclibs/xmlseclibs-ing.php"
+                ]
             },
             "notification-url": "https://packagist.org/downloads/",
             "license": [
@@ -120,7 +126,7 @@
                 "wordpress",
                 "wp"
             ],
-            "time": "2018-05-09T08:47:32+00:00"
+            "time": "2018-05-22T07:58:58+00:00"
         },
         {
             "name": "wp-premium/memberpress-basic",
@@ -2090,9 +2096,18 @@
             "time": "2018-05-06T14:44:48+00:00"
         }
     ],
-    "aliases": [],
+    "aliases": [
+        {
+            "alias": "2.1",
+            "alias_normalized": "2.1.0.0",
+            "version": "dev-develop",
+            "package": "wp-pay/core"
+        }
+    ],
     "minimum-stability": "stable",
-    "stability-flags": [],
+    "stability-flags": {
+        "wp-pay/core": 20
+    },
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
