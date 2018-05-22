@@ -285,13 +285,14 @@ class Gateway extends MeprBaseRealGateway {
 				)
 			);
 
+			/** @scrutinizer ignore-call */
 			$this->send_product_welcome_notices(
 				$uemail,
 				MeprTransactionsHelper::get_email_params( $transaction ),
 				$transaction->user()
 			);
 		} else {
-			$this->send_transaction_notices( $transaction, 'send_product_welcome_notices' ); /** @scrutinizer ignore-call */
+			$this->send_transaction_notices( $transaction, 'send_product_welcome_notices' );
 		}
 
 		// Send upgrade/downgrade notices.

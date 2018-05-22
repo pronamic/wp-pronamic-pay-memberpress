@@ -6,6 +6,7 @@
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
+
 module.exports = function( grunt ) {
 	require( 'load-grunt-tasks' )( grunt );
 

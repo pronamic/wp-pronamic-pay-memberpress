@@ -195,10 +195,16 @@ class PaymentData extends Pay_PaymentData {
 	 *
 	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprUser.php#L1115-L1140
 	 *
-	 * @return string
+	 * @return string|null
 	 */
 	public function get_address() {
-		return $this->member->address( 'one' );
+		$value = $this->member->address( 'one' );
+
+		if ( false === $value ) {
+			return null;
+		}
+
+		return $value;
 	}
 
 	/**
@@ -209,7 +215,13 @@ class PaymentData extends Pay_PaymentData {
 	 * @return string
 	 */
 	public function get_city() {
-		return $this->member->attr( 'city' );
+		$value = $this->member->address( 'city' );
+
+		if ( false === $value ) {
+			return null;
+		}
+
+		return $value;
 	}
 
 	/**
@@ -220,7 +232,13 @@ class PaymentData extends Pay_PaymentData {
 	 * @return string
 	 */
 	public function get_zip() {
-		return $this->member->attr( 'zip' );
+		$value = $this->member->address( 'zip' );
+
+		if ( false === $value ) {
+			return null;
+		}
+
+		return $value;
 	}
 
 	/**
