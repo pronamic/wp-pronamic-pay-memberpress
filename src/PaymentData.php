@@ -53,7 +53,7 @@ class PaymentData extends Pay_PaymentData {
 	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprTransaction.php#L602-L617
 	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprSubscription.php
 	 *
-	 * @var MeprUser|false
+	 * @var MeprSubscription|false
 	 */
 	private $subscription;
 
@@ -64,8 +64,8 @@ class PaymentData extends Pay_PaymentData {
 	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprTransaction.php#L596-L600
 	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/lib/MeprBaseGateway.php
 	 *
-	 * @param MeprTransaction $txn     MemberPress transaction object.
-	 * @param Gateway         $gateway MemberPress gateway object.
+	 * @param MeprTransaction $transaction MemberPress transaction object.
+	 * @param Gateway         $gateway     MemberPress gateway object.
 	 */
 	public function __construct( MeprTransaction $transaction, Gateway $gateway ) {
 		parent::__construct();
