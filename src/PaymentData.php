@@ -35,7 +35,7 @@ class PaymentData extends Pay_PaymentData {
 	 *
 	 * @var MeprTransaction
 	 */
-	private $txn;
+	private $transaction;
 
 	/**
 	 * MemberPress transaction user.
@@ -54,12 +54,12 @@ class PaymentData extends Pay_PaymentData {
 	 *
 	 * @param MeprTransaction $txn MemberPress transaction object.
 	 */
-	public function __construct( MeprTransaction $txn ) {
+	public function __construct( MeprTransaction $transaction ) {
 		parent::__construct();
 
-		$this->txn       = $txn;
-		$this->member    = $this->txn->user();
-		$this->recurring = ( $txn->subscription() && $txn->subscription()->txn_count > 1 );
+		$this->transaction = $transaction;
+		$this->member      = $transaction->user();
+		$this->recurring   = ( $transaction->subscription() && $transaction->subscription()->txn_count > 1 );
 	}
 
 	/**
@@ -81,7 +81,7 @@ class PaymentData extends Pay_PaymentData {
 	 * @return string|int
 	 */
 	public function get_source_id() {
-		return $this->txn->id;
+		return $this->transaction->id;
 	}
 
 	/**
@@ -92,7 +92,7 @@ class PaymentData extends Pay_PaymentData {
 	 * @return string|int
 	 */
 	public function get_order_id() {
-		return $this->txn->id;
+		return $this->transaction->id;
 	}
 
 	/**
@@ -103,7 +103,7 @@ class PaymentData extends Pay_PaymentData {
 	 * @return string
 	 */
 	public function get_description() {
-		return $this->txn->product()->post_title;
+		return $this->transaction->product()->post_title;
 	}
 
 	/**
@@ -119,7 +119,7 @@ class PaymentData extends Pay_PaymentData {
 		$item = new Item();
 		$item->setNumber( $this->get_order_id() );
 		$item->setDescription( $this->get_description() );
-		$item->setPrice( $this->txn->total );
+		$item->setPrice( $this->transaction->total );
 		$item->setQuantity( 1 );
 
 		$items->addItem( $item );
@@ -269,7 +269,7 @@ class PaymentData extends Pay_PaymentData {
 		$mepr_options = MeprOptions::fetch();
 
 		// @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprOptions.php#L768-782
-		return $mepr_options->thankyou_page_url( 'trans_num=' . $this->txn->id );
+		return $mepr_options->thankyou_page_url( 'trans_num=' . $this->transaction->id );
 	}
 
 	/**
@@ -307,13 +307,13 @@ class PaymentData extends Pay_PaymentData {
 	 * @return Subscription|false
 	 */
 	public function get_subscription() {
-		$product = $this->txn->product();
+		$product = $this->transaction->product();
 
 		if ( $product->is_one_time_payment() ) {
 			return false;
 		}
 
-		$mp_subscription = $this->txn->subscription();
+		$mp_subscription = $this->transaction->subscription();
 
 		if ( ! $mp_subscription ) {
 			return false;
@@ -336,7 +336,7 @@ class PaymentData extends Pay_PaymentData {
 		);
 
 		$subscription->set_amount( new Money(
-			$this->txn->total,
+			$this->transaction->total,
 			$this->get_currency_alphabetic_code()
 		) );
 
