@@ -285,7 +285,11 @@ class Gateway extends MeprBaseRealGateway {
 				)
 			);
 
-			/** @scrutinizer ignore-call */
+			/**
+			 * The `send_product_welcome_notices` method is only available in earlier version of MemberPress.
+			 *
+			 * @scrutinizer ignore-call
+			 */
 			$this->send_product_welcome_notices(
 				$uemail,
 				MeprTransactionsHelper::get_email_params( $transaction ),
