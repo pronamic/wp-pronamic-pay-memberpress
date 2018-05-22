@@ -193,34 +193,34 @@ class PaymentData extends Pay_PaymentData {
 	/**
 	 * Get address.
 	 *
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprOptions.php#L710-L719
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprUser.php#L1115-L1140
 	 *
 	 * @return string
 	 */
 	public function get_address() {
-		return $this->member->attr( 'biz_address1' );
+		return $this->member->address( 'one' );
 	}
 
 	/**
 	 * Get city.
 	 *
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprOptions.php#L710-L719
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprUser.php#L1115-L1140
 	 *
 	 * @return string
 	 */
 	public function get_city() {
-		return $this->member->attr( 'biz_city' );
+		return $this->member->attr( 'city' );
 	}
 
 	/**
 	 * Get ZIP.
 	 *
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprOptions.php#L710-L719
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprUser.php#L1115-L1140
 	 *
 	 * @return string
 	 */
 	public function get_zip() {
-		return $this->member->attr( 'biz_postcode' );
+		return $this->member->attr( 'zip' );
 	}
 
 	/**

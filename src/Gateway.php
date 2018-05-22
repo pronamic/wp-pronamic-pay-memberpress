@@ -291,7 +291,7 @@ class Gateway extends MeprBaseRealGateway {
 				$transaction->user()
 			);
 		} else {
-			$this->send_transaction_notices( $transaction, 'send_product_welcome_notices' );
+			$this->send_transaction_notices( $transaction, 'send_product_welcome_notices' ); /** @scrutinizer ignore-call */
 		}
 
 		// Send upgrade/downgrade notices.
