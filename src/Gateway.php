@@ -644,14 +644,10 @@ class Gateway extends MeprBaseRealGateway {
 	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/controllers/MeprCheckoutCtrl.php#L290
 	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/gateways/MeprPayPalGateway.php#L775-L850
 	 *
-	 * @param  MeprTransaction|null $txn MemberPress transaction object.
+	 * @param  MeprTransaction $txn MemberPress transaction object.
 	 * @return bool
 	 */
 	public function display_payment_page( $txn ) {
-		if ( ! $txn instanceof MeprTransaction ) {
-			return false;
-		}
-
 		// Gateway.
 		$config_id = $this->settings->config_id;
 
@@ -665,16 +661,14 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Process payment form.
 	 *
-	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L239-289
+	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L239-289
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/controllers/MeprCheckoutCtrl.php#L336
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/gateways/MeprPayPalGateway.php#L1011
 	 *
 	 * @param  MeprTransaction $txn MemberPress transaction object.
 	 * @return bool
 	 */
 	public function process_payment_form( $txn ) {
-		if ( ! $txn instanceof MeprTransaction ) {
-			return false;
-		}
-
 		if ( ! filter_has_var( INPUT_POST, 'pronamic_pay_memberpress_pay' ) ) {
 			return false;
 		}
