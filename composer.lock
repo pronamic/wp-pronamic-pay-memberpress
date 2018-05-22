@@ -7,6 +7,45 @@
     "content-hash": "21cf560796a740cbe22b6559602da0b4",
     "packages": [
         {
+            "name": "pronamic/wp-datetime",
+            "version": "1.0.0",
+            "source": {
+                "type": "git",
+                "url": "https://github.com/pronamic/wp-datetime.git",
+                "reference": "807265df543b60079377d5c0ff5ed10564f73914"
+            },
+            "dist": {
+                "type": "zip",
+                "url": "https://api.github.com/repos/pronamic/wp-datetime/zipball/807265df543b60079377d5c0ff5ed10564f73914",
+                "reference": "807265df543b60079377d5c0ff5ed10564f73914",
+                "shasum": ""
+            },
+            "require": {
+                "php": ">=5.3"
+            },
+            "require-dev": {
+                "johnpbloch/wordpress": "^4.9",
+                "php-coveralls/php-coveralls": "^1.1",
+                "phpmd/phpmd": "^2.4",
+                "phpunit/phpunit": "^4.8",
+                "vlucas/phpdotenv": "^2.0",
+                "wimg/php-compatibility": "^8.1",
+                "wp-coding-standards/wpcs": "^0.14.1",
+                "wp-phpunit/wp-phpunit": "^4.9"
+            },
+            "type": "library",
+            "autoload": {
+                "psr-4": {
+                    "Pronamic\\WordPress\\DateTime\\": "src"
+                }
+            },
+            "notification-url": "https://packagist.org/downloads/",
+            "license": [
+                "GPL-3.0-or-later"
+            ],
+            "time": "2018-05-11T12:27:26+00:00"
+        },
+        {
             "name": "pronamic/wp-money",
             "version": "1.0.0",
             "source": {
@@ -67,16 +106,18 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/wp-pay/core.git",
-                "reference": "1105152b174fe611d7258bed13a24ae3bc48fcc5"
+                "reference": "bb0724d2f34dacfa4fde3010f93360bc3a450f59"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wp-pay/core/zipball/1105152b174fe611d7258bed13a24ae3bc48fcc5",
-                "reference": "1105152b174fe611d7258bed13a24ae3bc48fcc5",
+                "url": "https://api.github.com/repos/wp-pay/core/zipball/bb0724d2f34dacfa4fde3010f93360bc3a450f59",
+                "reference": "bb0724d2f34dacfa4fde3010f93360bc3a450f59",
                 "shasum": ""
             },
             "require": {
-                "php": "^5.3"
+                "php": "^5.3",
+                "pronamic/wp-datetime": "^1.0",
+                "pronamic/wp-money": "^1.0"
             },
             "require-dev": {
                 "johnpbloch/wordpress": "^4.9",
@@ -126,7 +167,7 @@
                 "wordpress",
                 "wp"
             ],
-            "time": "2018-05-22T11:48:57+00:00"
+            "time": "2018-05-22T12:27:24+00:00"
         },
         {
             "name": "wp-premium/memberpress-basic",

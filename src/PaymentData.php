@@ -40,6 +40,7 @@ class PaymentData extends Pay_PaymentData {
 	/**
 	 * MemberPress transaction user.
 	 *
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprTransaction.php#L596-L600
 	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprUser.php
 	 *
 	 * @var MeprUser
@@ -49,11 +50,12 @@ class PaymentData extends Pay_PaymentData {
 	/**
 	 * MemberPress transaction subscription.
 	 *
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprUser.php
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprTransaction.php#L602-L617
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprSubscription.php
 	 *
-	 * @var MeprUser
+	 * @var MeprUser|false
 	 */
-	private $member;
+	private $subscription;
 
 	/**
 	 * Constructs and initialize payment data object.
@@ -69,7 +71,7 @@ class PaymentData extends Pay_PaymentData {
 		$this->transaction  = $transaction;
 		$this->user         = $transaction->user();
 		$this->subscription = $transaction->subscription();
-		$this->recurring    = ( $transaction->subscription() && $transaction->subscription()->txn_count > 1 );
+		$this->recurring    = $this->subscription && $this->subscription->txn_count > 1;
 	}
 
 	/**
