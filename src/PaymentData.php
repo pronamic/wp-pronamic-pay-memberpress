@@ -304,7 +304,7 @@ class PaymentData extends Pay_PaymentData {
 	 *
 	 * @since 2.0.0
 	 *
-	 * @return Subscription|bool
+	 * @return Subscription|false
 	 */
 	public function get_subscription() {
 		$product = $this->txn->product();
