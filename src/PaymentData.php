@@ -44,6 +44,15 @@ class PaymentData extends Pay_PaymentData {
 	 *
 	 * @var MeprUser
 	 */
+	private $user;
+
+	/**
+	 * MemberPress transaction subscription.
+	 *
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprUser.php
+	 *
+	 * @var MeprUser
+	 */
 	private $member;
 
 	/**
@@ -57,9 +66,10 @@ class PaymentData extends Pay_PaymentData {
 	public function __construct( MeprTransaction $transaction ) {
 		parent::__construct();
 
-		$this->transaction = $transaction;
-		$this->member      = $transaction->user();
-		$this->recurring   = ( $transaction->subscription() && $transaction->subscription()->txn_count > 1 );
+		$this->transaction  = $transaction;
+		$this->user         = $transaction->user();
+		$this->subscription = $transaction->subscription();
+		$this->recurring    = ( $transaction->subscription() && $transaction->subscription()->txn_count > 1 );
 	}
 
 	/**
@@ -151,7 +161,7 @@ class PaymentData extends Pay_PaymentData {
 	 * @return string
 	 */
 	public function get_email() {
-		return $this->member->user_email;
+		return $this->user->user_email;
 	}
 
 	/**
@@ -163,7 +173,7 @@ class PaymentData extends Pay_PaymentData {
 	 * @return string
 	 */
 	public function get_first_name() {
-		return $this->member->first_name;
+		return $this->user->first_name;
 	}
 
 	/**
@@ -175,7 +185,7 @@ class PaymentData extends Pay_PaymentData {
 	 * @return string
 	 */
 	public function get_last_name() {
-		return $this->member->last_name;
+		return $this->user->last_name;
 	}
 
 	/**
@@ -187,7 +197,7 @@ class PaymentData extends Pay_PaymentData {
 	 * @return string
 	 */
 	public function get_customer_name() {
-		return $this->member->get_full_name();
+		return $this->user->get_full_name();
 	}
 
 	/**
@@ -198,7 +208,7 @@ class PaymentData extends Pay_PaymentData {
 	 * @return string|null
 	 */
 	public function get_address() {
-		$value = $this->member->address( 'one', false );
+		$value = $this->user->address( 'one', false );
 
 		if ( false === $value ) {
 			return null;
@@ -215,7 +225,7 @@ class PaymentData extends Pay_PaymentData {
 	 * @return string|null
 	 */
 	public function get_city() {
-		$value = $this->member->address( 'city', false );
+		$value = $this->user->address( 'city', false );
 
 		if ( false === $value ) {
 			return null;
@@ -232,7 +242,7 @@ class PaymentData extends Pay_PaymentData {
 	 * @return string|null
 	 */
 	public function get_zip() {
-		$value = $this->member->address( 'zip', false );
+		$value = $this->user->address( 'zip', false );
 
 		if ( false === $value ) {
 			return null;
@@ -249,7 +259,7 @@ class PaymentData extends Pay_PaymentData {
 	 * @return string|null
 	 */
 	public function get_country() {
-		$value = $this->member->address( 'country', false );
+		$value = $this->user->address( 'country', false );
 
 		if ( false === $value ) {
 			return null;
