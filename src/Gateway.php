@@ -630,7 +630,7 @@ class Gateway extends MeprBaseRealGateway {
 		}
 
 		// Data.
-		$data = new PaymentData( $txn );
+		$data = new PaymentData( $txn, $this );
 
 		$payment = Plugin::start( $config_id, $gateway, $data, $this->payment_method );
 

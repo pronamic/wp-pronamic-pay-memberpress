@@ -62,16 +62,22 @@ class PaymentData extends Pay_PaymentData {
 	 *
 	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprTransaction.php
 	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprTransaction.php#L596-L600
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/lib/MeprBaseGateway.php
 	 *
-	 * @param MeprTransaction $txn MemberPress transaction object.
+	 * @param MeprTransaction $txn     MemberPress transaction object.
+	 * @param Gateway         $gateway MemberPress gateway object.
 	 */
-	public function __construct( MeprTransaction $transaction ) {
+	public function __construct( MeprTransaction $transaction, Gateway $gateway ) {
 		parent::__construct();
 
-		$this->transaction  = $transaction;
-		$this->user         = $transaction->user();
+		$this->transaction = $transaction;
+		$this->gateway     = $gateway;
+
+		$this->user = $transaction->user();
+
 		$this->subscription = $transaction->subscription();
-		$this->recurring    = $this->subscription && $this->subscription->txn_count > 1;
+
+		$this->recurring = $this->subscription && $this->subscription->txn_count > 1;
 	}
 
 	/**
@@ -281,16 +287,32 @@ class PaymentData extends Pay_PaymentData {
 		$mepr_options = MeprOptions::fetch();
 
 		// @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprOptions.php#L768-782
+		// @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprOptions.php#L806-L835
 		return $mepr_options->thankyou_page_url( 'trans_num=' . $this->transaction->id );
 	}
 
 	/**
 	 * Get cancel URL.
 	 *
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/lib/MeprBaseGateway.php#L130-L135
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/gateways/MeprPayPalStandardGateway.php#L1128-L1152
+	 *
 	 * @return string
 	 */
 	public function get_cancel_url() {
-		return $this->get_normal_return_url();
+		if ( isset( $this->transaction->product_id ) && $this->transaction->product_id > 0 ) {
+			$product = new MeprProduct( $this->transaction->product_id );
+
+			$url = $this->gateway->message_page_url( $product, 'cancel' );
+
+			if ( false !== $url ) {
+				return $url;
+			}
+		}
+
+		$mepr_options = MeprOptions::fetch();
+
+		return $mepr_options->account_page_url( 'action=subscriptions' )
 	}
 
 	/**
@@ -308,7 +330,9 @@ class PaymentData extends Pay_PaymentData {
 	 * @return string
 	 */
 	public function get_error_url() {
-		return $this->get_normal_return_url();
+		$mepr_options = MeprOptions::fetch();
+
+		return $mepr_options->account_page_url( 'action=subscriptions' )
 	}
 
 	/**
