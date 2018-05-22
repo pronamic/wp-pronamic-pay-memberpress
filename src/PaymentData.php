@@ -312,7 +312,7 @@ class PaymentData extends Pay_PaymentData {
 
 		$mepr_options = MeprOptions::fetch();
 
-		return $mepr_options->account_page_url( 'action=subscriptions' )
+		return $mepr_options->account_page_url( 'action=subscriptions' );
 	}
 
 	/**
