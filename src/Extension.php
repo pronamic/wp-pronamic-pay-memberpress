@@ -16,6 +16,7 @@ use MeprTransaction;
 use MeprSubscription;
 use Pronamic\WordPress\Pay\Core\Statuses;
 use Pronamic\WordPress\Pay\Payments\Payment;
+use Pronamic\WordPress\Pay\Subscriptions\Subscription;
 
 /**
  * WordPress pay MemberPress extension
@@ -52,6 +53,8 @@ class Extension {
 		add_filter( 'pronamic_payment_source_text_' . self::SLUG, array( __CLASS__, 'source_text' ), 10, 2 );
 		add_filter( 'pronamic_payment_source_description_' . self::SLUG, array( __CLASS__, 'source_description' ), 10, 2 );
 		add_filter( 'pronamic_payment_source_url_' . self::SLUG, array( __CLASS__, 'source_url' ), 10, 2 );
+		add_filter( 'pronamic_subscription_source_text_' . self::SLUG, array( __CLASS__, 'subscription_source_text' ), 10, 2 );
+		add_filter( 'pronamic_subscription_source_description_' . self::SLUG, array( __CLASS__, 'subscription_source_description' ), 10, 2 );
 
 		add_action( 'mepr_subscription_pre_delete', array( $this, 'subscription_pre_delete' ), 10, 1 );
 
@@ -137,25 +140,30 @@ class Extension {
 	 * @param Payment $payment The payment whose status is updated.
 	 */
 	public static function status_update( Payment $payment ) {
-		global $transaction;
-
 		$transaction_id = $payment->get_source_id();
 
 		$transaction = new MeprTransaction( $transaction_id );
 
 		if ( $payment->get_recurring() ) {
-			$sub = $transaction->subscription();
+			$subscription = $transaction->subscription();
+
+			if ( empty( $subscription ) || empty( $subscription->id ) ) {
+				$subscription_id = $payment->get_subscription()->get_source_id();
+
+				$subscription = new MeprSubscription( $subscription_id );
+			}
 
 			// Same source ID and first transaction ID for recurring payment means we need to add a new transaction.
-			if ( $payment->get_source_id() === $sub->first_txn_id ) {
+			if ( $payment->get_source_id() === $subscription->id ) {
 				// First transaction.
-				$first_txn = $sub->first_txn();
+				$first_txn = $subscription->first_txn();
 
 				if ( false === $first_txn || ! ( $first_txn instanceof MeprTransaction ) ) {
 					$first_txn             = new MeprTransaction();
-					$first_txn->user_id    = $sub->user_id;
-					$first_txn->product_id = $sub->product_id;
-					$first_txn->coupon_id  = $sub->coupon_id;
+					$first_txn->user_id    = $subscription->user_id;
+					$first_txn->product_id = $subscription->product_id;
+					$first_txn->coupon_id  = $subscription->coupon_id;
+					$first_txn->gateway    = null;
 				}
 
 				// Transaction number.
@@ -166,24 +174,25 @@ class Extension {
 				}
 
 				// New transaction.
-				$txn                  = new MeprTransaction();
-				$txn->created_at      = $payment->post->post_date_gmt;
-				$txn->user_id         = $first_txn->user_id;
-				$txn->product_id      = $first_txn->product_id;
-				$txn->coupon_id       = $first_txn->coupon_id;
-				$txn->gateway         = $transaction->gateway;
-				$txn->trans_num       = $trans_num;
-				$txn->txn_type        = MeprTransaction::$payment_str;
-				$txn->status          = MeprTransaction::$pending_str;
-				$txn->subscription_id = $sub->id;
+				$transaction                  = new MeprTransaction();
+				$transaction->created_at      = $payment->post->post_date_gmt;
+				$transaction->user_id         = $first_txn->user_id;
+				$transaction->product_id      = $first_txn->product_id;
+				$transaction->coupon_id       = $first_txn->coupon_id;
+				$transaction->gateway         = $first_txn->gateway;
+				$transaction->trans_num       = $trans_num;
+				$transaction->txn_type        = MeprTransaction::$payment_str;
+				$transaction->status          = MeprTransaction::$pending_str;
+				$transaction->subscription_id = $subscription->id;
 
-				$txn->set_gross( $payment->get_amount()->get_amount() );
+				$transaction->set_gross( $payment->get_amount()->get_amount() );
 
-				$txn->store();
+				$transaction->store();
 
-				update_post_meta( $payment->get_id(), '_pronamic_payment_source_id', $txn->id );
+				// Set source ID.
+				$payment->set_meta( 'source_id', $transaction->id );
 
-				$transaction = $txn;
+				$payment->source_id = $transaction->id;
 			}
 		}
 
@@ -225,7 +234,7 @@ class Extension {
 	 * @param int $subscription_id MemberPress subscription id.
 	 */
 	public function subscription_pre_delete( $subscription_id ) {
-		$subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_memberpress_subscription_id', $subscription_id );
+		$subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_source_id', $subscription_id );
 
 		if ( ! $subscription ) {
 			return;
@@ -274,6 +283,31 @@ class Extension {
 	}
 
 	/**
+	 * Subscription source text.
+	 *
+	 * @param string       $text         Source text.
+	 * @param Subscription $subscription Subscription to create the source text for.
+	 *
+	 * @return string
+	 */
+	public static function subscription_source_text( $text, Subscription $subscription ) {
+		$text = __( 'MemberPress', 'pronamic_ideal' ) . '<br />';
+
+		$text .= sprintf(
+			'<a href="%s">%s</a>',
+			add_query_arg( array(
+				'page'   => 'memberpress-trans',
+				'action' => 'subscription',
+				'id'     => $subscription->source_id,
+			), admin_url( 'admin.php' ) ),
+			/* translators: %s: payment source id */
+			sprintf( __( 'Subscription %s', 'pronamic_ideal' ), $subscription->source_id )
+		);
+
+		return $text;
+	}
+
+	/**
 	 * Source description.
 	 *
 	 * @param string  $description Description.
@@ -283,6 +317,18 @@ class Extension {
 	 */
 	public static function source_description( $description, Payment $payment ) {
 		return __( 'MemberPress Transaction', 'pronamic_ideal' );
+	}
+
+	/**
+	 * Subscription source description.
+	 *
+	 * @param string       $description  Description.
+	 * @param Subscription $subscription Subscription to create the description for.
+	 *
+	 * @return string
+	 */
+	public static function subscription_source_description( $description, Subscription $subscription ) {
+		return __( 'MemberPress Subscription', 'pronamic_ideal' );
 	}
 
 	/**
@@ -315,16 +361,16 @@ class Extension {
 	 * @param MeprSubscription $memberpress_subscription MemberPress subscription object.
 	 */
 	public function memberpress_subscription_transition_status( $status_old, $status_new, $memberpress_subscription ) {
-		$pronamic_subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_memberpress_subscription_id', $memberpress_subscription->id );
+		$subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_source_id', $memberpress_subscription->id );
 
-		if ( empty( $pronamic_subscription ) ) {
+		if ( empty( $subscription ) ) {
 			return;
 		}
 
-		$pronamic_status = SubscriptionStatuses::transform( $status_new );
+		$status = SubscriptionStatuses::transform( $status_new );
 
-		$pronamic_subscription->set_status( $pronamic_status );
+		$subscription->set_status( $status );
 
-		$pronamic_subscription->save();
+		$subscription->save();
 	}
 }

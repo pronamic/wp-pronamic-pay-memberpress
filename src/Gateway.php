@@ -254,14 +254,6 @@ class Gateway extends MeprBaseRealGateway {
 			$subscription->status     = MeprSubscription::$active_str;
 			$subscription->created_at = $transaction->created_at;
 			$subscription->store();
-
-			// Set subscription first transaction id meta.
-			$pronamic_subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_source_id', $subscription->first_txn_id );
-
-			if ( $pronamic_subscription ) {
-				// Store MemberPress subscription id to be able to cancel subscription on delete.
-				$pronamic_subscription->set_meta( 'memberpress_subscription_id', $subscription->id );
-			}
 		}
 
 		/*
@@ -416,7 +408,7 @@ class Gateway extends MeprBaseRealGateway {
 			return;
 		}
 
-		$subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_source_id', $sub->first_txn_id );
+		$subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_source_id', $sub->id );
 
 		if ( ! $subscription ) {
 			return;
@@ -473,7 +465,7 @@ class Gateway extends MeprBaseRealGateway {
 			return;
 		}
 
-		$subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_source_id', $sub->first_txn_id );
+		$subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_source_id', $sub->id );
 
 		if ( ! $subscription ) {
 			return;
@@ -548,7 +540,7 @@ class Gateway extends MeprBaseRealGateway {
 			return;
 		}
 
-		$subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_source_id', $sub->first_txn_id );
+		$subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_source_id', $sub->id );
 
 		if ( ! $subscription ) {
 			return;

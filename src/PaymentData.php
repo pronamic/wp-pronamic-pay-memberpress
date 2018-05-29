@@ -392,6 +392,10 @@ class PaymentData extends Pay_PaymentData {
 			return false;
 		}
 
+		if ( ! empty( $this->transaction->subscription_id ) ) {
+			return $this->transaction->subscription_id;
+		}
+
 		return $this->get_source_id();
 	}
 }
