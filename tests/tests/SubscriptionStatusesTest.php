@@ -10,7 +10,7 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 
-use MeprSubscription;
+use \MeprSubscription;
 use Pronamic\WordPress\Pay\Core\Statuses;
 
 /**
