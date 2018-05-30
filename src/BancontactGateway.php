@@ -10,6 +10,7 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 
+use Pronamic\WordPress\Pay\Plugin;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 
 /**
@@ -26,6 +27,16 @@ class BancontactGateway extends Gateway {
 	 * @var string
 	 */
 	protected $payment_method = PaymentMethods::BANCONTACT;
+
+	/**
+	 * Get icon function, please not that this is not a MemberPress function.
+	 *
+	 * @since 2.0.1
+	 * @return string
+	 */
+	protected function get_icon() {
+		return plugins_url( 'images/bancontact/icon-32x32.png', Plugin::$file );
+	}
 
 	/**
 	 * Get alias class name of this gateway.

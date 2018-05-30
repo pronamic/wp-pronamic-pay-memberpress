@@ -29,16 +29,6 @@ class DirectDebitSofortGateway extends Gateway {
 	protected $payment_method = PaymentMethods::DIRECT_DEBIT_SOFORT;
 
 	/**
-	 * Get icon function, please note that this is not a MemberPress function.
-	 *
-	 * @since 2.0.0
-	 * @return string
-	 */
-	protected function get_icon() {
-		return plugins_url( 'images/sepa-sofort/icon-24x24.png', Plugin::$file );
-	}
-
-	/**
 	 * Get alias class name of this gateway.
 	 *
 	 * @return string

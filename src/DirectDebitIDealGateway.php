@@ -29,16 +29,6 @@ class DirectDebitIDealGateway extends Gateway {
 	protected $payment_method = PaymentMethods::DIRECT_DEBIT_IDEAL;
 
 	/**
-	 * Get icon function, please note that this is not a MemberPress function.
-	 *
-	 * @since 1.0.2
-	 * @return string
-	 */
-	protected function get_icon() {
-		return plugins_url( 'images/sepa-ideal/icon-24x24.png', Plugin::$file );
-	}
-
-	/**
 	 * Get alias class name of this gateway.
 	 *
 	 * @return string
