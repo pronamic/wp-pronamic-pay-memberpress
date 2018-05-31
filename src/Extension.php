@@ -55,6 +55,7 @@ class Extension {
 		add_filter( 'pronamic_payment_source_url_' . self::SLUG, array( __CLASS__, 'source_url' ), 10, 2 );
 		add_filter( 'pronamic_subscription_source_text_' . self::SLUG, array( __CLASS__, 'subscription_source_text' ), 10, 2 );
 		add_filter( 'pronamic_subscription_source_description_' . self::SLUG, array( __CLASS__, 'subscription_source_description' ), 10, 2 );
+		add_filter( 'pronamic_subscription_source_url_' . self::SLUG, array( __CLASS__, 'subscription_source_url' ), 10, 2 );
 
 		add_action( 'mepr_subscription_pre_delete', array( $this, 'subscription_pre_delete' ), 10, 1 );
 
@@ -296,9 +297,8 @@ class Extension {
 		$text .= sprintf(
 			'<a href="%s">%s</a>',
 			add_query_arg( array(
-				'page'   => 'memberpress-trans',
-				'action' => 'subscription',
-				'id'     => $subscription->source_id,
+				'page'         => 'memberpress-subscriptions',
+				'subscription' => $subscription->source_id,
 			), admin_url( 'admin.php' ) ),
 			/* translators: %s: payment source id */
 			sprintf( __( 'Subscription %s', 'pronamic_ideal' ), $subscription->source_id )
@@ -344,6 +344,23 @@ class Extension {
 			'page'   => 'memberpress-trans',
 			'action' => 'edit',
 			'id'     => $payment->source_id,
+		), admin_url( 'admin.php' ) );
+
+		return $url;
+	}
+
+	/**
+	 * Subscription source URL.
+	 *
+	 * @param string       $url          URL.
+	 * @param Subscription $subscription Subscription.
+	 *
+	 * @return string
+	 */
+	public static function subscription_source_url( $url, Subscription $subscription ) {
+		$url = add_query_arg( array(
+			'page'         => 'memberpress-subscriptions',
+			'subscription' => $subscription->source_id,
 		), admin_url( 'admin.php' ) );
 
 		return $url;
