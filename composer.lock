@@ -4,7 +4,7 @@
         "Read more about it at https://getcomposer.org/doc/01-basic-usage.md#installing-dependencies",
         "This file is @generated automatically"
     ],
-    "content-hash": "967a5b0e51167d4f8ee08d621ad9a87d",
+    "content-hash": "5ae85c638e6c064c477a71a303f57937",
     "packages": [
         {
             "name": "pronamic/wp-datetime",
@@ -102,16 +102,16 @@
         },
         {
             "name": "wp-pay/core",
-            "version": "dev-develop",
+            "version": "2.0.1",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wp-pay/core.git",
-                "reference": "9a89addcdf27074c9c461106510f7bf2b517c861"
+                "reference": "95e3849e166e1ffd65e0e3f2289acc8e6fbb3185"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wp-pay/core/zipball/9a89addcdf27074c9c461106510f7bf2b517c861",
-                "reference": "9a89addcdf27074c9c461106510f7bf2b517c861",
+                "url": "https://api.github.com/repos/wp-pay/core/zipball/95e3849e166e1ffd65e0e3f2289acc8e6fbb3185",
+                "reference": "95e3849e166e1ffd65e0e3f2289acc8e6fbb3185",
                 "shasum": ""
             },
             "require": {
@@ -167,7 +167,7 @@
                 "wordpress",
                 "wp"
             ],
-            "time": "2018-06-01T12:16:46+00:00"
+            "time": "2018-06-01T13:40:32+00:00"
         }
     ],
     "packages-dev": [
@@ -2137,18 +2137,9 @@
             "time": "2018-05-18T13:07:05+00:00"
         }
     ],
-    "aliases": [
-        {
-            "alias": "2.1",
-            "alias_normalized": "2.1.0.0",
-            "version": "dev-develop",
-            "package": "wp-pay/core"
-        }
-    ],
+    "aliases": [],
     "minimum-stability": "stable",
-    "stability-flags": {
-        "wp-pay/core": 20
-    },
+    "stability-flags": [],
     "prefer-stable": false,
     "prefer-lowest": false,
     "platform": {
