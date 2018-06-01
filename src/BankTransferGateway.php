@@ -16,7 +16,7 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
  * WordPress pay MemberPress bank transfer gateway
  *
  * @author  Remco Tolsma
- * @version 2.0.0
+ * @version 2.0.1
  * @since   1.0.0
  */
 class BankTransferGateway extends Gateway {

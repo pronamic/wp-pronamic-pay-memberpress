@@ -16,7 +16,7 @@ use MeprTransaction;
  * WordPress pay MemberPress
  *
  * @author  Remco Tolsma
- * @version 2.0.0
+ * @version 2.0.1
  * @since   1.0.0
  */
 class MemberPress {
