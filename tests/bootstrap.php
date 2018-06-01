@@ -8,6 +8,8 @@
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
 
+define( 'ABSPATH', dirname( dirname( __FILE__ ) ) . '/wordpress/' );
+
 require_once __DIR__ . '/../vendor/autoload.php';
 
 require_once getenv( 'WP_PHPUNIT__DIR' ) . '/includes/functions.php';
