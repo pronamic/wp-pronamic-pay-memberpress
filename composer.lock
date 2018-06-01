@@ -106,12 +106,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/wp-pay/core.git",
-                "reference": "bb0724d2f34dacfa4fde3010f93360bc3a450f59"
+                "reference": "9a89addcdf27074c9c461106510f7bf2b517c861"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wp-pay/core/zipball/bb0724d2f34dacfa4fde3010f93360bc3a450f59",
-                "reference": "bb0724d2f34dacfa4fde3010f93360bc3a450f59",
+                "url": "https://api.github.com/repos/wp-pay/core/zipball/9a89addcdf27074c9c461106510f7bf2b517c861",
+                "reference": "9a89addcdf27074c9c461106510f7bf2b517c861",
                 "shasum": ""
             },
             "require": {
@@ -167,7 +167,7 @@
                 "wordpress",
                 "wp"
             ],
-            "time": "2018-05-22T12:27:24+00:00"
+            "time": "2018-06-01T12:16:46+00:00"
         },
         {
             "name": "wp-premium/memberpress-basic",
