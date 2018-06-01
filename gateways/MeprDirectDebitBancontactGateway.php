@@ -1,6 +1,6 @@
 <?php
 /**
- * Direct Debit mandate via iDEAL gateway alias
+ * Direct Debit mandate via Bancontact gateway alias.
  *
  * @author    Pronamic <info@pronamic.eu>
  * @copyright 2005-2018 Pronamic
@@ -8,4 +8,4 @@
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
 
-class_alias( 'Pronamic\WordPress\Pay\Extensions\MemberPress\DirectDebitIDealGateway', 'MeprDirectDebitIDealGateway' );
+class_alias( 'Pronamic\WordPress\Pay\Extensions\MemberPress\DirectDebitBancontactGateway', 'MeprDirectDebitBancontactGateway' );

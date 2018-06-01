@@ -1,4 +1,12 @@
 <?php
+/**
+ * Direct Debit mandate via iDEAL gateway
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2018 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
+ */
 
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 
@@ -6,13 +14,10 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Plugin;
 
 /**
- * Title: WordPress pay MemberPress Direct Debit mandate via iDEAL gateway
- * Description:
- * Copyright: Copyright (c) 2005 - 2018
- * Company: Pronamic
+ * WordPress pay MemberPress Direct Debit mandate via iDEAL gateway
  *
  * @author  Reüel van der Steege
- * @version 2.0.0
+ * @version 2.0.1
  * @since   2.0.0
  */
 class DirectDebitIDealGateway extends Gateway {
@@ -24,17 +29,7 @@ class DirectDebitIDealGateway extends Gateway {
 	protected $payment_method = PaymentMethods::DIRECT_DEBIT_IDEAL;
 
 	/**
-	 * Get icon function, please note that this is not a MemberPress function.
-	 *
-	 * @since 1.0.2
-	 * @return string
-	 */
-	protected function get_icon() {
-		return plugins_url( 'images/sepa-ideal/icon-24x24.png', Plugin::$file );
-	}
-
-	/**
-	 * Get class alias name.
+	 * Get alias class name of this gateway.
 	 *
 	 * @return string
 	 */

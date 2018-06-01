@@ -35,7 +35,8 @@
 	},
 	"require": {
 		"php": "^5.3",
-		"wp-pay/core": "^2.0"
+		"wp-pay/core": "dev-develop as 2.1",
+		"pronamic/wp-money": "^1.0"
 	},
 	"require-dev": {
 		"php-coveralls/php-coveralls": "^1.0",
@@ -43,6 +44,9 @@
 		"wp-coding-standards/wpcs": "^0.14.1",
 		"phpmd/phpmd": "^2.4",
 		"phpunit/phpunit": "^4.8",
-		"wimg/php-compatibility": "^8.1"
+		"wimg/php-compatibility": "^8.1",
+		"wp-phpunit/wp-phpunit": "^4.9",
+		"johnpbloch/wordpress": "^4.9",
+		"wp-premium/memberpress-basic": "^1.3"
 	}
 }

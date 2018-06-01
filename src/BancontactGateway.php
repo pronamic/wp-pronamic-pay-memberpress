@@ -1,17 +1,23 @@
 <?php
+/**
+ * Bancontact/Mister Cash gateway
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2018 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
+ */
 
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 
+use Pronamic\WordPress\Pay\Plugin;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 
 /**
- * Title: WordPress pay MemberPress Bancontact/Mister Cash gateway
- * Description:
- * Copyright: Copyright (c) 2005 - 2018
- * Company: Pronamic
+ * WordPress pay MemberPress Bancontact/Mister Cash gateway
  *
  * @author  Remco Tolsma
- * @version 2.0.0
+ * @version 2.0.1
  * @since   1.0.0
  */
 class BancontactGateway extends Gateway {
@@ -22,6 +28,21 @@ class BancontactGateway extends Gateway {
 	 */
 	protected $payment_method = PaymentMethods::BANCONTACT;
 
+	/**
+	 * Get icon function, please not that this is not a MemberPress function.
+	 *
+	 * @since 2.0.1
+	 * @return string
+	 */
+	protected function get_icon() {
+		return plugins_url( 'images/bancontact/icon-32x32.png', Plugin::$file );
+	}
+
+	/**
+	 * Get alias class name of this gateway.
+	 *
+	 * @return string
+	 */
 	public function get_alias() {
 		return 'MeprMisterCashGateway';
 	}

@@ -1,4 +1,12 @@
 <?php
+/**
+ * Payment data
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2018 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
+ */
 
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 
@@ -13,64 +21,123 @@ use Pronamic\WordPress\Pay\Payments\Items;
 use Pronamic\WordPress\Pay\Subscriptions\Subscription;
 
 /**
- * Title: WordPress pay MemberPress payment data
- * Description:
- * Copyright: Copyright (c) 2005 - 2018
- * Company: Pronamic
+ * WordPress pay MemberPress payment data
  *
  * @author  Remco Tolsma
- * @version 2.0.0
+ * @version 2.0.1
  * @since   1.0.0
  */
 class PaymentData extends Pay_PaymentData {
 	/**
 	 * MemberPress transaction.
 	 *
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprTransaction.php
+	 *
 	 * @var MeprTransaction
 	 */
-	private $txn;
+	private $transaction;
 
 	/**
 	 * MemberPress transaction user.
 	 *
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprTransaction.php#L596-L600
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprUser.php
+	 *
 	 * @var MeprUser
 	 */
-	private $member;
+	private $user;
+
+	/**
+	 * MemberPress transaction subscription.
+	 *
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprTransaction.php#L602-L617
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprSubscription.php
+	 *
+	 * @var MeprSubscription|false
+	 */
+	private $subscription;
 
 	/**
 	 * Constructs and initialize payment data object.
+	 *
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprTransaction.php
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprTransaction.php#L596-L600
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/lib/MeprBaseGateway.php
+	 *
+	 * @param MeprTransaction $transaction MemberPress transaction object.
+	 * @param Gateway         $gateway     MemberPress gateway object.
 	 */
-	public function __construct( MeprTransaction $txn ) {
+	public function __construct( MeprTransaction $transaction, Gateway $gateway ) {
 		parent::__construct();
 
-		$this->txn       = $txn;
-		$this->member    = $this->txn->user();
-		$this->recurring = ( $txn->subscription() && $txn->subscription()->txn_count > 1 );
+		$this->transaction = $transaction;
+		$this->gateway     = $gateway;
+
+		$this->user = $transaction->user();
+
+		$this->subscription = $transaction->subscription();
+
+		$this->recurring = $this->subscription && $this->subscription->txn_count > 1;
 	}
 
+	/**
+	 * Get source slug.
+	 *
+	 * @link https://github.com/pronamic/wp-pronamic-ideal/blob/5.0.0/classes/Payments/AbstractPaymentData.php#L56-L61
+	 *
+	 * @return string
+	 */
 	public function get_source() {
 		return 'memberpress';
 	}
 
+	/**
+	 * Get source ID.
+	 *
+	 * @link https://github.com/pronamic/wp-pronamic-ideal/blob/5.0.0/classes/Payments/AbstractPaymentData.php#L63-L70
+	 *
+	 * @return string|int
+	 */
 	public function get_source_id() {
-		return $this->txn->id;
+		return $this->transaction->id;
 	}
 
+	/**
+	 * Get order ID.
+	 *
+	 * @link https://github.com/pronamic/wp-pronamic-ideal/blob/5.0.0/classes/Payments/AbstractPaymentData.php#L88-L93
+	 *
+	 * @return string|int
+	 */
 	public function get_order_id() {
-		return $this->txn->id;
+		return $this->transaction->id;
 	}
 
+	/**
+	 * Get description.
+	 *
+	 * @link https://github.com/pronamic/wp-pronamic-ideal/blob/5.0.0/classes/Payments/AbstractPaymentData.php#L81-L86
+	 *
+	 * @return string
+	 */
 	public function get_description() {
-		return $this->txn->product()->post_title;
+		return $this->transaction->product()->post_title;
 	}
 
+	/**
+	 * Get items.
+	 *
+	 * @link https://github.com/pronamic/wp-pronamic-ideal/blob/5.0.0/classes/Payments/AbstractPaymentData.php#L95-L100
+	 *
+	 * @return Items
+	 */
 	public function get_items() {
 		$items = new Items();
 
 		$item = new Item();
 		$item->setNumber( $this->get_order_id() );
 		$item->setDescription( $this->get_description() );
-		$item->setPrice( $this->txn->total );
+		$item->setPrice( $this->transaction->total );
 		$item->setQuantity( 1 );
 
 		$items->addItem( $item );
@@ -78,66 +145,194 @@ class PaymentData extends Pay_PaymentData {
 		return $items;
 	}
 
+	/**
+	 * Get currency alphabetic code.
+	 *
+	 * @link https://github.com/pronamic/wp-pronamic-ideal/blob/5.0.0/classes/Payments/AbstractPaymentData.php#L213-L218
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprOptions.php#L162-L163
+	 *
+	 * @return string
+	 */
 	public function get_currency_alphabetic_code() {
 		$mepr_options = MeprOptions::fetch();
 
-		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprOptions.php#L136-137
+		// @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprOptions.php#L136-137
 		return $mepr_options->currency_code;
 	}
 
+	/**
+	 * Get email.
+	 *
+	 * @link https://github.com/wp-premium/memberpress-business/blob/1.2.7/app/models/MeprUser.php#L1103-L1105
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprUser.php#L1229-L1231
+	 *
+	 * @return string
+	 */
 	public function get_email() {
-		if ( $this->member instanceof MeprUser ) {
-			return $this->member->user_email;
-		}
+		return $this->user->user_email;
 	}
 
+	/**
+	 * Get first name.
+	 *
+	 * @link https://github.com/wp-premium/memberpress-business/blob/1.2.7/app/models/MeprUser.php#L316-L319
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprUser.php#L376-L378
+	 *
+	 * @return string
+	 */
 	public function get_first_name() {
-		if ( $this->member instanceof MeprUser ) {
-			return $this->member->first_name;
-		}
+		return $this->user->first_name;
 	}
 
+	/**
+	 * Get last name.
+	 *
+	 * @link https://github.com/wp-premium/memberpress-business/blob/1.2.7/app/models/MeprUser.php#L316-L319
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprUser.php#L376-L378
+	 *
+	 * @return string
+	 */
 	public function get_last_name() {
-		if ( $this->member instanceof MeprUser ) {
-			return $this->member->last_name;
-		}
+		return $this->user->last_name;
 	}
 
+	/**
+	 * Get customer name.
+	 *
+	 * @link https://github.com/wp-premium/memberpress-business/blob/1.2.7/app/models/MeprUser.php#L316-L319
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprUser.php#L376-L378
+	 *
+	 * @return string
+	 */
 	public function get_customer_name() {
-		if ( $this->member instanceof MeprUser ) {
-			return $this->member->get_full_name();
-		}
+		return $this->user->get_full_name();
 	}
 
+	/**
+	 * Get address.
+	 *
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprUser.php#L1115-L1140
+	 *
+	 * @return string|null
+	 */
 	public function get_address() {
-		return '';
+		$value = $this->user->address( 'one', false );
+
+		if ( false === $value ) {
+			return null;
+		}
+
+		return $value;
 	}
 
+	/**
+	 * Get city.
+	 *
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprUser.php#L1115-L1140
+	 *
+	 * @return string|null
+	 */
 	public function get_city() {
-		return '';
+		$value = $this->user->address( 'city', false );
+
+		if ( false === $value ) {
+			return null;
+		}
+
+		return $value;
 	}
 
+	/**
+	 * Get ZIP.
+	 *
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprUser.php#L1115-L1140
+	 *
+	 * @return string|null
+	 */
 	public function get_zip() {
-		return '';
+		$value = $this->user->address( 'zip', false );
+
+		if ( false === $value ) {
+			return null;
+		}
+
+		return $value;
 	}
 
+	/**
+	 * Get country.
+	 *
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprUser.php#L1115-L1140
+	 *
+	 * @return string|null
+	 */
+	public function get_country() {
+		$value = $this->user->address( 'country', false );
+
+		if ( false === $value ) {
+			return null;
+		}
+
+		return $value;
+	}
+
+	/**
+	 * Get normal return URL.
+	 *
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/gateways/MeprPayPalStandardGateway.php#L1121
+	 *
+	 * @return string
+	 */
 	public function get_normal_return_url() {
 		$mepr_options = MeprOptions::fetch();
 
-		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprOptions.php#L768-782
-		return $mepr_options->thankyou_page_url( 'trans_num=' . $this->txn->id );
+		// @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprOptions.php#L768-782
+		// @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprOptions.php#L806-L835
+		return $mepr_options->thankyou_page_url( 'trans_num=' . $this->transaction->id );
 	}
 
+	/**
+	 * Get cancel URL.
+	 *
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/lib/MeprBaseGateway.php#L130-L135
+	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/gateways/MeprPayPalStandardGateway.php#L1128-L1152
+	 *
+	 * @return string
+	 */
 	public function get_cancel_url() {
-		return $this->get_normal_return_url();
+		if ( isset( $this->transaction->product_id ) && $this->transaction->product_id > 0 ) {
+			$product = new MeprProduct( $this->transaction->product_id );
+
+			$url = $this->gateway->message_page_url( $product, 'cancel' );
+
+			if ( false !== $url ) {
+				return $url;
+			}
+		}
+
+		$mepr_options = MeprOptions::fetch();
+
+		return $mepr_options->account_page_url( 'action=subscriptions' );
 	}
 
+	/**
+	 * Get success URL.
+	 *
+	 * @return string
+	 */
 	public function get_success_url() {
 		return $this->get_normal_return_url();
 	}
 
+	/**
+	 * Get error URL.
+	 *
+	 * @return string
+	 */
 	public function get_error_url() {
-		return $this->get_normal_return_url();
+		$mepr_options = MeprOptions::fetch();
+
+		return $mepr_options->account_page_url( 'action=subscriptions' );
 	}
 
 	/**
@@ -145,16 +340,16 @@ class PaymentData extends Pay_PaymentData {
 	 *
 	 * @since 2.0.0
 	 *
-	 * @return Subscription|bool
+	 * @return Subscription|false
 	 */
 	public function get_subscription() {
-		$product = $this->txn->product();
+		$product = $this->transaction->product();
 
 		if ( $product->is_one_time_payment() ) {
 			return false;
 		}
 
-		$mp_subscription = $this->txn->subscription();
+		$mp_subscription = $this->transaction->subscription();
 
 		if ( ! $mp_subscription ) {
 			return false;
@@ -177,7 +372,7 @@ class PaymentData extends Pay_PaymentData {
 		);
 
 		$subscription->set_amount( new Money(
-			$this->txn->total,
+			$this->transaction->total,
 			$this->get_currency_alphabetic_code()
 		) );
 
@@ -187,7 +382,7 @@ class PaymentData extends Pay_PaymentData {
 	/**
 	 * Get subscription source ID.
 	 *
-	 * @since 2.0.0
+	 * @since  2.0.0
 	 * @return string
 	 */
 	public function get_subscription_source_id() {
@@ -195,6 +390,10 @@ class PaymentData extends Pay_PaymentData {
 
 		if ( ! $subscription ) {
 			return false;
+		}
+
+		if ( ! empty( $this->transaction->subscription_id ) ) {
+			return $this->transaction->subscription_id;
 		}
 
 		return $this->get_source_id();
