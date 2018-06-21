@@ -19,6 +19,13 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	protected $payment_method;
 
 	/**
+	 * MemberPress transaction.
+	 *
+	 * @var MeprTransaction
+	 */
+	public $mp_txn;
+
+	/**
 	 * Constructs and initialize iDEAL gateway.
 	 */
 	public function __construct() {
@@ -146,7 +153,25 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L140-145
 	 */
 	public function record_subscription_payment() {
+		$transaction = $this->mp_txn;
 
+		$transaction->status = MeprTransaction::$complete_str;
+		$transaction->store();
+
+		$subscription = $transaction->subscription();
+
+		if ( $subscription ) {
+			if ( MeprSubscription::$active_str !== $subscription->status ) {
+				$subscription->status = MeprSubscription::$active_str;
+				$subscription->store();
+			}
+
+			$subscription->limit_payment_cycles();
+		}
+
+		$this->send_transaction_notices( $transaction, 'send_transaction_receipt_notices' );
+
+		return $transaction;
 	}
 
 	/**
@@ -155,11 +180,19 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L147-148
 	 */
 	public function record_payment_failure() {
-		global $transaction;
+		$transaction = $this->mp_txn;
 
 		// @see // @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprTransaction.php#L50
 		$transaction->status = MeprTransaction::$failed_str;
 		$transaction->store();
+
+		// Expire associated transactions for subscription
+		$subscription = $transaction->subscription();
+
+		if ( $subscription ) {
+			$subscription->expire_txns();
+			$subscription->store();
+		}
 
 		$this->send_transaction_notices( $transaction, 'send_failed_txn_notices' );
 
@@ -172,20 +205,12 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L124-129
 	 */
 	public function record_payment() {
-		global $transaction;
+		$transaction = $this->mp_txn;
 
-		/*
-		 * For some reasons the `send_product_welcome_notices` function accepts 1 or 3 arguments. We are not sure
-		 * if this is a difference in the 'Business' and 'Developer' edition or between version `1.2.4` and `1.2.7`.
-		 *
-		 * @see https://github.com/wp-premium/memberpress-developer/blob/1.2.4/app/lib/MeprBaseGateway.php#L596-L612
-		 * @see https://github.com/wp-premium/memberpress-business/blob/1.2.7/app/lib/MeprBaseGateway.php#L609-L619
-		 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprTransaction.php#L51
-		 */
 		$transaction->status = MeprTransaction::$complete_str;
 
 		// This will only work before maybe_cancel_old_sub is run
-		$upgrade = $transaction->is_upgrade();
+		$upgrade   = $transaction->is_upgrade();
 		$downgrade = $transaction->is_downgrade();
 
 		$transaction->maybe_cancel_old_sub();
@@ -199,6 +224,14 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Gateway extends MeprBaseRealGateway
 			$subscription->store();
 		}
 
+		/*
+		 * For some reasons the `send_product_welcome_notices` function accepts 1 or 3 arguments. We are not sure
+		 * if this is a difference in the 'Business' and 'Developer' edition or between version `1.2.4` and `1.2.7`.
+		 *
+		 * @see https://github.com/wp-premium/memberpress-developer/blob/1.2.4/app/lib/MeprBaseGateway.php#L596-L612
+		 * @see https://github.com/wp-premium/memberpress-business/blob/1.2.7/app/lib/MeprBaseGateway.php#L609-L619
+		 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprTransaction.php#L51
+		 */
 		$reflection = new ReflectionClass( 'MeprBaseRealGateway' );
 
 		if ( $reflection->hasMethod( 'send_product_welcome_notices' ) && 3 === $reflection->getMethod( 'send_product_welcome_notices' )->getNumberOfParameters() ) {

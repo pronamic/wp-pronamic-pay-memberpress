@@ -21,6 +21,17 @@ class Pronamic_WP_Pay_Extensions_MemberPress_CreditCardGateway extends Pronamic_
 		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L12-13
 		$this->name           = __( 'Credit Card', 'pronamic_ideal' );
 		$this->payment_method = Pronamic_WP_Pay_PaymentMethods::CREDIT_CARD;
+
+		$this->capabilities = array(
+			'process-payments',
+			//'process-refunds',
+			'create-subscriptions',
+			'cancel-subscriptions',
+			'update-subscriptions',
+			'suspend-subscriptions',
+			'resume-subscriptions',
+			'subscription-trial-payment'
+		);
 	}
 
 	public function get_alias() {

@@ -127,6 +127,38 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 
 		$transaction = new MeprTransaction( $transaction_id );
 
+		if ( $payment->get_recurring() ) {
+			$sub = $transaction->subscription();
+
+			if ( $payment->get_source_id() === $sub->first_txn_id ) {
+				// Same source ID and first transaction ID for recurring payment means we need to add a new transaction
+
+				$trans_num = $payment->get_transaction_id();
+
+				if ( empty( $trans_num ) ) {
+					$trans_num = uniqid();
+				}
+
+				// New transaction
+				$txn                  = new MeprTransaction();
+				$txn->created_at      = $payment->post->post_date_gmt;
+				$txn->user_id         = $sub->user_id;
+				$txn->product_id      = $sub->product_id;
+				$txn->coupon_id       = $sub->coupon_id;
+				$txn->gateway         = $transaction->gateway;
+				$txn->trans_num       = $trans_num;
+				$txn->txn_type        = MeprTransaction::$payment_str;
+				$txn->status          = MeprTransaction::$pending_str;
+				$txn->subscription_id = $sub->id;
+
+				$txn->store();
+
+				update_post_meta( $payment->get_id(), '_pronamic_payment_source_id', $txn->id );
+
+				$transaction = $txn;
+			}
+		}
+
 		$should_update = ! Pronamic_WP_Pay_Extensions_MemberPress_MemberPress::transaction_has_status( $transaction, array(
 			MeprTransaction::$failed_str,
 			MeprTransaction::$complete_str,
@@ -134,6 +166,8 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 
 		if ( $should_update ) {
 			$gateway = new Pronamic_WP_Pay_Extensions_MemberPress_Gateway();
+
+			$gateway->mp_txn = $transaction;
 
 			switch ( $payment->get_status() ) {
 				case Pronamic_WP_Pay_Statuses::CANCELLED :
@@ -143,7 +177,11 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 
 					break;
 				case Pronamic_WP_Pay_Statuses::SUCCESS :
-					$gateway->record_payment();
+					if ( $payment->get_recurring() ) {
+						$gateway->record_subscription_payment();
+					} else {
+						$gateway->record_payment();
+					}
 
 					break;
 				case Pronamic_WP_Pay_Statuses::OPEN :
