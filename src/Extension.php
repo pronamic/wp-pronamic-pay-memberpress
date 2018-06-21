@@ -37,16 +37,19 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 		add_filter( 'pronamic_payment_redirect_url_' . self::SLUG, array( __CLASS__, 'redirect_url' ), 10, 2 );
 		add_action( 'pronamic_payment_status_update_' . self::SLUG, array( __CLASS__, 'status_update' ), 10, 1 );
 
-		add_filter( 'pronamic_payment_source_text_' . self::SLUG,   array( __CLASS__, 'source_text' ), 10, 2 );
-		add_filter( 'pronamic_payment_source_description_' . self::SLUG,   array( __CLASS__, 'source_description' ), 10, 2 );
-		add_filter( 'pronamic_payment_source_url_' . self::SLUG,   array( __CLASS__, 'source_url' ), 10, 2 );
+		add_filter( 'pronamic_payment_source_text_' . self::SLUG, array( __CLASS__, 'source_text' ), 10, 2 );
+		add_filter( 'pronamic_payment_source_description_' . self::SLUG, array( __CLASS__, 'source_description' ), 10, 2 );
+		add_filter( 'pronamic_payment_source_url_' . self::SLUG, array( __CLASS__, 'source_url' ), 10, 2 );
 	}
 
 	/**
 	 * Gateway paths
 	 *
 	 * @param array $paths
+	 *
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprGatewayFactory.php#L48-50
+	 *
+	 * @return array
 	 */
 	public function gateway_paths( $paths ) {
 		$paths[] = dirname( __FILE__ ) . '/../gateways/';
@@ -79,8 +82,8 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 
 				$url = add_query_arg(
 					array(
-						'action' => 'payment_form',
-						'txn' => $transaction->trans_num,
+						'action'   => 'payment_form',
+						'txn'      => $transaction->trans_num,
 						'_wpnonce' => wp_create_nonce( 'mepr_payment_form' ),
 					),
 					$product->url()
@@ -198,9 +201,7 @@ class Pronamic_WP_Pay_Extensions_MemberPress_Extension {
 	 * Source column
 	 */
 	public static function source_text( $text, Pronamic_WP_Pay_Payment $payment ) {
-		$text  = '';
-
-		$text .= __( 'MemberPress', 'pronamic_ideal' ) . '<br />';
+		$text = __( 'MemberPress', 'pronamic_ideal' ) . '<br />';
 
 		$text .= sprintf(
 			'<a href="%s">%s</a>',
