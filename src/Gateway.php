@@ -205,7 +205,7 @@ class Gateway extends MeprBaseRealGateway {
 			$mepr_db = new MeprDb();
 
 			$wpdb->query( $wpdb->prepare(
-				"UPDATE %s SET expires_at = created_at WHERE subscription_id = %d AND txn_type = %s",
+				'UPDATE %s SET expires_at = created_at WHERE subscription_id = %d AND txn_type = %s',
 				$mepr_db->transactions,
 				$subscription->id,
 				MeprTransaction::$subscription_confirmation_str
