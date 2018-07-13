@@ -20,5 +20,8 @@
 
 		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
 		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
+
+        <exclude name="WordPress.VIP.DirectDatabaseQuery.DirectQuery" />
+        <exclude name="WordPress.VIP.DirectDatabaseQuery.NoCaching" />
 	</rule>
 </ruleset>
