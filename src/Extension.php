@@ -48,7 +48,10 @@ class Extension {
 	public function __construct() {
 		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprGatewayFactory.php#L48-50
 		add_filter( 'mepr-gateway-paths', array( $this, 'gateway_paths' ) );
-		add_filter( 'mepr_recurring_subscriptions_table_joins', array( $this, 'subscriptions_table_joins_nested_query_fix' ) );
+
+		if ( version_compare( MEPR_VERSION, '1.3.36', '<' ) ) {
+			add_filter( 'mepr_recurring_subscriptions_table_joins', array( $this, 'subscriptions_table_joins_nested_query_fix' ) );
+		}
 
 		add_filter( 'pronamic_payment_redirect_url_' . self::SLUG, array( __CLASS__, 'redirect_url' ), 10, 2 );
 		add_action( 'pronamic_payment_status_update_' . self::SLUG, array( __CLASS__, 'status_update' ), 10, 1 );
