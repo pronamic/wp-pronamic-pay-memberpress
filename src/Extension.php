@@ -49,7 +49,7 @@ class Extension {
 		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprGatewayFactory.php#L48-50
 		add_filter( 'mepr-gateway-paths', array( $this, 'gateway_paths' ) );
 
-		if ( version_compare( MEPR_VERSION, '1.3.36', '<' ) ) {
+		if ( defined( 'MEPR_VERSION' ) && version_compare( MEPR_VERSION, '1.3.36', '<' ) ) {
 			add_filter( 'mepr_recurring_subscriptions_table_joins', array( $this, 'subscriptions_table_joins_nested_query_fix' ) );
 		}
 
