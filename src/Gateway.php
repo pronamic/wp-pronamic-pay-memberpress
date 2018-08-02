@@ -11,6 +11,7 @@
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 
 use MeprBaseRealGateway;
+use MeprDb;
 use MeprEmailFactory;
 use MeprOptions;
 use MeprProduct;
@@ -185,6 +186,8 @@ class Gateway extends MeprBaseRealGateway {
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L140-145
 	 */
 	public function record_subscription_payment() {
+		global $wpdb;
+
 		$transaction = $this->mp_txn;
 
 		$transaction->status = MeprTransaction::$complete_str;
@@ -197,6 +200,15 @@ class Gateway extends MeprBaseRealGateway {
 				$subscription->status = MeprSubscription::$active_str;
 				$subscription->store();
 			}
+
+			// Expire subscription confirmations.
+			$mepr_db = new MeprDb();
+
+			$wpdb->query( $wpdb->prepare(
+				"UPDATE $mepr_db->transactions SET expires_at = created_at WHERE subscription_id = %d AND txn_type = %s",
+				$subscription->id,
+				MeprTransaction::$subscription_confirmation_str
+			) );
 
 			$subscription->limit_payment_cycles();
 		}

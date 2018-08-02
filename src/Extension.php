@@ -10,10 +10,12 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 
+use MeprDb;
 use MeprOptions;
 use MeprProduct;
-use MeprTransaction;
 use MeprSubscription;
+use MeprTransaction;
+use MeprUtils;
 use Pronamic\WordPress\Pay\Core\Statuses;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Subscriptions\Subscription;
@@ -46,6 +48,7 @@ class Extension {
 	public function __construct() {
 		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprGatewayFactory.php#L48-50
 		add_filter( 'mepr-gateway-paths', array( $this, 'gateway_paths' ) );
+		add_filter( 'mepr_recurring_subscriptions_table_joins', array( $this, 'subscriptions_table_joins_nested_query_fix' ) );
 
 		add_filter( 'pronamic_payment_redirect_url_' . self::SLUG, array( __CLASS__, 'redirect_url' ), 10, 2 );
 		add_action( 'pronamic_payment_status_update_' . self::SLUG, array( __CLASS__, 'status_update' ), 10, 1 );
@@ -74,6 +77,44 @@ class Extension {
 		$paths[] = dirname( __FILE__ ) . '/../gateways/';
 
 		return $paths;
+	}
+
+	/**
+	 * Fix to display correct active status and expiry date on account page,
+	 * based on the subscription confirmation transaction.
+	 *
+	 * @param array $joins SQL joins.
+	 *
+	 * @return array
+	 */
+	public function subscriptions_table_joins_nested_query_fix( $joins ) {
+		if ( ! is_array( $joins ) ) {
+			return $joins;
+		}
+
+		// Loop joins.
+		foreach ( $joins as &$join ) {
+			// Determine if fix needs to be applied.
+			if ( ! strpos( $join, 'expiring_txn' ) && ! strpos( $join, 't2.subscription_id=sub.id' ) ) {
+				continue;
+			}
+
+			$mepr_db = new MeprDb();
+
+			/**
+			 * Add `wp_mepr_subscriptions AS sub` to SELECT query, so `sub.id` in subquery
+			 * contains the subscription ID from outer query instead of NULL.
+			 *
+			 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprSubscription.php#L565
+			 */
+			$join = str_replace(
+				' AS t',
+				sprintf( ' AS t, %s AS sub', $mepr_db->subscriptions ),
+				$join
+			);
+		}
+
+		return $joins;
 	}
 
 	/**
@@ -194,6 +235,25 @@ class Extension {
 				$payment->set_meta( 'source_id', $transaction->id );
 
 				$payment->source_id = $transaction->id;
+
+				if ( MeprSubscription::$active_str === $subscription->status ) {
+					// New transaction and subscription confirmation.
+					$subscription_confirmation                  = new MeprTransaction();
+					$subscription_confirmation->created_at      = $payment->post->post_date_gmt;
+					$subscription_confirmation->user_id         = $first_txn->user_id;
+					$subscription_confirmation->product_id      = $first_txn->product_id;
+					$subscription_confirmation->coupon_id       = $first_txn->coupon_id;
+					$subscription_confirmation->gateway         = $first_txn->gateway;
+					$subscription_confirmation->trans_num       = $trans_num;
+					$subscription_confirmation->txn_type        = MeprTransaction::$subscription_confirmation_str;
+					$subscription_confirmation->status          = MeprTransaction::$confirmed_str;
+					$subscription_confirmation->subscription_id = $subscription->id;
+					$subscription_confirmation->expires_at      = MeprUtils::ts_to_mysql_date( strtotime( $payment->post->post_date_gmt ) + MeprUtils::days( 15 ), 'Y-m-d 23:59:59' );
+
+					$subscription_confirmation->set_subtotal( 0.00 );
+
+					$subscription_confirmation->store();
+				}
 			}
 		}
 
