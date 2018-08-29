@@ -10,10 +10,12 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 
+use MeprDb;
 use MeprOptions;
 use MeprProduct;
-use MeprTransaction;
 use MeprSubscription;
+use MeprTransaction;
+use MeprUtils;
 use Pronamic\WordPress\Pay\Core\Statuses;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Subscriptions\Subscription;
@@ -22,7 +24,7 @@ use Pronamic\WordPress\Pay\Subscriptions\Subscription;
  * WordPress pay MemberPress extension
  *
  * @author  Remco Tolsma
- * @version 2.0.1
+ * @version 2.0.2
  * @since   1.0.0
  */
 class Extension {
@@ -194,6 +196,35 @@ class Extension {
 				$payment->set_meta( 'source_id', $transaction->id );
 
 				$payment->source_id = $transaction->id;
+
+				if ( MeprSubscription::$active_str === $subscription->status ) {
+					/*
+					 * We create a 'confirmed' 'subscription_confirmation'
+					 * transaction for a grace period of 15 days.
+					 *
+					 * Transactions of type "subscription_confirmation" with a
+					 * status of "confirmed" are hidden in the UI, and are used
+					 * as a way to provide free trial periods and the 24 hour
+					 * grace period on a recurring subscription signup.
+					 *
+					 * @link https://docs.memberpress.com/article/219-where-is-data-stored.
+					 */
+					$subscription_confirmation                  = new MeprTransaction();
+					$subscription_confirmation->created_at      = $payment->post->post_date_gmt;
+					$subscription_confirmation->user_id         = $first_txn->user_id;
+					$subscription_confirmation->product_id      = $first_txn->product_id;
+					$subscription_confirmation->coupon_id       = $first_txn->coupon_id;
+					$subscription_confirmation->gateway         = $first_txn->gateway;
+					$subscription_confirmation->trans_num       = $trans_num;
+					$subscription_confirmation->txn_type        = MeprTransaction::$subscription_confirmation_str;
+					$subscription_confirmation->status          = MeprTransaction::$confirmed_str;
+					$subscription_confirmation->subscription_id = $subscription->id;
+					$subscription_confirmation->expires_at      = MeprUtils::ts_to_mysql_date( strtotime( $payment->post->post_date_gmt ) + MeprUtils::days( 15 ), 'Y-m-d 23:59:59' );
+
+					$subscription_confirmation->set_subtotal( 0.00 );
+
+					$subscription_confirmation->store();
+				}
 			}
 		}
 

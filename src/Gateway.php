@@ -11,6 +11,7 @@
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 
 use MeprBaseRealGateway;
+use MeprDb;
 use MeprEmailFactory;
 use MeprOptions;
 use MeprProduct;
@@ -30,7 +31,7 @@ use ReflectionClass;
  * WordPress pay MemberPress gateway
  *
  * @author  Remco Tolsma
- * @version 2.0.1
+ * @version 2.0.2
  * @since   1.0.0
  */
 class Gateway extends MeprBaseRealGateway {
@@ -52,7 +53,6 @@ class Gateway extends MeprBaseRealGateway {
 	 * Constructs and initialize iDEAL gateway.
 	 */
 	public function __construct() {
-
 		// Set the name of this gateway.
 		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L12-13.
 		$this->name = __( 'Pronamic', 'pronamic_ideal' );
@@ -197,6 +197,8 @@ class Gateway extends MeprBaseRealGateway {
 				$subscription->status = MeprSubscription::$active_str;
 				$subscription->store();
 			}
+
+			$subscription->expire_confirmation_txn();
 
 			$subscription->limit_payment_cycles();
 		}
