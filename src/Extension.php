@@ -49,10 +49,6 @@ class Extension {
 		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprGatewayFactory.php#L48-50
 		add_filter( 'mepr-gateway-paths', array( $this, 'gateway_paths' ) );
 
-		if ( defined( 'MEPR_VERSION' ) && version_compare( MEPR_VERSION, '1.3.36', '<' ) ) {
-			add_filter( 'mepr_recurring_subscriptions_table_joins', array( $this, 'subscriptions_table_joins_nested_query_fix' ) );
-		}
-
 		add_filter( 'pronamic_payment_redirect_url_' . self::SLUG, array( __CLASS__, 'redirect_url' ), 10, 2 );
 		add_action( 'pronamic_payment_status_update_' . self::SLUG, array( __CLASS__, 'status_update' ), 10, 1 );
 
@@ -80,44 +76,6 @@ class Extension {
 		$paths[] = dirname( __FILE__ ) . '/../gateways/';
 
 		return $paths;
-	}
-
-	/**
-	 * Fix to display correct active status and expiry date on account page,
-	 * based on the subscription confirmation transaction.
-	 *
-	 * @param array $joins SQL joins.
-	 *
-	 * @return array
-	 */
-	public function subscriptions_table_joins_nested_query_fix( $joins ) {
-		if ( ! is_array( $joins ) ) {
-			return $joins;
-		}
-
-		// Loop joins.
-		foreach ( $joins as &$join ) {
-			// Determine if fix needs to be applied.
-			if ( ! strpos( $join, 'expiring_txn' ) && ! strpos( $join, 't2.subscription_id=sub.id' ) ) {
-				continue;
-			}
-
-			$mepr_db = new MeprDb();
-
-			/**
-			 * Add `wp_mepr_subscriptions AS sub` to SELECT query, so `sub.id` in subquery
-			 * contains the subscription ID from outer query instead of NULL.
-			 *
-			 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprSubscription.php#L565
-			 */
-			$join = str_replace(
-				' AS t',
-				sprintf( ' AS t, %s AS sub', $mepr_db->subscriptions ),
-				$join
-			);
-		}
-
-		return $joins;
 	}
 
 	/**
