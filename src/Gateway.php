@@ -53,7 +53,6 @@ class Gateway extends MeprBaseRealGateway {
 	 * Constructs and initialize iDEAL gateway.
 	 */
 	public function __construct() {
-
 		// Set the name of this gateway.
 		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L12-13.
 		$this->name = __( 'Pronamic', 'pronamic_ideal' );
@@ -201,15 +200,7 @@ class Gateway extends MeprBaseRealGateway {
 				$subscription->store();
 			}
 
-			// Expire subscription confirmations.
-			$mepr_db = new MeprDb();
-
-			$wpdb->query( $wpdb->prepare(
-				'UPDATE %s SET expires_at = created_at WHERE subscription_id = %d AND txn_type = %s',
-				$mepr_db->transactions,
-				$subscription->id,
-				MeprTransaction::$subscription_confirmation_str
-			) );
+			$subscription->expire_confirmation_txn();
 
 			$subscription->limit_payment_cycles();
 		}
