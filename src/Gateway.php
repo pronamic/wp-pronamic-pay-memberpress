@@ -185,8 +185,6 @@ class Gateway extends MeprBaseRealGateway {
 	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L140-145
 	 */
 	public function record_subscription_payment() {
-		global $wpdb;
-
 		$transaction = $this->mp_txn;
 
 		$transaction->status = MeprTransaction::$complete_str;
