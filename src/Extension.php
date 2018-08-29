@@ -198,7 +198,17 @@ class Extension {
 				$payment->source_id = $transaction->id;
 
 				if ( MeprSubscription::$active_str === $subscription->status ) {
-					// New transaction and subscription confirmation.
+					/*
+					 * We create a 'confirmed' 'subscription_confirmation'
+					 * transaction for a grace period of 15 days.
+					 *
+					 * Transactions of type "subscription_confirmation" with a
+					 * status of "confirmed" are hidden in the UI, and are used
+					 * as a way to provide free trial periods and the 24 hour
+					 * grace period on a recurring subscription signup.
+					 *
+					 * @link https://docs.memberpress.com/article/219-where-is-data-stored.
+					 */
 					$subscription_confirmation                  = new MeprTransaction();
 					$subscription_confirmation->created_at      = $payment->post->post_date_gmt;
 					$subscription_confirmation->user_id         = $first_txn->user_id;
