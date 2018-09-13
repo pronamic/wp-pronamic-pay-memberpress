@@ -105,6 +105,9 @@ class Extension {
 					array(
 						'action'   => 'payment_form',
 						'txn'      => $transaction->trans_num,
+						'errors'   => array(
+							__( 'Payment failed. Please try again.', 'pronamic_ideal' )
+						),
 						'_wpnonce' => wp_create_nonce( 'mepr_payment_form' ),
 					),
 					$product->url()
