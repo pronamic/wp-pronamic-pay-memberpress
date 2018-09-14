@@ -24,7 +24,7 @@ use Pronamic\WordPress\Pay\Subscriptions\Subscription;
  * WordPress pay MemberPress payment data
  *
  * @author  Remco Tolsma
- * @version 2.0.1
+ * @version 2.0.3
  * @since   1.0.0
  */
 class PaymentData extends Pay_PaymentData {
@@ -371,10 +371,12 @@ class PaymentData extends Pay_PaymentData {
 			$this->get_description()
 		);
 
-		$subscription->set_amount( new Money(
-			$this->transaction->total,
-			$this->get_currency_alphabetic_code()
-		) );
+		$subscription->set_amount(
+			new Money(
+				$this->transaction->total,
+				$this->get_currency_alphabetic_code()
+			)
+		);
 
 		return $subscription;
 	}

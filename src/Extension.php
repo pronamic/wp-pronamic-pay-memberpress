@@ -24,7 +24,7 @@ use Pronamic\WordPress\Pay\Subscriptions\Subscription;
  * WordPress pay MemberPress extension
  *
  * @author  Remco Tolsma
- * @version 2.0.2
+ * @version 2.0.3
  * @since   1.0.0
  */
 class Extension {
@@ -105,6 +105,9 @@ class Extension {
 					array(
 						'action'   => 'payment_form',
 						'txn'      => $transaction->trans_num,
+						'errors'   => array(
+							__( 'Payment failed. Please try again.', 'pronamic_ideal' ),
+						),
 						'_wpnonce' => wp_create_nonce( 'mepr_payment_form' ),
 					),
 					$product->url()
@@ -228,10 +231,13 @@ class Extension {
 			}
 		}
 
-		$should_update = ! MemberPress::transaction_has_status( $transaction, array(
-			MeprTransaction::$failed_str,
-			MeprTransaction::$complete_str,
-		) );
+		$should_update = ! MemberPress::transaction_has_status(
+			$transaction,
+			array(
+				MeprTransaction::$failed_str,
+				MeprTransaction::$complete_str,
+			)
+		);
 
 		if ( $should_update ) {
 			$gateway = new Gateway();
@@ -302,11 +308,14 @@ class Extension {
 
 		$text .= sprintf(
 			'<a href="%s">%s</a>',
-			add_query_arg( array(
-				'page'   => 'memberpress-trans',
-				'action' => 'edit',
-				'id'     => $payment->source_id,
-			), admin_url( 'admin.php' ) ),
+			add_query_arg(
+				array(
+					'page'   => 'memberpress-trans',
+					'action' => 'edit',
+					'id'     => $payment->source_id,
+				),
+				admin_url( 'admin.php' )
+			),
 			/* translators: %s: payment source id */
 			sprintf( __( 'Transaction %s', 'pronamic_ideal' ), $payment->source_id )
 		);
@@ -327,10 +336,13 @@ class Extension {
 
 		$text .= sprintf(
 			'<a href="%s">%s</a>',
-			add_query_arg( array(
-				'page'         => 'memberpress-subscriptions',
-				'subscription' => $subscription->source_id,
-			), admin_url( 'admin.php' ) ),
+			add_query_arg(
+				array(
+					'page'         => 'memberpress-subscriptions',
+					'subscription' => $subscription->source_id,
+				),
+				admin_url( 'admin.php' )
+			),
 			/* translators: %s: payment source id */
 			sprintf( __( 'Subscription %s', 'pronamic_ideal' ), $subscription->source_id )
 		);
@@ -371,11 +383,14 @@ class Extension {
 	 * @return string
 	 */
 	public static function source_url( $url, Payment $payment ) {
-		$url = add_query_arg( array(
-			'page'   => 'memberpress-trans',
-			'action' => 'edit',
-			'id'     => $payment->source_id,
-		), admin_url( 'admin.php' ) );
+		$url = add_query_arg(
+			array(
+				'page'   => 'memberpress-trans',
+				'action' => 'edit',
+				'id'     => $payment->source_id,
+			),
+			admin_url( 'admin.php' )
+		);
 
 		return $url;
 	}
@@ -389,10 +404,13 @@ class Extension {
 	 * @return string
 	 */
 	public static function subscription_source_url( $url, Subscription $subscription ) {
-		$url = add_query_arg( array(
-			'page'         => 'memberpress-subscriptions',
-			'subscription' => $subscription->source_id,
-		), admin_url( 'admin.php' ) );
+		$url = add_query_arg(
+			array(
+				'page'         => 'memberpress-subscriptions',
+				'subscription' => $subscription->source_id,
+			),
+			admin_url( 'admin.php' )
+		);
 
 		return $url;
 	}
