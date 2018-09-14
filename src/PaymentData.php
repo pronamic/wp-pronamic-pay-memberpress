@@ -371,10 +371,12 @@ class PaymentData extends Pay_PaymentData {
 			$this->get_description()
 		);
 
-		$subscription->set_amount( new Money(
-			$this->transaction->total,
-			$this->get_currency_alphabetic_code()
-		) );
+		$subscription->set_amount(
+			new Money(
+				$this->transaction->total,
+				$this->get_currency_alphabetic_code()
+			)
+		);
 
 		return $subscription;
 	}
