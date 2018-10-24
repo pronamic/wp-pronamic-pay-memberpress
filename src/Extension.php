@@ -191,7 +191,7 @@ class Extension {
 				$transaction->status          = MeprTransaction::$pending_str;
 				$transaction->subscription_id = $subscription->id;
 
-				$transaction->set_gross( $payment->get_amount()->get_amount() );
+				$transaction->set_gross( $payment->get_total_amount()->get_amount() );
 
 				$transaction->store();
 
