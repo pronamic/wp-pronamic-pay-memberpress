@@ -247,15 +247,22 @@ class Gateway extends MeprBaseRealGateway {
 		$upgrade   = $transaction->is_upgrade();
 		$downgrade = $transaction->is_downgrade();
 
-		$transaction->maybe_cancel_old_sub();
-		$transaction->store();
+		$event_transaction = $transaction->maybe_cancel_old_sub();
 
 		$subscription = $transaction->subscription();
 
 		if ( $subscription ) {
+			$event_subscription = $subscription->maybe_cancel_old_sub();
+
 			$subscription->status     = MeprSubscription::$active_str;
 			$subscription->created_at = $transaction->created_at;
 			$subscription->store();
+		}
+
+		$transaction->store();
+
+		if ( false === $event_transaction && false !== $event_subscription ) {
+			$event_transaction = $event_subscription;
 		}
 
 		/*
@@ -294,15 +301,22 @@ class Gateway extends MeprBaseRealGateway {
 		}
 
 		// Send upgrade/downgrade notices.
-		if ( $upgrade ) {
-			$this->upgraded_sub( $transaction );
-			$this->send_transaction_notices( $transaction, 'send_upgraded_txn_notices' );
-		} elseif ( $downgrade ) {
-			$this->downgraded_sub( $transaction );
-			$this->send_transaction_notices( $transaction, 'send_downgraded_txn_notices' );
+		$product = $transaction->product();
+
+		if ( 'lifetime' === $product->period_type ) {
+			if ( $upgrade ) {
+				$this->upgraded_sub( $transaction, $event_transaction );
+				$this->send_transaction_notices( $transaction, 'send_upgraded_txn_notices' );
+			} elseif ( $downgrade ) {
+				$this->downgraded_sub( $transaction, $event_transaction );
+				$this->send_transaction_notices( $transaction, 'send_downgraded_txn_notices' );
+			} else {
+				$this->new_sub( $transaction );
+			}
+
+			$this->send_transaction_notices( $transaction, 'send_signup_notices' );
 		}
 
-		$this->send_transaction_notices( $transaction, 'send_signup_notices' );
 		$this->send_transaction_notices( $transaction, 'send_transaction_receipt_notices' );
 
 		return $transaction;
