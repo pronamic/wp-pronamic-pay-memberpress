@@ -257,13 +257,13 @@ class Gateway extends MeprBaseRealGateway {
 			$subscription->status     = MeprSubscription::$active_str;
 			$subscription->created_at = $transaction->created_at;
 			$subscription->store();
+
+			if ( false === $event_transaction && false !== $event_subscription ) {
+				$event_transaction = $event_subscription;
+			}
 		}
 
 		$transaction->store();
-
-		if ( false === $event_transaction && false !== $event_subscription ) {
-			$event_transaction = $event_subscription;
-		}
 
 		/*
 		 * For some reasons the `send_product_welcome_notices` function accepts 1 or 3 arguments. We are not sure
