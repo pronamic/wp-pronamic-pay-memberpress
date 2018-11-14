@@ -642,6 +642,20 @@ class Gateway extends MeprBaseRealGateway {
 
 		$payment = Plugin::start( $config_id, $gateway, $data, $this->payment_method );
 
+		/*
+		 * Update transaction subtotal.
+		 *
+		 * Notes:
+		 * - MemberPress also uses trial amount for prorated upgrade/downgrade
+		 * - Not updated BEFORE payment start, as transaction total amount is used for subscription amount.
+		 */
+		$subscription = $txn->subscription();
+
+		if ( $subscription && $subscription->in_trial() ) {
+			$txn->set_subtotal( $subscription->trial_amount );
+			$txn->store();
+		}
+
 		$error = $gateway->get_error();
 
 		if ( ! is_wp_error( $error ) ) {
