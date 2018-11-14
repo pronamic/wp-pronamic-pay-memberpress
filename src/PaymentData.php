@@ -134,10 +134,24 @@ class PaymentData extends Pay_PaymentData {
 	public function get_items() {
 		$items = new Items();
 
+		/*
+		 * Price.
+		 *
+		 * Note: MemberPress uses trial amount for prorated upgrade/downgrade too.
+		 */
+		$price = $this->transaction->total;
+
+		$subscription = $this->transaction->subscription();
+
+		if ( $subscription && $subscription->in_trial() ) {
+			$price = $subscription->trial_amount;
+		}
+
+		// Item.
 		$item = new Item();
 		$item->set_number( $this->get_order_id() );
 		$item->set_description( $this->get_description() );
-		$item->set_price( $this->transaction->total );
+		$item->set_price( $price );
 		$item->set_quantity( 1 );
 
 		$items->addItem( $item );
