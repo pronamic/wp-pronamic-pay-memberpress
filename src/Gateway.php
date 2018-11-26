@@ -313,10 +313,9 @@ class Gateway extends MeprBaseRealGateway {
 			} else {
 				$this->new_sub( $transaction );
 			}
-
-			$this->send_transaction_notices( $transaction, 'send_signup_notices' );
 		}
 
+		$this->send_transaction_notices( $transaction, 'send_signup_notices' );
 		$this->send_transaction_notices( $transaction, 'send_transaction_receipt_notices' );
 
 		return $transaction;
