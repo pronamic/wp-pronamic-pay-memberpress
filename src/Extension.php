@@ -24,7 +24,7 @@ use Pronamic\WordPress\Pay\Subscriptions\Subscription;
  * WordPress pay MemberPress extension
  *
  * @author  Remco Tolsma
- * @version 2.0.3
+ * @version 2.0.4
  * @since   1.0.0
  */
 class Extension {

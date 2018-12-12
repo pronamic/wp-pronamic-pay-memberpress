@@ -7,6 +7,10 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [2.0.4] - 2018-12-12
+- Add support for trials with the same length as subscription period.
+- Improve upgrading/downgrading.
+
 ## [2.0.3] - 2018-09-14
 - Added error message on registration form for failed payment.
 
@@ -53,6 +57,7 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 - First release.
 
 [unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.3...HEAD
+[2.0.4]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.3...2.0.4
 [2.0.3]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.2...2.0.3
 [2.0.2]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.1...2.0.2
 [2.0.1]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.0...2.0.1
