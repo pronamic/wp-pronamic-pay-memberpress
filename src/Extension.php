@@ -24,7 +24,7 @@ use Pronamic\WordPress\Pay\Subscriptions\Subscription;
  * WordPress pay MemberPress extension
  *
  * @author  Remco Tolsma
- * @version 2.0.3
+ * @version 2.0.4
  * @since   1.0.0
  */
 class Extension {
@@ -46,7 +46,7 @@ class Extension {
 	 * Constructs and initializes the MemberPress extension.
 	 */
 	public function __construct() {
-		// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprGatewayFactory.php#L48-50
+		// @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprGatewayFactory.php#L48-50
 		add_filter( 'mepr-gateway-paths', array( $this, 'gateway_paths' ) );
 
 		add_filter( 'pronamic_payment_redirect_url_' . self::SLUG, array( __CLASS__, 'redirect_url' ), 10, 2 );
@@ -67,7 +67,7 @@ class Extension {
 	/**
 	 * Gateway paths.
 	 *
-	 * @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprGatewayFactory.php#L48-50
+	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprGatewayFactory.php#L48-50
 	 *
 	 * @param array $paths Array with gateway paths.
 	 * @return array
@@ -115,7 +115,7 @@ class Extension {
 
 				break;
 			case Statuses::SUCCESS:
-				// @see https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprOptions.php#L768-782
+				// @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprOptions.php#L768-782
 				$mepr_options = MeprOptions::fetch();
 
 				$product         = new MeprProduct( $transaction->product_id );
@@ -141,7 +141,7 @@ class Extension {
 	/**
 	 * Update lead status of the specified payment.
 	 *
-	 * @see https://github.com/Charitable/Charitable/blob/1.1.4/includes/gateways/class-charitable-gateway-paypal.php#L229-L357
+	 * @link https://github.com/Charitable/Charitable/blob/1.1.4/includes/gateways/class-charitable-gateway-paypal.php#L229-L357
 	 *
 	 * @param Payment $payment The payment whose status is updated.
 	 */
@@ -191,7 +191,7 @@ class Extension {
 				$transaction->status          = MeprTransaction::$pending_str;
 				$transaction->subscription_id = $subscription->id;
 
-				$transaction->set_gross( $payment->get_amount()->get_amount() );
+				$transaction->set_gross( $payment->get_total_amount()->get_value() );
 
 				$transaction->store();
 
