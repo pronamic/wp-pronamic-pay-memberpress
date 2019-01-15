@@ -62,6 +62,64 @@ class Extension {
 		add_action( 'mepr_subscription_pre_delete', array( $this, 'subscription_pre_delete' ), 10, 1 );
 
 		add_action( 'mepr_subscription_transition_status', array( $this, 'memberpress_subscription_transition_status' ), 10, 3 );
+
+		add_filter( 'mepr_view_get_string', function( $view, $slug, $vars ) {
+			if ( '/admin/transactions/trans_form' !== $slug ) {
+				return $view;
+			}
+
+			$view .= '<tr valign="top">
+  <th scope="row"><label for="trans_num">Test*:</label></th>
+  <td>
+    <input type="text" name="trans_num" id="trans_num" value="tr_xQfb8uavMT" class="regular-text" />
+    <p class="description">A unique Invoice ID for this Transaction. Only edit this if you absolutely have to.</p>
+  </td>
+</tr>';
+
+			return $view;
+		}, 10, 3 );
+
+		// @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/controllers/MeprTransactionsCtrl.php#L17-L21
+		$hook = 'memberpress_page_memberpress-trans';
+
+		add_filter( 'manage_' .$hook . '_columns', function( $columns ) {
+			$columns['pronamic_payment'] = __( 'Pronamic Payment', 'pronamic_ideal' );
+
+			return $columns;
+		}, 10 );
+
+		add_filter( 'mepr_view_get_string', function( $view, $slug, $vars ) {
+			if ( '/admin/transactions/row' !== $slug ) {
+				return $view;
+			}
+
+			$new_column = '<td>Test</dt>';
+
+			$view = str_replace( '</tr>', $new_column . '</tr>', $view );
+
+			return $view;
+		}, 10, 3 );
+
+		// @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/controllers/MeprSubscriptionsCtrl.php#L19-L26
+		$hook = 'memberpress_page_memberpress-subscriptions';
+
+		add_filter( 'manage_' .$hook . '_columns', function( $columns ) {
+			$columns['pronamic_subscription'] = __( 'Pronamic Subscription', 'pronamic_ideal' );
+
+			return $columns;
+		}, 10 );
+
+		add_filter( 'mepr_view_get_string', function( $view, $slug, $vars ) {
+			if ( '/admin/subscriptions/row' !== $slug ) {
+				return $view;
+			}
+
+			$new_column = '<td>Test</dt>';
+
+			$view = str_replace( '</tr>', $new_column . '</tr>', $view );
+
+			return $view;
+		}, 10, 3 );
 	}
 
 	/**
