@@ -1,6 +1,6 @@
 <?php
 /**
- * IDeal gateway
+ * PayPal gateway
  *
  * @author    Pronamic <info@pronamic.eu>
  * @copyright 2005-2019 Pronamic
@@ -8,25 +8,25 @@
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
 
-namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
+namespace Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways;
 
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Plugin;
 
 /**
- * WordPress pay MemberPress iDEAL gateway
+ * WordPress pay MemberPress PayPal gateway
  *
- * @author  Remco Tolsma
+ * @author  Reüel van der Steege
  * @version 2.0.1
- * @since   1.0.0
+ * @since   1.0.5
  */
-class IDealGateway extends Gateway {
+class PayPalGateway extends Gateway {
 	/**
 	 * Payment method.
 	 *
 	 * @var string
 	 */
-	protected $payment_method = PaymentMethods::IDEAL;
+	protected $payment_method = PaymentMethods::PAYPAL;
 
 	/**
 	 * Get icon function, please not that this is not a MemberPress function.
@@ -35,7 +35,7 @@ class IDealGateway extends Gateway {
 	 * @return string
 	 */
 	protected function get_icon() {
-		return plugins_url( 'images/ideal/icon-32x32.png', Plugin::$file );
+		return plugins_url( 'images/paypal/icon-32x32.png', Plugin::$file );
 	}
 
 	/**
@@ -44,6 +44,6 @@ class IDealGateway extends Gateway {
 	 * @return string
 	 */
 	public function get_alias() {
-		return 'MeprIDealGateway';
+		return 'MeprPronamicPayPalGateway';
 	}
 }

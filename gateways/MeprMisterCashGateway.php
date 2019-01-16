@@ -8,4 +8,4 @@
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
 
-class_alias( 'Pronamic\WordPress\Pay\Extensions\MemberPress\BancontactGateway', 'MeprMisterCashGateway' );
+class_alias( 'Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways\BancontactGateway', 'MeprMisterCashGateway' );

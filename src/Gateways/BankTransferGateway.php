@@ -1,6 +1,6 @@
 <?php
 /**
- * Direct Debit mandate via iDEAL gateway
+ * Bank transfer gateway
  *
  * @author    Pronamic <info@pronamic.eu>
  * @copyright 2005-2019 Pronamic
@@ -8,25 +8,24 @@
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
 
-namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
+namespace Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways;
 
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
-use Pronamic\WordPress\Pay\Plugin;
 
 /**
- * WordPress pay MemberPress Direct Debit mandate via iDEAL gateway
+ * WordPress pay MemberPress bank transfer gateway
  *
- * @author  Reüel van der Steege
+ * @author  Remco Tolsma
  * @version 2.0.1
- * @since   2.0.0
+ * @since   1.0.0
  */
-class DirectDebitIDealGateway extends Gateway {
+class BankTransferGateway extends Gateway {
 	/**
 	 * Payment method.
 	 *
 	 * @var string
 	 */
-	protected $payment_method = PaymentMethods::DIRECT_DEBIT_IDEAL;
+	protected $payment_method = PaymentMethods::BANK_TRANSFER;
 
 	/**
 	 * Get alias class name of this gateway.
@@ -34,6 +33,6 @@ class DirectDebitIDealGateway extends Gateway {
 	 * @return string
 	 */
 	public function get_alias() {
-		return 'MeprDirectDebitIDealGateway';
+		return 'MeprBankTransferGateway';
 	}
 }
