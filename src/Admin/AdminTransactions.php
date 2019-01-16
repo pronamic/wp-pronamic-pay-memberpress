@@ -50,7 +50,6 @@ class AdminTransactions {
 	 * @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/controllers/MeprTransactionsCtrl.php#L479-L486
 	 * @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/views/admin/transactions/list.php
 	 * @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/views/admin/transactions/row.php
-	 * @link https://docs.gravityforms.com/gform_submit_button/#5-append-custom-css-classes-to-the-button
 	 *
 	 * @param string $view View.
 	 * @param string $slug Slug.
@@ -61,6 +60,14 @@ class AdminTransactions {
 		if ( '/admin/transactions/row' !== $slug ) {
 			return $view;
 		}
+
+		/*
+		 * Unfortunately there is currently no filter to extend the transactions table row.
+		 * @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/views/admin/transactions/row.php
+		 *
+		 * If we want to add a custom column we should extend the HTML/DOM.
+		 * @link https://docs.gravityforms.com/gform_submit_button/#5-append-custom-css-classes-to-the-button
+		 */
 
 		return $view;
 	}
