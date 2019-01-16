@@ -24,7 +24,10 @@ use MeprView;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Core\Statuses;
 use Pronamic\WordPress\Pay\Core\Util as Core_Util;
+use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Plugin;
+use Pronamic\WordPress\Pay\Extensions\MemberPress\Pronamic;
+use Pronamic\WordPress\Pay\Extensions\MemberPress\MemberPress;
 use ReflectionClass;
 
 /**
@@ -636,10 +639,13 @@ class Gateway extends MeprBaseRealGateway {
 			return;
 		}
 
-		// Data.
-		$data = new PaymentData( $txn, $this );
+		// Create Pronamic payment.
+		$payment = Pronamic::get_payment( $txn );
 
-		$payment = Plugin::start( $config_id, $gateway, $data, $this->payment_method );
+		$payment->config_id = $this->settings->config_id;
+		$payment->method    = $this->payment_method;
+
+		$payment = Plugin::start_payment( $payment );
 
 		/*
 		 * Update transaction subtotal.
