@@ -61,7 +61,10 @@ class Gateway extends MeprBaseRealGateway {
 		$this->name = __( 'Pronamic', 'pronamic_ideal' );
 
 		if ( ! empty( $this->payment_method ) ) {
-			$this->name = PaymentMethods::get_name( $this->payment_method );
+			$this->name = sprintf(
+				__( 'Pronamic - %s', 'pronamic_ideal' ),
+				PaymentMethods::get_name( $this->payment_method )
+			);
 		}
 
 		// Set the default settings.
