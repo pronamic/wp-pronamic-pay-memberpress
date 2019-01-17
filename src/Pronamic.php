@@ -184,7 +184,7 @@ class Pronamic {
 		$subscription->interval        = $memberpress_product->period;
 		$subscription->interval_period = Core_Util::to_period( $memberpress_product->period_type );
 
-		$subscription->set_amount(
+		$subscription->set_total_amount(
 			new Money(
 				$memberpress_transaction->total,
 				MemberPress::get_currency()
