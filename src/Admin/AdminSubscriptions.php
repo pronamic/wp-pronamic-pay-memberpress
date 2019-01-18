@@ -55,7 +55,7 @@ class AdminSubscriptions {
 	/**
 	 * Get subscriptions map.
 	 *
-	 * @param object $table
+	 * @param object $table Table.
 	 * @return array
 	 */
 	private function get_subscriptions_map( $table ) {
@@ -121,9 +121,9 @@ class AdminSubscriptions {
 	 * @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/views/admin/subscriptions/row.php
 	 *
 	 * @param string $column_name Column name.
-	 * @param $rec
-	 * @param $table
-	 * @param $attributes
+	 * @param object $rec         Record.
+	 * @param object $table       Table.
+	 * @param string $attributes  Attributes.
 	 */
 	public function admin_subscriptions_cell( $column_name, $rec, $table, $attributes ) {
 		if ( 'pronamic_subscription' !== $column_name ) {
@@ -132,7 +132,7 @@ class AdminSubscriptions {
 
 		$map = $this->get_subscriptions_map( $table );
 
-		printf(
+		printf( // WPCS: XSS ok.
 			'<td %s>',
 			$attributes
 		);
