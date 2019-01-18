@@ -62,6 +62,7 @@ class Gateway extends MeprBaseRealGateway {
 
 		if ( ! empty( $this->payment_method ) ) {
 			$this->name = sprintf(
+				/* translators: %s: payment method name */
 				__( 'Pronamic - %s', 'pronamic_ideal' ),
 				PaymentMethods::get_name( $this->payment_method )
 			);

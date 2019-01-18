@@ -34,7 +34,7 @@ class AdminSubscriptions {
 		// @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/controllers/MeprSubscriptionsCtrl.php#L19-L26
 		$hook = 'memberpress_page_memberpress-subscriptions';
 
-		add_filter( 'manage_' .$hook . '_columns', array( $this, 'manage_subscriptions_columns' ), 10 );
+		add_filter( 'manage_' . $hook . '_columns', array( $this, 'manage_subscriptions_columns' ), 10 );
 
 		add_action( 'mepr-admin-subscriptions-cell', array( $this, 'admin_subscriptions_cell' ), 10, 4 );
 

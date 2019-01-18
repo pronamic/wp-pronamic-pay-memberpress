@@ -18,6 +18,8 @@
 	<rule ref="WordPress">
 		<exclude name="Generic.Files.LowercasedFilename.NotFound" />
 
+		<exclude name="WordPress.DB.SlowDBQuery.slow_db_query_meta_query" />
+
 		<exclude name="WordPress.Files.FileName.InvalidClassFileName" />
 		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase" />
 	</rule>

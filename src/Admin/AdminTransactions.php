@@ -27,7 +27,7 @@ class AdminTransactions {
 		// @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/controllers/MeprTransactionsCtrl.php
 		$hook = 'memberpress_page_memberpress-trans';
 
-		add_filter( 'manage_' .$hook . '_columns', array( $this, 'manage_transactions_columns' ), 10 );
+		add_filter( 'manage_' . $hook . '_columns', array( $this, 'manage_transactions_columns' ), 10 );
 
 		add_filter( 'mepr_view_get_string', array( $this, 'extend_transaction_row' ), 10, 3 );
 		add_filter( 'mepr_view_get_string', array( $this, 'extend_transaction_form' ), 10, 3 );

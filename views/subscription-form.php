@@ -1,3 +1,14 @@
+<?php
+/**
+ * MemberPress subscription form
+ *
+ * @author    Pronamic <info@pronamic.eu>
+ * @copyright 2005-2019 Pronamic
+ * @license   GPL-3.0-or-later
+ * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
+ */
+
+?>
 <tr valign="top">
 	<th scope="row">
 		<label for="trans_num"><?php esc_html_e( 'Pronamic Subscription', 'pronamic_ideal' ); ?></label>

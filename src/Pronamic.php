@@ -34,7 +34,7 @@ class Pronamic {
 	/**
 	 * Get Pronamic payment from MemberPress transaction.
 	 *
-	 * @param MeprTransaction $transaction MemberPress transaction object.
+	 * @param MeprTransaction $memberpress_transaction MemberPress transaction object.
 	 *
 	 * @return Payment
 	 */
