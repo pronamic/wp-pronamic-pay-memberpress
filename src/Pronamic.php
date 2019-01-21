@@ -27,8 +27,8 @@ use Pronamic\WordPress\Pay\Subscriptions\Subscription;
  * Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.0.1
- * @since   1.0.0
+ * @version 2.0.5
+ * @since   2.0.5
  */
 class Pronamic {
 	/**
@@ -124,6 +124,27 @@ class Pronamic {
 		 */
 
 		/*
+		 * Subscription.
+		 * @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/models/MeprTransaction.php#L603-L618
+		 */
+		$payment->subscription = self::get_subscription( $memberpress_transaction );
+
+		if ( $payment->subscription ) {
+			$payment->subscription_source_id = $memberpress_transaction->subscription_id;
+
+			if ( $memberpress_subscription->in_trial() ) {
+				$payment->set_total_amount(
+					new TaxedMoney(
+						$memberpress_subscription->trial_amount,
+						MemberPress::get_currency(),
+						null, // Calculate tax value based on tax percentage.
+						$memberpress_transaction->tax_rate
+					)
+				);
+			}
+		}
+
+		/*
 		 * Lines.
 		 */
 		$payment->lines = new PaymentLines();
@@ -136,16 +157,6 @@ class Pronamic {
 		$line->set_unit_price( $payment->get_total_amount() );
 		$line->set_total_amount( $payment->get_total_amount() );
 		$line->set_product_url( get_permalink( $memberpress_product->ID ) );
-
-		/*
-		 * Subscription.
-		 * @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/models/MeprTransaction.php#L603-L618
-		 */
-		$payment->subscription = self::get_subscription( $memberpress_transaction );
-
-		if ( $payment->subscription ) {
-			$payment->subscription_source_id = $memberpress_transaction->subscription_id;
-		}
 
 		/*
 		 * Return.
