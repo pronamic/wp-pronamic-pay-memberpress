@@ -7,6 +7,10 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [2.0.5] - 2019-01-21
+- Added admin Pronamic subscription column to MemberPress subscriptions overview.
+- Updated payment and subscription creation.
+
 ## [2.0.4] - 2018-12-12
 - Add support for trials with the same length as subscription period.
 - Improve upgrading/downgrading.
@@ -56,7 +60,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.3...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.5...HEAD
+[2.0.5]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.4...2.0.5
 [2.0.4]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.3...2.0.4
 [2.0.3]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.2...2.0.3
 [2.0.2]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.1...2.0.2

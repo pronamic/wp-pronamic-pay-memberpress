@@ -3,12 +3,12 @@
  * Gateway
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2018 Pronamic
+ * @copyright 2005-2019 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
 
-namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
+namespace Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways;
 
 use MeprBaseRealGateway;
 use MeprDb;
@@ -24,7 +24,10 @@ use MeprView;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Core\Statuses;
 use Pronamic\WordPress\Pay\Core\Util as Core_Util;
+use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Plugin;
+use Pronamic\WordPress\Pay\Extensions\MemberPress\Pronamic;
+use Pronamic\WordPress\Pay\Extensions\MemberPress\MemberPress;
 use ReflectionClass;
 
 /**
@@ -58,7 +61,11 @@ class Gateway extends MeprBaseRealGateway {
 		$this->name = __( 'Pronamic', 'pronamic_ideal' );
 
 		if ( ! empty( $this->payment_method ) ) {
-			$this->name = PaymentMethods::get_name( $this->payment_method );
+			$this->name = sprintf(
+				/* translators: %s: payment method name */
+				__( 'Pronamic - %s', 'pronamic_ideal' ),
+				PaymentMethods::get_name( $this->payment_method )
+			);
 		}
 
 		// Set the default settings.
@@ -636,10 +643,13 @@ class Gateway extends MeprBaseRealGateway {
 			return;
 		}
 
-		// Data.
-		$data = new PaymentData( $txn, $this );
+		// Create Pronamic payment.
+		$payment = Pronamic::get_payment( $txn );
 
-		$payment = Plugin::start( $config_id, $gateway, $data, $this->payment_method );
+		$payment->config_id = $this->settings->config_id;
+		$payment->method    = $this->payment_method;
+
+		$payment = Plugin::start_payment( $payment );
 
 		/*
 		 * Update transaction subtotal.

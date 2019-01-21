@@ -1,41 +1,41 @@
 <?php
 /**
- * PayPal gateway
+ * Bancontact/Mister Cash gateway
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2018 Pronamic
+ * @copyright 2005-2019 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
 
-namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
+namespace Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways;
 
-use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Plugin;
+use Pronamic\WordPress\Pay\Core\PaymentMethods;
 
 /**
- * WordPress pay MemberPress PayPal gateway
+ * WordPress pay MemberPress Bancontact/Mister Cash gateway
  *
- * @author  Reüel van der Steege
+ * @author  Remco Tolsma
  * @version 2.0.1
- * @since   1.0.5
+ * @since   1.0.0
  */
-class PayPalGateway extends Gateway {
+class BancontactGateway extends Gateway {
 	/**
 	 * Payment method.
 	 *
 	 * @var string
 	 */
-	protected $payment_method = PaymentMethods::PAYPAL;
+	protected $payment_method = PaymentMethods::BANCONTACT;
 
 	/**
 	 * Get icon function, please not that this is not a MemberPress function.
 	 *
-	 * @since 1.0.2
+	 * @since 2.0.1
 	 * @return string
 	 */
 	protected function get_icon() {
-		return plugins_url( 'images/paypal/icon-32x32.png', Plugin::$file );
+		return plugins_url( 'images/bancontact/icon-32x32.png', Plugin::$file );
 	}
 
 	/**
@@ -44,6 +44,6 @@ class PayPalGateway extends Gateway {
 	 * @return string
 	 */
 	public function get_alias() {
-		return 'MeprPronamicPayPalGateway';
+		return 'MeprMisterCashGateway';
 	}
 }

@@ -3,7 +3,7 @@
  * Extension
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2018 Pronamic
+ * @copyright 2005-2019 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
@@ -62,6 +62,14 @@ class Extension {
 		add_action( 'mepr_subscription_pre_delete', array( $this, 'subscription_pre_delete' ), 10, 1 );
 
 		add_action( 'mepr_subscription_transition_status', array( $this, 'memberpress_subscription_transition_status' ), 10, 3 );
+
+		if ( is_admin() ) {
+			$this->admin_subscriptions = new Admin\AdminSubscriptions();
+			$this->admin_transactions  = new Admin\AdminTransactions();
+
+			$this->admin_subscriptions->setup();
+			$this->admin_transactions->setup();
+		}
 	}
 
 	/**
