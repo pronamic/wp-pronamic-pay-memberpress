@@ -39,7 +39,12 @@ class AdminTransactions {
 	 * @param array $columns Columns.
 	 */
 	public function manage_transactions_columns( $columns ) {
-		$columns['pronamic_payment'] = __( 'Pronamic Payment', 'pronamic_ideal' );
+		/*
+		 * Unfortunately there is currently no filter to extend the transactions table row,
+		 * we therefore do not add an column for the Pronamic payment:
+		 *
+		 * $columns['pronamic_payment'] = __( 'Pronamic Payment', 'pronamic_ideal' );
+		 */
 
 		return $columns;
 	}
