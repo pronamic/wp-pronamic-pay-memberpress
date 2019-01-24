@@ -17,6 +17,7 @@ use MeprSubscription;
 use MeprTransaction;
 use MeprUtils;
 use Pronamic\WordPress\Pay\Core\Statuses;
+use Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways\Gateway;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Subscriptions\Subscription;
 
