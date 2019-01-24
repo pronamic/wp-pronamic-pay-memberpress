@@ -254,16 +254,16 @@
         },
         {
             "name": "wp-pay/core",
-            "version": "2.1.2",
+            "version": "2.1.3",
             "source": {
                 "type": "git",
                 "url": "https://github.com/wp-pay/core.git",
-                "reference": "79390ca1ab1b6236c6d5e91ded8c44be8103f3a5"
+                "reference": "565f49b12438b0862d9453b6afbc037406a01159"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/wp-pay/core/zipball/79390ca1ab1b6236c6d5e91ded8c44be8103f3a5",
-                "reference": "79390ca1ab1b6236c6d5e91ded8c44be8103f3a5",
+                "url": "https://api.github.com/repos/wp-pay/core/zipball/565f49b12438b0862d9453b6afbc037406a01159",
+                "reference": "565f49b12438b0862d9453b6afbc037406a01159",
                 "shasum": ""
             },
             "require": {
@@ -275,11 +275,11 @@
             },
             "require-dev": {
                 "dealerdirect/phpcodesniffer-composer-installer": "^0.5.0",
-                "johnpbloch/wordpress": "^5.0",
                 "php-coveralls/php-coveralls": "^1.0",
                 "phpcompatibility/phpcompatibility-wp": "^2.0",
                 "phpmd/phpmd": "^2.4",
                 "phpunit/phpunit": "^4.5",
+                "roots/wordpress": "^5.0",
                 "squizlabs/php_codesniffer": "^2.9",
                 "wimg/php-compatibility": "^9.0",
                 "wp-coding-standards/wpcs": "^1.2",
@@ -323,7 +323,7 @@
                 "wordpress",
                 "wp"
             ],
-            "time": "2019-01-03T10:24:46+00:00"
+            "time": "2019-01-21T15:54:40+00:00"
         }
     ],
     "packages-dev": [
@@ -2185,6 +2185,7 @@
                 "phpcs",
                 "standards"
             ],
+            "abandoned": "phpcompatibility/php-compatibility",
             "time": "2018-07-17T13:42:26+00:00"
         },
         {

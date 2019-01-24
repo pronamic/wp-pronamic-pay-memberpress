@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [2.0.6] - 2019-01-24
+- Fix fatal error due to Gateway class not found when processing status updates.
+
 ## [2.0.5] - 2019-01-21
 - Added admin Pronamic subscription column to MemberPress subscriptions overview.
 - Updated payment and subscription creation.
@@ -60,7 +63,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.5...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.6...HEAD
+[2.0.6]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.5...2.0.6
 [2.0.5]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.4...2.0.5
 [2.0.4]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.3...2.0.4
 [2.0.3]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.2...2.0.3
