@@ -97,7 +97,7 @@ class Pronamic {
 		foreach ( $address_fields as $field => $function ) {
 			$value = $memberpress_user->address( $field, false );
 
-			if ( false !== $value ) {
+			if ( false !== $value && ! empty( $value ) ) {
 				call_user_func( array( $address, $function ), $value );
 			}
 		}
