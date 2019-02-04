@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [2.0.7] - 2019-02-04
+- Fixed "Given country code not ISO 3166-1 alpha-2 value".
+
 ## [2.0.6] - 2019-01-24
 - Fix fatal error due to Gateway class not found when processing status updates.
 
@@ -63,7 +66,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.6...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.7...HEAD
+[2.0.7]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.6...2.0.7
 [2.0.6]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.5...2.0.6
 [2.0.5]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.4...2.0.5
 [2.0.4]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.3...2.0.4
