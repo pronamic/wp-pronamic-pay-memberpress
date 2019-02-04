@@ -97,9 +97,11 @@ class Pronamic {
 		foreach ( $address_fields as $field => $function ) {
 			$value = $memberpress_user->address( $field, false );
 
-			if ( false !== $value ) {
-				call_user_func( array( $address, $function ), $value );
+			if ( empty( $value ) ) {
+				continue;
 			}
+
+			call_user_func( array( $address, $function ), $value );
 		}
 
 		$payment->set_billing_address( $address );
