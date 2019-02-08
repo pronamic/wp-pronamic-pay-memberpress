@@ -29,6 +29,24 @@ class DirectDebitSofortGateway extends Gateway {
 	protected $payment_method = PaymentMethods::DIRECT_DEBIT_SOFORT;
 
 	/**
+	 * Constructs and initialize credit card gateway.
+	 */
+	public function __construct() {
+		parent::__construct();
+
+		// Capabilities.
+		$this->capabilities = array(
+			'process-payments',
+			'create-subscriptions',
+			'cancel-subscriptions',
+			'update-subscriptions',
+			'suspend-subscriptions',
+			'resume-subscriptions',
+			'subscription-trial-payment',
+		);
+	}
+
+	/**
 	 * Get alias class name of this gateway.
 	 *
 	 * @return string
