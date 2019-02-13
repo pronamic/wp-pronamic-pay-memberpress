@@ -29,21 +29,21 @@ class IDealGateway extends Gateway {
 	protected $payment_method = PaymentMethods::IDEAL;
 
 	/**
-	 * Get icon function, please not that this is not a MemberPress function.
-	 *
-	 * @since 1.0.2
-	 * @return string
-	 */
-	protected function get_icon() {
-		return plugins_url( 'images/ideal/icon-32x32.png', Plugin::$file );
-	}
-
-	/**
 	 * Get alias class name of this gateway.
 	 *
 	 * @return string
 	 */
 	public function get_alias() {
 		return 'MeprIDealGateway';
+	}
+
+	/**
+	 * Get icon function, please note that this is not a MemberPress function.
+	 *
+	 * @since 1.0.2
+	 * @return string
+	 */
+	protected function get_icon() {
+		return plugins_url( 'images/ideal/icon-32x32.png', Plugin::$file );
 	}
 }
