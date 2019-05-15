@@ -7,6 +7,11 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [2.0.8] - 2019-05-15
+- Fix subscription source ID bug.
+- Add more payment method icons.
+- Add missing capabilities to Direct Debit Bancontact/iDEAL/Sofort gateways.
+
 ## [2.0.7] - 2019-02-04
 - Fixed "Given country code not ISO 3166-1 alpha-2 value".
 
@@ -66,7 +71,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.7...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.8...HEAD
+[2.0.8]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.7...2.0.8
 [2.0.7]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.6...2.0.7
 [2.0.6]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.5...2.0.6
 [2.0.5]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.4...2.0.5
