@@ -29,21 +29,21 @@ class BancontactGateway extends Gateway {
 	protected $payment_method = PaymentMethods::BANCONTACT;
 
 	/**
-	 * Get icon function, please not that this is not a MemberPress function.
-	 *
-	 * @since 2.0.1
-	 * @return string
-	 */
-	protected function get_icon() {
-		return plugins_url( 'images/bancontact/icon-32x32.png', Plugin::$file );
-	}
-
-	/**
 	 * Get alias class name of this gateway.
 	 *
 	 * @return string
 	 */
 	public function get_alias() {
 		return 'MeprMisterCashGateway';
+	}
+
+	/**
+	 * Get icon function, please note that this is not a MemberPress function.
+	 *
+	 * @since 2.0.1
+	 * @return string
+	 */
+	protected function get_icon() {
+		return plugins_url( 'images/bancontact/icon-32x32.png', Plugin::$file );
 	}
 }

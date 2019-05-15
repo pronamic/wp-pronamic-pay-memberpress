@@ -155,18 +155,11 @@ class Extension {
 	 * @param Payment $payment The payment whose status is updated.
 	 */
 	public static function status_update( Payment $payment ) {
-		$transaction_id = $payment->get_source_id();
-
-		$transaction = new MeprTransaction( $transaction_id );
+		$transaction = new MeprTransaction( $payment->get_source_id() );
 
 		if ( $payment->get_recurring() ) {
-			$subscription = $transaction->subscription();
-
-			if ( empty( $subscription ) || empty( $subscription->id ) ) {
-				$subscription_id = $payment->get_subscription()->get_source_id();
-
-				$subscription = new MeprSubscription( $subscription_id );
-			}
+			$subscription_id = $payment->get_subscription()->get_source_id();
+			$subscription    = new MeprSubscription( $subscription_id );
 
 			// Same source ID and first transaction ID for recurring payment means we need to add a new transaction.
 			if ( $payment->get_source_id() === $subscription->id ) {

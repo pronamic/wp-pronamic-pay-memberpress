@@ -29,11 +29,39 @@ class DirectDebitSofortGateway extends Gateway {
 	protected $payment_method = PaymentMethods::DIRECT_DEBIT_SOFORT;
 
 	/**
+	 * Constructs and initialize credit card gateway.
+	 */
+	public function __construct() {
+		parent::__construct();
+
+		// Capabilities.
+		$this->capabilities = array(
+			'process-payments',
+			'create-subscriptions',
+			'cancel-subscriptions',
+			'update-subscriptions',
+			'suspend-subscriptions',
+			'resume-subscriptions',
+			'subscription-trial-payment',
+		);
+	}
+
+	/**
 	 * Get alias class name of this gateway.
 	 *
 	 * @return string
 	 */
 	public function get_alias() {
 		return 'MeprDirectDebitSofortGateway';
+	}
+
+	/**
+	 * Get icon function, please note that this is not a MemberPress function.
+	 *
+	 * @since 2.0.8
+	 * @return string
+	 */
+	protected function get_icon() {
+		return plugins_url( 'images/direct-debit-sofort/icon-32x32.png', Plugin::$file );
 	}
 }

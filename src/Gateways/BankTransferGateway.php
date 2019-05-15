@@ -11,6 +11,7 @@
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways;
 
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
+use Pronamic\WordPress\Pay\Plugin;
 
 /**
  * WordPress pay MemberPress bank transfer gateway
@@ -34,5 +35,15 @@ class BankTransferGateway extends Gateway {
 	 */
 	public function get_alias() {
 		return 'MeprBankTransferGateway';
+	}
+
+	/**
+	 * Get icon function, please note that this is not a MemberPress function.
+	 *
+	 * @since 2.0.8
+	 * @return string
+	 */
+	protected function get_icon() {
+		return plugins_url( 'images/bank-transfer/icon-32x32.png', Plugin::$file );
 	}
 }
