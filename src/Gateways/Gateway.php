@@ -53,6 +53,13 @@ class Gateway extends MeprBaseRealGateway {
 	public $mp_txn;
 
 	/**
+	 * Pronamic payment.
+	 *
+	 * @var Payment
+	 */
+	public $pronamic_payment;
+
+	/**
 	 * Constructs and initialize iDEAL gateway.
 	 */
 	public function __construct() {
@@ -227,12 +234,14 @@ class Gateway extends MeprBaseRealGateway {
 		$transaction->status = MeprTransaction::$failed_str;
 		$transaction->store();
 
-		// Expire associated transactions for subscription.
-		$subscription = $transaction->subscription();
+		// Expire associated subscription transactions for non-recurring payments.
+		if ( ! ( isset( $this->pronamic_payment ) && $this->pronamic_payment->get_recurring() ) ) {
+			$subscription = $transaction->subscription();
 
-		if ( $subscription ) {
-			$subscription->expire_txns();
-			$subscription->store();
+			if ( $subscription ) {
+				$subscription->expire_txns();
+				$subscription->store();
+			}
 		}
 
 		$this->send_transaction_notices( $transaction, 'send_failed_txn_notices' );

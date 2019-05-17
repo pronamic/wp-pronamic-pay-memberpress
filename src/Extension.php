@@ -249,7 +249,8 @@ class Extension {
 		if ( $should_update ) {
 			$gateway = new Gateway();
 
-			$gateway->mp_txn = $transaction;
+			$gateway->pronamic_payment = $payment;
+			$gateway->mp_txn           = $transaction;
 
 			switch ( $payment->get_status() ) {
 				case Statuses::CANCELLED:
