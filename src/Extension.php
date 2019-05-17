@@ -241,6 +241,11 @@ class Extension {
 			)
 		);
 
+		// Allow successful recurring payments to update failed transaction.
+		if ( $payment->get_recurring() && Statuses::SUCCESS === $payment->get_status() && MeprTransaction::$failed_str === $transaction->status ) {
+			$should_update = true;
+		}
+
 		if ( $should_update ) {
 			$gateway = new Gateway();
 
