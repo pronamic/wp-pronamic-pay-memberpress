@@ -186,14 +186,14 @@ class Pronamic {
 			return false;
 		}
 
-		$frequency = '';
+		$frequency = null;
 
 		if ( $memberpress_subscription->limit_cycles ) {
-			$frequency = $memberpress_subscription->limit_cycles;
+			$frequency = $memberpress_subscription->limit_cycles_num;
 		}
 
 		$subscription                  = new Subscription();
-		$subscription->frequency       = $frequency;
+		$subscription->frequency       = (int) $frequency;
 		$subscription->interval        = $memberpress_product->period;
 		$subscription->interval_period = Core_Util::to_period( $memberpress_product->period_type );
 
