@@ -95,12 +95,12 @@ class Extension {
 	 *
 	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/controllers/MeprAppCtrl.php#L129-146
 	 *
-	 * @param array $post_type Registered post type.
+	 * @param string $post_type Registered post type.
 	 *
 	 * @return void
 	 */
 	public function post_type_columns_hide( $post_type ) {
-		if ( ! in_array( $post_type, array( 'pronamic_payment', 'pronamic_pay_subscr' ) ) ) {
+		if ( ! in_array( $post_type, array( 'pronamic_payment', 'pronamic_pay_subscr', true ) ) ) {
 			return;
 		}
 
