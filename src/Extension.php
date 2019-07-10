@@ -100,7 +100,7 @@ class Extension {
 	 * @return void
 	 */
 	public function post_type_columns_hide( $post_type ) {
-		if ( ! in_array( $post_type, array( 'pronamic_payment', 'pronamic_pay_subscr', true ) ) ) {
+		if ( ! in_array( $post_type, array( 'pronamic_payment', 'pronamic_pay_subscr' ), true ) ) {
 			return;
 		}
 
