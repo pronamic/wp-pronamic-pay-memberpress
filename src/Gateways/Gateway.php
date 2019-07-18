@@ -462,7 +462,7 @@ class Gateway extends MeprBaseRealGateway {
 
 		// The status of canceled or completed subscriptions will not be changed automatically.
 		if ( ! in_array( $subscription->get_status(), array( Statuses::CANCELLED, Statuses::COMPLETED ), true ) ) {
-			$subscription->set_status( Statuses::OPEN );
+			$subscription->set_status( Statuses::ON_HOLD );
 
 			$subscription->save();
 		}
