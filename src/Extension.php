@@ -64,6 +64,9 @@ class Extension {
 
 		add_action( 'mepr_subscription_transition_status', array( $this, 'memberpress_subscription_transition_status' ), 10, 3 );
 
+		// Hide MemberPress columns for payments and subscriptions.
+		add_filter( 'registered_post_type', array( $this, 'post_type_columns_hide' ), 15, 1 );
+
 		if ( is_admin() ) {
 			$this->admin_subscriptions = new Admin\AdminSubscriptions();
 			$this->admin_transactions  = new Admin\AdminTransactions();
@@ -85,6 +88,23 @@ class Extension {
 		$paths[] = dirname( __FILE__ ) . '/../gateways/';
 
 		return $paths;
+	}
+
+	/**
+	 * Hide MemberPress columns for payments and subscriptions.
+	 *
+	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/controllers/MeprAppCtrl.php#L129-146
+	 *
+	 * @param string $post_type Registered post type.
+	 *
+	 * @return void
+	 */
+	public function post_type_columns_hide( $post_type ) {
+		if ( ! in_array( $post_type, array( 'pronamic_payment', 'pronamic_pay_subscr' ), true ) ) {
+			return;
+		}
+
+		remove_filter( 'manage_edit-' . $post_type . '_columns', 'MeprAppCtrl::columns' );
 	}
 
 	/**
@@ -241,10 +261,16 @@ class Extension {
 			)
 		);
 
+		// Allow successful recurring payments to update failed transaction.
+		if ( $payment->get_recurring() && Statuses::SUCCESS === $payment->get_status() && MeprTransaction::$failed_str === $transaction->status ) {
+			$should_update = true;
+		}
+
 		if ( $should_update ) {
 			$gateway = new Gateway();
 
-			$gateway->mp_txn = $transaction;
+			$gateway->pronamic_payment = $payment;
+			$gateway->mp_txn           = $transaction;
 
 			switch ( $payment->get_status() ) {
 				case Statuses::CANCELLED:

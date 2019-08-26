@@ -132,8 +132,9 @@ class AdminSubscriptions {
 
 		$map = $this->get_subscriptions_map( $table );
 
-		printf( // WPCS: XSS ok.
+		printf(
 			'<td %s>',
+			// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 			$attributes
 		);
 

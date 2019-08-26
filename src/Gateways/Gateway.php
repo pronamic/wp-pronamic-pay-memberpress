@@ -53,6 +53,13 @@ class Gateway extends MeprBaseRealGateway {
 	public $mp_txn;
 
 	/**
+	 * Pronamic payment.
+	 *
+	 * @var Payment
+	 */
+	public $pronamic_payment;
+
+	/**
 	 * Constructs and initialize iDEAL gateway.
 	 */
 	public function __construct() {
@@ -227,12 +234,14 @@ class Gateway extends MeprBaseRealGateway {
 		$transaction->status = MeprTransaction::$failed_str;
 		$transaction->store();
 
-		// Expire associated transactions for subscription.
-		$subscription = $transaction->subscription();
+		// Expire associated subscription transactions for non-recurring payments.
+		if ( ! ( isset( $this->pronamic_payment ) && $this->pronamic_payment->get_recurring() ) ) {
+			$subscription = $transaction->subscription();
 
-		if ( $subscription ) {
-			$subscription->expire_txns();
-			$subscription->store();
+			if ( $subscription ) {
+				$subscription->expire_txns();
+				$subscription->store();
+			}
 		}
 
 		$this->send_transaction_notices( $transaction, 'send_failed_txn_notices' );
@@ -453,7 +462,7 @@ class Gateway extends MeprBaseRealGateway {
 
 		// The status of canceled or completed subscriptions will not be changed automatically.
 		if ( ! in_array( $subscription->get_status(), array( Statuses::CANCELLED, Statuses::COMPLETED ), true ) ) {
-			$subscription->set_status( Statuses::OPEN );
+			$subscription->set_status( Statuses::ON_HOLD );
 
 			$subscription->save();
 		}
@@ -757,7 +766,8 @@ class Gateway extends MeprBaseRealGateway {
 
 		$invoice = MeprTransactionsHelper::get_invoice( $txn );
 
-		echo $invoice; // WPCS: XSS ok.
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $invoice;
 
 		?>
 		<div class="mp_wrapper mp_payment_form_wrapper">
@@ -776,7 +786,8 @@ class Gateway extends MeprBaseRealGateway {
 				$gateway = Plugin::get_gateway( $config_id );
 
 				if ( $gateway ) {
-					echo $gateway->get_input_html(); // WPCS: XSS ok.
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo $gateway->get_input_html();
 				}
 
 				?>
