@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [2.0.9] - 2019-08-26
+- Updated packages.
+
 ## [2.0.8] - 2019-05-15
 - Fix subscription source ID bug.
 - Add more payment method icons.
@@ -71,7 +74,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.8...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.9...HEAD
+[2.0.9]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.8...2.0.9
 [2.0.8]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.7...2.0.8
 [2.0.7]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.6...2.0.7
 [2.0.6]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.5...2.0.6

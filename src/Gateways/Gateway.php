@@ -766,7 +766,8 @@ class Gateway extends MeprBaseRealGateway {
 
 		$invoice = MeprTransactionsHelper::get_invoice( $txn );
 
-		echo $invoice; // WPCS: XSS ok.
+		// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+		echo $invoice;
 
 		?>
 		<div class="mp_wrapper mp_payment_form_wrapper">
@@ -785,7 +786,8 @@ class Gateway extends MeprBaseRealGateway {
 				$gateway = Plugin::get_gateway( $config_id );
 
 				if ( $gateway ) {
-					echo $gateway->get_input_html(); // WPCS: XSS ok.
+					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
+					echo $gateway->get_input_html();
 				}
 
 				?>
