@@ -186,17 +186,19 @@ class Pronamic {
 			return false;
 		}
 
-		$frequency = null;
-
-		if ( $memberpress_subscription->limit_cycles ) {
-			$frequency = $memberpress_subscription->limit_cycles_num;
-		}
-
+		// New subscription.
 		$subscription                  = new Subscription();
-		$subscription->frequency       = (int) $frequency;
 		$subscription->interval        = $memberpress_product->period;
 		$subscription->interval_period = Core_Util::to_period( $memberpress_product->period_type );
 
+		// Frequency.
+		$limit_cycles_number = (int) $memberpress_subscription->limit_cycles_num;
+
+		if ( $memberpress_subscription->limit_cycles && $limit_cycles_number > 0 ) {
+			$subscription->frequency = $limit_cycles_number;
+		}
+
+		// Amount.
 		$subscription->set_total_amount(
 			new TaxedMoney(
 				$memberpress_transaction->total,
