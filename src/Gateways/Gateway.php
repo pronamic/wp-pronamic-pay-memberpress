@@ -22,7 +22,7 @@ use MeprUser;
 use MeprUtils;
 use MeprView;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
-use Pronamic\WordPress\Pay\Core\Statuses;
+use Pronamic\WordPress\Pay\Payments\PaymentStatus;
 use Pronamic\WordPress\Pay\Core\Util as Core_Util;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Plugin;
@@ -461,8 +461,8 @@ class Gateway extends MeprBaseRealGateway {
 		$subscription->add_note( $note );
 
 		// The status of canceled or completed subscriptions will not be changed automatically.
-		if ( ! in_array( $subscription->get_status(), array( Statuses::CANCELLED, Statuses::COMPLETED ), true ) ) {
-			$subscription->set_status( Statuses::ON_HOLD );
+		if ( ! in_array( $subscription->get_status(), array( PaymentStatus::CANCELLED, PaymentStatus::COMPLETED ), true ) ) {
+			$subscription->set_status( PaymentStatus::ON_HOLD );
 
 			$subscription->save();
 		}
@@ -536,8 +536,8 @@ class Gateway extends MeprBaseRealGateway {
 		$subscription->add_note( $note );
 
 		// The status of canceled or completed subscriptions will not be changed automatically.
-		if ( ! in_array( $subscription->get_status(), array( Statuses::CANCELLED, Statuses::COMPLETED ), true ) ) {
-			$subscription->set_status( Statuses::ACTIVE );
+		if ( ! in_array( $subscription->get_status(), array( PaymentStatus::CANCELLED, PaymentStatus::COMPLETED ), true ) ) {
+			$subscription->set_status( PaymentStatus::ACTIVE );
 
 			$subscription->save();
 		}
@@ -601,8 +601,8 @@ class Gateway extends MeprBaseRealGateway {
 		$subscription->add_note( $note );
 
 		// The status of canceled or completed subscriptions will not be changed automatically.
-		if ( ! in_array( $subscription->get_status(), array( Statuses::CANCELLED, Statuses::COMPLETED ), true ) ) {
-			$subscription->set_status( Statuses::CANCELLED );
+		if ( ! in_array( $subscription->get_status(), array( PaymentStatus::CANCELLED, PaymentStatus::COMPLETED ), true ) ) {
+			$subscription->set_status( PaymentStatus::CANCELLED );
 
 			$subscription->save();
 		}

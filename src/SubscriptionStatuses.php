@@ -11,7 +11,7 @@
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 
 use MeprSubscription;
-use Pronamic\WordPress\Pay\Core\Statuses;
+use Pronamic\WordPress\Pay\Payments\PaymentStatus;
 
 /**
  * Subscription statuses
@@ -31,13 +31,13 @@ class SubscriptionStatuses {
 	public static function transform( $status ) {
 		switch ( $status ) {
 			case MeprSubscription::$pending_str:
-				return Statuses::OPEN;
+				return PaymentStatus::OPEN;
 			case MeprSubscription::$active_str:
-				return Statuses::ACTIVE;
+				return PaymentStatus::ACTIVE;
 			case MeprSubscription::$suspended_str:
 				return null;
 			case MeprSubscription::$cancelled_str:
-				return Statuses::CANCELLED;
+				return PaymentStatus::CANCELLED;
 		}
 	}
 }
