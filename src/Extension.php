@@ -20,6 +20,7 @@ use Pronamic\WordPress\Pay\Payments\PaymentStatus;
 use Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways\Gateway;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Subscriptions\Subscription;
+use Pronamic\WordPress\Pay\Subscriptions\SubscriptionStatus;
 
 /**
  * WordPress pay MemberPress extension
@@ -316,8 +317,8 @@ class Extension {
 		$subscription->add_note( $note );
 
 		// The status of canceled or completed subscriptions will not be changed automatically.
-		if ( ! in_array( $subscription->get_status(), array( PaymentStatus::CANCELLED, PaymentStatus::COMPLETED ), true ) ) {
-			$subscription->set_status( PaymentStatus::CANCELLED );
+		if ( ! in_array( $subscription->get_status(), array( SubscriptionStatus::CANCELLED, SubscriptionStatus::COMPLETED ), true ) ) {
+			$subscription->set_status( SubscriptionStatus::CANCELLED );
 
 			$subscription->save();
 		}
