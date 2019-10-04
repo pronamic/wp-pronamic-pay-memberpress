@@ -1,6 +1,6 @@
 {
   "name": "memberpress",
-  "version": "2.0.10",
+  "version": "2.0.11",
   "description": "MemberPress driver for the WordPress payment processing library.",
   "repository": {
     "type": "git",
