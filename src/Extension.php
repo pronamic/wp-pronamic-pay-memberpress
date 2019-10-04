@@ -16,10 +16,11 @@ use MeprProduct;
 use MeprSubscription;
 use MeprTransaction;
 use MeprUtils;
-use Pronamic\WordPress\Pay\Core\Statuses;
+use Pronamic\WordPress\Pay\Payments\PaymentStatus;
 use Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways\Gateway;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Subscriptions\Subscription;
+use Pronamic\WordPress\Pay\Subscriptions\SubscriptionStatus;
 
 /**
  * WordPress pay MemberPress extension
@@ -125,9 +126,9 @@ class Extension {
 		$transaction = new MeprTransaction( $transaction_id );
 
 		switch ( $payment->get_status() ) {
-			case Statuses::CANCELLED:
-			case Statuses::EXPIRED:
-			case Statuses::FAILURE:
+			case PaymentStatus::CANCELLED:
+			case PaymentStatus::EXPIRED:
+			case PaymentStatus::FAILURE:
 				$product = $transaction->product();
 
 				$url = add_query_arg(
@@ -143,7 +144,7 @@ class Extension {
 				);
 
 				break;
-			case Statuses::SUCCESS:
+			case PaymentStatus::SUCCESS:
 				// @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprOptions.php#L768-782
 				$mepr_options = MeprOptions::fetch();
 
@@ -159,7 +160,7 @@ class Extension {
 				$url = $mepr_options->thankyou_page_url( http_build_query( $args ) );
 
 				break;
-			case Statuses::OPEN:
+			case PaymentStatus::OPEN:
 			default:
 				break;
 		}
@@ -262,7 +263,7 @@ class Extension {
 		);
 
 		// Allow successful recurring payments to update failed transaction.
-		if ( $payment->get_recurring() && Statuses::SUCCESS === $payment->get_status() && MeprTransaction::$failed_str === $transaction->status ) {
+		if ( $payment->get_recurring() && PaymentStatus::SUCCESS === $payment->get_status() && MeprTransaction::$failed_str === $transaction->status ) {
 			$should_update = true;
 		}
 
@@ -273,13 +274,13 @@ class Extension {
 			$gateway->mp_txn           = $transaction;
 
 			switch ( $payment->get_status() ) {
-				case Statuses::CANCELLED:
-				case Statuses::EXPIRED:
-				case Statuses::FAILURE:
+				case PaymentStatus::CANCELLED:
+				case PaymentStatus::EXPIRED:
+				case PaymentStatus::FAILURE:
 					$gateway->record_payment_failure();
 
 					break;
-				case Statuses::SUCCESS:
+				case PaymentStatus::SUCCESS:
 					if ( $payment->get_recurring() ) {
 						$gateway->record_subscription_payment();
 					} else {
@@ -287,7 +288,7 @@ class Extension {
 					}
 
 					break;
-				case Statuses::OPEN:
+				case PaymentStatus::OPEN:
 				default:
 					break;
 			}
@@ -316,8 +317,8 @@ class Extension {
 		$subscription->add_note( $note );
 
 		// The status of canceled or completed subscriptions will not be changed automatically.
-		if ( ! in_array( $subscription->get_status(), array( Statuses::CANCELLED, Statuses::COMPLETED ), true ) ) {
-			$subscription->set_status( Statuses::CANCELLED );
+		if ( ! in_array( $subscription->get_status(), array( SubscriptionStatus::CANCELLED, SubscriptionStatus::COMPLETED ), true ) ) {
+			$subscription->set_status( SubscriptionStatus::CANCELLED );
 
 			$subscription->save();
 		}

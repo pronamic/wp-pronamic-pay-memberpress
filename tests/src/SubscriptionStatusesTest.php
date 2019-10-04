@@ -11,7 +11,7 @@
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 
 use \MeprSubscription;
-use Pronamic\WordPress\Pay\Core\Statuses;
+use Pronamic\WordPress\Pay\Subscriptions\SubscriptionStatus;
 
 /**
  * Subscription statuses test
@@ -42,10 +42,10 @@ class SubscriptionStatusesTest extends \PHPUnit_Framework_TestCase {
 	 */
 	public function status_matrix_provider() {
 		return array(
-			array( MeprSubscription::$pending_str, Statuses::OPEN ),
-			array( MeprSubscription::$active_str, Statuses::ACTIVE ),
+			array( MeprSubscription::$pending_str, SubscriptionStatus::OPEN ),
+			array( MeprSubscription::$active_str, SubscriptionStatus::ACTIVE ),
 			array( MeprSubscription::$suspended_str, null ),
-			array( MeprSubscription::$cancelled_str, Statuses::CANCELLED ),
+			array( MeprSubscription::$cancelled_str, SubscriptionStatus::CANCELLED ),
 			array( 'not existing status', null ),
 		);
 	}
