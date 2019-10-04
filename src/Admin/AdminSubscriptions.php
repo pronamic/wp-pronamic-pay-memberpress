@@ -16,7 +16,7 @@ use WP_Query;
  * Admin subscriptions
  *
  * @author  Remco Tolsma
- * @version 2.0.4
+ * @version 2.0.11
  * @since   1.0.0
  */
 class AdminSubscriptions {

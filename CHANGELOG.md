@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [2.0.11] - 2019-10-04
+- Fixed showing lifetime columns on MemberPress subscriptions page if plugin is loaded before MemberPress.
+
 ## [2.0.10] - 2019-09-02
 - Fix error "`DatePeriod::__construct()`: The recurrence count '0' is invalid. Needs to be > 0".
 
@@ -77,7 +80,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.10...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.11...HEAD
+[2.0.11]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.10...2.0.11
 [2.0.10]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.9...2.0.10
 [2.0.9]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.8...2.0.9
 [2.0.8]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.7...2.0.8
