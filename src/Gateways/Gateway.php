@@ -653,18 +653,12 @@ class Gateway extends MeprBaseRealGateway {
 		}
 
 		// Create Pronamic payment.
-		$should_redirect = true;
+		$payment = Pronamic::get_payment( $txn );
 
-		try {
-			$payment = Pronamic::get_payment( $txn );
+		$payment->config_id = $this->settings->config_id;
+		$payment->method    = $this->payment_method;
 
-			$payment->config_id = $this->settings->config_id;
-			$payment->method    = $this->payment_method;
-
-			$payment = Plugin::start_payment( $payment );
-		} catch ( \Pronamic\WordPress\Pay\PayException $e ) {
-			$should_redirect = false;
-		}
+		$payment = Plugin::start_payment( $payment );
 
 		/*
 		 * Update transaction subtotal.
@@ -680,7 +674,9 @@ class Gateway extends MeprBaseRealGateway {
 			$txn->store();
 		}
 
-		if ( $should_redirect ) {
+		$error = $gateway->get_error();
+
+		if ( ! is_wp_error( $error ) ) {
 			// Redirect.
 			$gateway->redirect( $payment );
 		}
