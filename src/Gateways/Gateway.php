@@ -658,7 +658,15 @@ class Gateway extends MeprBaseRealGateway {
 		$payment->config_id = $this->settings->config_id;
 		$payment->method    = $this->payment_method;
 
-		$payment = Plugin::start_payment( $payment );
+		$error = null;
+
+		try {
+			$payment = Plugin::start_payment( $payment );
+		} catch ( \Exception $e ) {
+			$error = $e;
+
+			// @todo What to do?
+		}
 
 		/*
 		 * Update transaction subtotal.
@@ -674,9 +682,7 @@ class Gateway extends MeprBaseRealGateway {
 			$txn->store();
 		}
 
-		$error = $gateway->get_error();
-
-		if ( ! is_wp_error( $error ) ) {
+		if ( ! ( $error instanceof \Exception ) ) {
 			// Redirect.
 			$gateway->redirect( $payment );
 		}
