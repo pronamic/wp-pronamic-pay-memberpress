@@ -664,8 +664,6 @@ class Gateway extends MeprBaseRealGateway {
 			$payment = Plugin::start_payment( $payment );
 		} catch ( \Exception $e ) {
 			$error = $e;
-
-			// @todo What to do?
 		}
 
 		/*
@@ -682,10 +680,13 @@ class Gateway extends MeprBaseRealGateway {
 			$txn->store();
 		}
 
-		if ( ! ( $error instanceof \Exception ) ) {
-			// Redirect.
-			$gateway->redirect( $payment );
+		if ( $error instanceof \Exception ) {
+			// Rethrow error, catched by MemberPress.
+			throw $error;
 		}
+
+		// Redirect.
+		$gateway->redirect( $payment );
 	}
 
 	/**
