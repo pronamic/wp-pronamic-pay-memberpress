@@ -11,7 +11,6 @@
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways;
 
 use MeprBaseRealGateway;
-use MeprDb;
 use MeprEmailFactory;
 use MeprOptions;
 use MeprProduct;
@@ -26,7 +25,6 @@ use Pronamic\WordPress\Pay\Core\Util as Core_Util;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Plugin;
 use Pronamic\WordPress\Pay\Extensions\MemberPress\Pronamic;
-use Pronamic\WordPress\Pay\Extensions\MemberPress\MemberPress;
 use Pronamic\WordPress\Pay\Subscriptions\SubscriptionStatus;
 use ReflectionClass;
 
@@ -34,7 +32,7 @@ use ReflectionClass;
  * WordPress pay MemberPress gateway
  *
  * @author  Remco Tolsma
- * @version 2.0.4
+ * @version 2.0.12
  * @since   1.0.0
  */
 class Gateway extends MeprBaseRealGateway {
@@ -636,9 +634,10 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Payment redirect.
 	 *
-	 * @since 1.0.2
-	 *
 	 * @param MeprTransaction $txn MemberPress transaction object.
+	 *
+	 * @throws \Exception Throws exception on gateway payment start error.
+	 * @since 1.0.2
 	 */
 	public function payment_redirect( $txn ) {
 		$txn = new MeprTransaction( $txn->id );
@@ -658,7 +657,13 @@ class Gateway extends MeprBaseRealGateway {
 		$payment->config_id = $this->settings->config_id;
 		$payment->method    = $this->payment_method;
 
-		$payment = Plugin::start_payment( $payment );
+		$error = null;
+
+		try {
+			$payment = Plugin::start_payment( $payment );
+		} catch ( \Exception $e ) {
+			$error = $e;
+		}
 
 		/*
 		 * Update transaction subtotal.
@@ -674,12 +679,13 @@ class Gateway extends MeprBaseRealGateway {
 			$txn->store();
 		}
 
-		$error = $gateway->get_error();
-
-		if ( ! is_wp_error( $error ) ) {
-			// Redirect.
-			$gateway->redirect( $payment );
+		if ( $error instanceof \Exception ) {
+			// Rethrow error, catched by MemberPress.
+			throw $error;
 		}
+
+		// Redirect.
+		$gateway->redirect( $payment );
 	}
 
 	/**
@@ -690,6 +696,8 @@ class Gateway extends MeprBaseRealGateway {
 	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/gateways/MeprPayPalGateway.php#L775-L850
 	 *
 	 * @param MeprTransaction $txn MemberPress transaction object.
+	 *
+	 * @throws \Exception Throws exception on gateway payment start error.
 	 */
 	public function display_payment_page( $txn ) {
 		// Gateway.
@@ -709,8 +717,10 @@ class Gateway extends MeprBaseRealGateway {
 	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/controllers/MeprCheckoutCtrl.php#L336
 	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/gateways/MeprPayPalGateway.php#L1011
 	 *
-	 * @param  MeprTransaction $txn MemberPress transaction object.
+	 * @param MeprTransaction $txn MemberPress transaction object.
+	 *
 	 * @return bool
+	 * @throws \Exception Throws exception on gateway payment start error.
 	 */
 	public function process_payment_form( $txn ) {
 		if ( ! filter_has_var( INPUT_POST, 'pronamic_pay_memberpress_pay' ) ) {
