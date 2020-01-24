@@ -199,7 +199,8 @@ class Gateway extends MeprBaseRealGateway {
 	public function record_subscription_payment() {
 		$transaction = $this->mp_txn;
 
-		$transaction->status = MeprTransaction::$complete_str;
+		$transaction->status     = MeprTransaction::$complete_str;
+		$transaction->expires_at = MeprUtils::ts_to_mysql_date( $this->pronamic_payment->get_end_date()->getTimestamp(), 'Y-m-d 23:59:59' );
 		$transaction->store();
 
 		$subscription = $transaction->subscription();
