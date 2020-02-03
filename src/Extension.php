@@ -3,7 +3,7 @@
  * Extension
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2019 Pronamic
+ * @copyright 2005-2020 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
@@ -212,6 +212,7 @@ class Extension {
 				$transaction->trans_num       = $trans_num;
 				$transaction->txn_type        = MeprTransaction::$payment_str;
 				$transaction->status          = MeprTransaction::$pending_str;
+				$transaction->expires_at      = MeprUtils::ts_to_mysql_date( $payment->get_end_date()->getTimestamp(), 'Y-m-d 23:59:59' );
 				$transaction->subscription_id = $subscription->id;
 
 				$transaction->set_gross( $payment->get_total_amount()->get_value() );
