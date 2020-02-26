@@ -134,7 +134,7 @@ class Pronamic {
 		if ( $payment->subscription ) {
 			$payment->subscription_source_id = $memberpress_transaction->subscription_id;
 
-			if ( $memberpress_subscription->in_trial() || '0' === $memberpress_subscription->trial_days ) {
+			if ( $memberpress_subscription->in_trial() ) {
 				$payment->set_total_amount(
 					new TaxedMoney(
 						$memberpress_subscription->trial_amount,
@@ -183,7 +183,7 @@ class Pronamic {
 		$memberpress_subscription = $memberpress_transaction->subscription();
 
 		if ( ! $memberpress_subscription ) {
-			return null;
+			return false;
 		}
 
 		// New subscription.
@@ -196,25 +196,6 @@ class Pronamic {
 
 		if ( $memberpress_subscription->limit_cycles && $limit_cycles_number > 0 ) {
 			$subscription->frequency = $limit_cycles_number;
-
-			/*
-			 * Payment cycles limit is referred to in MemberPress as "Max # of Payments",
-			 * and therefore includes the first payment too. However, we also need to
-			 * take the subscription trial settings into account.
-			 *
-			 * Examples:
-			 * - No trial, no limit      = €10 / month
-			 * - No trial, limit 5       = 5 payments of €10 / month
-			 * - 1 month trial, no limit = 1 month for €5 then €10 / month
-			 * - 1 month trial, limit 5  = 1 month for €5 then 5 payments of €10 / month
-			 */
-			if ( ! $memberpress_subscription->trial ) {
-				$subscription->frequency--;
-			}
-
-			if ( 0 === $subscription->frequency ) {
-				return null;
-			}
 		}
 
 		// Amount.
