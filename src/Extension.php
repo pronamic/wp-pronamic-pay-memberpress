@@ -29,7 +29,7 @@ use Pronamic\WordPress\Pay\Subscriptions\SubscriptionStatus;
  * @version 2.0.4
  * @since   1.0.0
  */
-class Extension {
+class Extension extends \Pronamic\WordPress\Pay\AbstractPluginIntegration {
 	/**
 	 * The slug of this addon
 	 *
@@ -38,16 +38,11 @@ class Extension {
 	const SLUG = 'memberpress';
 
 	/**
-	 * Bootstrap
-	 */
-	public static function bootstrap() {
-		new self();
-	}
-
-	/**
 	 * Constructs and initializes the MemberPress extension.
 	 */
 	public function __construct() {
+		parent::__construct();
+
 		// @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprGatewayFactory.php#L48-50
 		add_filter( 'mepr-gateway-paths', array( $this, 'gateway_paths' ) );
 
