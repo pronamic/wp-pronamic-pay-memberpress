@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [2.1.0] - 2020-03-19
+- Extension extends abstract plugin integration.
+
 ## [2.0.13] - 2020-02-03
 - Explicitly set transaction expiry date.
 
@@ -86,7 +89,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.13...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.1.0...HEAD
+[2.1.0]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.13...2.1.0
 [2.0.13]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.12...2.0.13
 [2.0.12]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.11...2.0.12
 [2.0.11]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.10...2.0.11
