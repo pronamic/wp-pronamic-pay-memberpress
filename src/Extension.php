@@ -16,6 +16,7 @@ use MeprProduct;
 use MeprSubscription;
 use MeprTransaction;
 use MeprUtils;
+use Pronamic\WordPress\Pay\AbstractPluginIntegration;
 use Pronamic\WordPress\Pay\Payments\PaymentStatus;
 use Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways\Gateway;
 use Pronamic\WordPress\Pay\Payments\Payment;
@@ -29,7 +30,7 @@ use Pronamic\WordPress\Pay\Subscriptions\SubscriptionStatus;
  * @version 2.0.4
  * @since   1.0.0
  */
-class Extension extends \Pronamic\WordPress\Pay\AbstractPluginIntegration {
+class Extension extends AbstractPluginIntegration {
 	/**
 	 * The slug of this addon
 	 *
@@ -38,32 +39,48 @@ class Extension extends \Pronamic\WordPress\Pay\AbstractPluginIntegration {
 	const SLUG = 'memberpress';
 
 	/**
-	 * Constructs and initializes the MemberPress extension.
+	 * Construct MemberPress plugin integration.
 	 */
 	public function __construct() {
 		parent::__construct();
 
+		// Dependencies.
+		$dependencies = $this->get_dependencies();
+
+		$dependencies->add( new MemberPressDependency() );
+	}
+
+	/**
+	 * Setup.
+	 */
+	public function setup() {
+		\add_filter( 'pronamic_subscription_source_description_' . self::SLUG, array( $this, 'subscription_source_description' ), 10, 2 );
+		\add_filter( 'pronamic_payment_source_description_' . self::SLUG, array( $this, 'source_description' ), 10, 2 );
+
+		// Check if dependencies are met and integration is active.
+		if ( ! $this->is_active() ) {
+			return;
+		}
+
 		// @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprGatewayFactory.php#L48-50
-		add_filter( 'mepr-gateway-paths', array( $this, 'gateway_paths' ) );
+		\add_filter( 'mepr-gateway-paths', array( $this, 'gateway_paths' ) );
 
-		add_filter( 'pronamic_payment_redirect_url_' . self::SLUG, array( __CLASS__, 'redirect_url' ), 10, 2 );
-		add_action( 'pronamic_payment_status_update_' . self::SLUG, array( __CLASS__, 'status_update' ), 10, 1 );
+		\add_filter( 'pronamic_payment_redirect_url_' . self::SLUG, array( $this, 'redirect_url' ), 10, 2 );
+		\add_action( 'pronamic_payment_status_update_' . self::SLUG, array( $this, 'status_update' ), 10, 1 );
 
-		add_filter( 'pronamic_payment_source_text_' . self::SLUG, array( __CLASS__, 'source_text' ), 10, 2 );
-		add_filter( 'pronamic_payment_source_description_' . self::SLUG, array( __CLASS__, 'source_description' ), 10, 2 );
-		add_filter( 'pronamic_payment_source_url_' . self::SLUG, array( __CLASS__, 'source_url' ), 10, 2 );
-		add_filter( 'pronamic_subscription_source_text_' . self::SLUG, array( __CLASS__, 'subscription_source_text' ), 10, 2 );
-		add_filter( 'pronamic_subscription_source_description_' . self::SLUG, array( __CLASS__, 'subscription_source_description' ), 10, 2 );
-		add_filter( 'pronamic_subscription_source_url_' . self::SLUG, array( __CLASS__, 'subscription_source_url' ), 10, 2 );
+		\add_filter( 'pronamic_subscription_source_text_' . self::SLUG, array( $this, 'subscription_source_text' ), 10, 2 );
+		\add_filter( 'pronamic_subscription_source_url_' . self::SLUG, array( $this, 'subscription_source_url' ), 10, 2 );
+		\add_filter( 'pronamic_payment_source_text_' . self::SLUG, array( $this, 'source_text' ), 10, 2 );
+		\add_filter( 'pronamic_payment_source_url_' . self::SLUG, array( $this, 'source_url' ), 10, 2 );
 
-		add_action( 'mepr_subscription_pre_delete', array( $this, 'subscription_pre_delete' ), 10, 1 );
+		\add_action( 'mepr_subscription_pre_delete', array( $this, 'subscription_pre_delete' ), 10, 1 );
 
-		add_action( 'mepr_subscription_transition_status', array( $this, 'memberpress_subscription_transition_status' ), 10, 3 );
+		\add_action( 'mepr_subscription_transition_status', array( $this, 'memberpress_subscription_transition_status' ), 10, 3 );
 
 		// Hide MemberPress columns for payments and subscriptions.
-		add_filter( 'registered_post_type', array( $this, 'post_type_columns_hide' ), 15, 1 );
+		\add_filter( 'registered_post_type', array( $this, 'post_type_columns_hide' ), 15, 1 );
 
-		if ( is_admin() ) {
+		if ( \is_admin() ) {
 			$this->admin_subscriptions = new Admin\AdminSubscriptions();
 			$this->admin_transactions  = new Admin\AdminTransactions();
 
@@ -113,7 +130,7 @@ class Extension extends \Pronamic\WordPress\Pay\AbstractPluginIntegration {
 	 *
 	 * @return string
 	 */
-	public static function redirect_url( $url, Payment $payment ) {
+	public function redirect_url( $url, Payment $payment ) {
 		global $transaction;
 
 		$transaction_id = $payment->get_source_id();
@@ -170,7 +187,7 @@ class Extension extends \Pronamic\WordPress\Pay\AbstractPluginIntegration {
 	 *
 	 * @param Payment $payment The payment whose status is updated.
 	 */
-	public static function status_update( Payment $payment ) {
+	public function status_update( Payment $payment ) {
 		$transaction = new MeprTransaction( $payment->get_source_id() );
 
 		if ( $payment->get_recurring() ) {
@@ -328,7 +345,7 @@ class Extension extends \Pronamic\WordPress\Pay\AbstractPluginIntegration {
 	 *
 	 * @return string
 	 */
-	public static function source_text( $text, Payment $payment ) {
+	public function source_text( $text, Payment $payment ) {
 		$text = __( 'MemberPress', 'pronamic_ideal' ) . '<br />';
 
 		$text .= sprintf(
@@ -356,7 +373,7 @@ class Extension extends \Pronamic\WordPress\Pay\AbstractPluginIntegration {
 	 *
 	 * @return string
 	 */
-	public static function subscription_source_text( $text, Subscription $subscription ) {
+	public function subscription_source_text( $text, Subscription $subscription ) {
 		$text = __( 'MemberPress', 'pronamic_ideal' ) . '<br />';
 
 		$text .= sprintf(
@@ -383,7 +400,7 @@ class Extension extends \Pronamic\WordPress\Pay\AbstractPluginIntegration {
 	 *
 	 * @return string
 	 */
-	public static function source_description( $description, Payment $payment ) {
+	public function source_description( $description, Payment $payment ) {
 		return __( 'MemberPress Transaction', 'pronamic_ideal' );
 	}
 
@@ -395,7 +412,7 @@ class Extension extends \Pronamic\WordPress\Pay\AbstractPluginIntegration {
 	 *
 	 * @return string
 	 */
-	public static function subscription_source_description( $description, Subscription $subscription ) {
+	public function subscription_source_description( $description, Subscription $subscription ) {
 		return __( 'MemberPress Subscription', 'pronamic_ideal' );
 	}
 
@@ -407,7 +424,7 @@ class Extension extends \Pronamic\WordPress\Pay\AbstractPluginIntegration {
 	 *
 	 * @return string
 	 */
-	public static function source_url( $url, Payment $payment ) {
+	public function source_url( $url, Payment $payment ) {
 		$url = add_query_arg(
 			array(
 				'page'   => 'memberpress-trans',
@@ -428,7 +445,7 @@ class Extension extends \Pronamic\WordPress\Pay\AbstractPluginIntegration {
 	 *
 	 * @return string
 	 */
-	public static function subscription_source_url( $url, Subscription $subscription ) {
+	public function subscription_source_url( $url, Subscription $subscription ) {
 		$url = add_query_arg(
 			array(
 				'page'         => 'memberpress-subscriptions',
