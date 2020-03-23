@@ -42,7 +42,11 @@ class Extension extends AbstractPluginIntegration {
 	 * Construct MemberPress plugin integration.
 	 */
 	public function __construct() {
-		parent::__construct();
+		parent::__construct(
+			array(
+				'name' => __( 'MemberPress', 'pronamic_ideal' ),
+			)
+		);
 
 		// Dependencies.
 		$dependencies = $this->get_dependencies();
