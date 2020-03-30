@@ -32,7 +32,7 @@ use ReflectionClass;
  * WordPress pay MemberPress gateway
  *
  * @author  Remco Tolsma
- * @version 2.0.12
+ * @version 2.1.1
  * @since   1.0.0
  */
 class Gateway extends MeprBaseRealGateway {
@@ -116,9 +116,15 @@ class Gateway extends MeprBaseRealGateway {
 			$class = $this;
 		}
 
-		if ( 'MeprUtils' === $class && 'send_product_welcome_notices' === $method ) {
-			// `send_product_welcome_notices` is called from `send_signup_notices` in newer versions.
-			return;
+		// `send_product_welcome_notices` is called from `send_signup_notices` in newer versions.
+		if ( 'send_product_welcome_notices' === $method ) {
+			if ( 'MeprUtils' === $class ) {
+				return null;
+			}
+
+			if ( ! \method_exists( $class, 'send_product_welcome_notices' ) ) {
+				return null;
+			}
 		}
 
 		return call_user_func( array( $class, $method ), $transaction );
