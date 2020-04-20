@@ -32,7 +32,7 @@ use ReflectionClass;
  * WordPress pay MemberPress gateway
  *
  * @author  Remco Tolsma
- * @version 2.1.1
+ * @version 2.1.2
  * @since   1.0.0
  */
 class Gateway extends MeprBaseRealGateway {
@@ -678,7 +678,10 @@ class Gateway extends MeprBaseRealGateway {
 		 * Notes:
 		 * - MemberPress also uses trial amount for prorated upgrade/downgrade
 		 * - Not updated BEFORE payment start, as transaction total amount is used for subscription amount.
+		 * - Reload transaction to make sure actual status is being used (i.e. on free downgrade).
 		 */
+		$txn = new MeprTransaction( $txn->id );
+
 		$subscription = $txn->subscription();
 
 		if ( $subscription && $subscription->in_trial() ) {
