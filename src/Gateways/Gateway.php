@@ -212,7 +212,16 @@ class Gateway extends MeprBaseRealGateway {
 		$subscription = $transaction->subscription();
 
 		if ( $subscription ) {
-			if ( MeprSubscription::$active_str !== $subscription->status ) {
+			$should_activate = ! \in_array(
+				$subscription->status,
+				array(
+					MeprSubscription::$active_str,
+					MeprSubscription::$cancelled_str,
+				),
+				true
+			);
+
+			if ( $should_activate ) {
 				$subscription->status = MeprSubscription::$active_str;
 				$subscription->store();
 			}
