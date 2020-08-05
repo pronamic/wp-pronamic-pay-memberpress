@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [2.1.3] - 2020-08-05
+- Fixed reactivating cancelled MemberPress subscription when pending recurring payment completes.
+
 ## [2.1.2] - 2020-04-20
 - Fixed setting `complete` transaction status to `pending` again on free downgrade.
 
@@ -97,7 +100,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.1.2...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.1.3...HEAD
+[2.1.3]: https://github.com/wp-pay-extensions/memberpress/compare/2.1.2...2.1.3
 [2.1.2]: https://github.com/wp-pay-extensions/memberpress/compare/2.1.1...2.1.2
 [2.1.1]: https://github.com/wp-pay-extensions/memberpress/compare/2.1.0...2.1.1
 [2.1.0]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.13...2.1.0
