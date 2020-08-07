@@ -194,7 +194,7 @@ class Extension extends AbstractPluginIntegration {
 	public function status_update( Payment $payment ) {
 		$transaction = new MeprTransaction( $payment->get_source_id() );
 
-		if ( $payment->get_recurring() ) {
+		if ( $payment->get_recurring() || empty( $transaction->id ) ) {
 			$subscription_id = $payment->get_subscription()->get_source_id();
 			$subscription    = new MeprSubscription( $subscription_id );
 
@@ -291,9 +291,22 @@ class Extension extends AbstractPluginIntegration {
 			$gateway->mp_txn           = $transaction;
 
 			switch ( $payment->get_status() ) {
+				case PaymentStatus::FAILURE:
+					$gateway->record_payment_failure();
+
+					// Set subscription 'On Hold' to prevent subsequent
+					// successful subscriptions from awaking subscription.
+					if ( ! $payment->get_recurring() ) {
+						$subscription = $payment->get_subscription();
+
+						if ( null !== $subscription ) {
+							$subscription->set_status( SubscriptionStatus::ON_HOLD );
+						}
+					}
+
+					break;
 				case PaymentStatus::CANCELLED:
 				case PaymentStatus::EXPIRED:
-				case PaymentStatus::FAILURE:
 					$gateway->record_payment_failure();
 
 					break;
