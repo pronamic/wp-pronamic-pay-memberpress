@@ -208,7 +208,7 @@ class Pronamic {
 			->with_number_recurrences( $number_recurrences )
 			->create();
 
-		$subscription->phases[] = $regular_phase;
+		$subscription->add_phase( $regular_phase );
 
 		// Amount.
 		$subscription->set_total_amount(
