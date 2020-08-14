@@ -189,13 +189,13 @@ class Pronamic {
 		// New subscription.
 		$subscription = new Subscription();
 
-		// Number recurrences.
-		$number_recurrences = null;
+		// Total periods.
+		$total_periods = null;
 
 		$limit_cycles_number = (int) $memberpress_subscription->limit_cycles_num;
 
 		if ( $memberpress_subscription->limit_cycles && $limit_cycles_number > 0 ) {
-			$number_recurrences = $limit_cycles_number;
+			$total_periods = $limit_cycles_number;
 		}
 
 		// Phase.
@@ -205,7 +205,7 @@ class Pronamic {
 			->with_start_date( $start_date )
 			->with_amount( new TaxedMoney( $memberpress_transaction->total, MemberPress::get_currency() ) )
 			->with_interval( $memberpress_product->period, Core_Util::to_period( $memberpress_product->period_type ) )
-			->with_number_recurrences( $number_recurrences )
+			->with_total_periods( $total_periods )
 			->create();
 
 		$subscription->add_phase( $regular_phase );
