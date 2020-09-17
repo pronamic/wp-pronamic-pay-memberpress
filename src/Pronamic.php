@@ -205,7 +205,7 @@ class Pronamic {
 		$regular_phase = ( new SubscriptionPhaseBuilder() )
 			->with_start_date( $start_date )
 			->with_amount( new TaxedMoney( $memberpress_transaction->total, MemberPress::get_currency() ) )
-			->with_interval( $memberpress_product->period, Core_Util::to_period( $memberpress_product->period_type ) )
+			->with_interval( 'P' . $memberpress_product->period . Core_Util::to_period( $memberpress_product->period_type ) )
 			->with_total_periods( $total_periods )
 			->create();
 
