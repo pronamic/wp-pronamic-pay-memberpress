@@ -11,9 +11,6 @@
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 
 use MeprTransaction;
-use MeprOptions;
-use Pronamic\WordPress\DateTime\DateTime;
-use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Money\TaxedMoney;
 use Pronamic\WordPress\Pay\Address;
 use Pronamic\WordPress\Pay\Customer;
@@ -21,6 +18,7 @@ use Pronamic\WordPress\Pay\ContactName;
 use Pronamic\WordPress\Pay\Core\Util as Core_Util;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Payments\PaymentLines;
+use Pronamic\WordPress\Pay\Subscriptions\SubscriptionBuilder;
 use Pronamic\WordPress\Pay\Subscriptions\SubscriptionPhaseBuilder;
 use Pronamic\WordPress\Pay\Subscriptions\Subscription;
 
@@ -187,9 +185,6 @@ class Pronamic {
 			return false;
 		}
 
-		// New subscription.
-		$subscription = new Subscription();
-
 		// Total periods.
 		$total_periods = null;
 
@@ -200,24 +195,17 @@ class Pronamic {
 		}
 
 		// Phase.
-		$start_date = new \DateTimeImmutable();
-
-		$regular_phase = ( new SubscriptionPhaseBuilder() )
-			->with_start_date( $start_date )
+		$phase = ( new SubscriptionPhaseBuilder() )
+			->with_start_date( new \DateTimeImmutable() )
 			->with_amount( new TaxedMoney( $memberpress_transaction->total, MemberPress::get_currency() ) )
 			->with_interval( 'P' . $memberpress_product->period . Core_Util::to_period( $memberpress_product->period_type ) )
 			->with_total_periods( $total_periods )
 			->create();
 
-		$subscription->add_phase( $regular_phase );
-
-		// Amount.
-		$subscription->set_total_amount(
-			new TaxedMoney(
-				$memberpress_transaction->total,
-				MemberPress::get_currency()
-			)
-		);
+		// Build subscription.
+		$subscription = ( new SubscriptionBuilder() )
+			->with_phase( $phase )
+			->create();
 
 		return $subscription;
 	}
