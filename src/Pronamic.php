@@ -182,7 +182,7 @@ class Pronamic {
 		$memberpress_subscription = $memberpress_transaction->subscription();
 
 		if ( ! $memberpress_subscription ) {
-			return false;
+			return null;
 		}
 
 		// Total periods.
