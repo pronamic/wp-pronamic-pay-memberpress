@@ -274,7 +274,6 @@ class Extension extends AbstractPluginIntegration {
 		$should_update = ! MemberPress::transaction_has_status(
 			$transaction,
 			array(
-				MeprTransaction::$failed_str,
 				MeprTransaction::$complete_str,
 			)
 		);
