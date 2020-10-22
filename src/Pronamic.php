@@ -185,6 +185,29 @@ class Pronamic {
 			return null;
 		}
 
+		/**
+		 * Build subscription.
+		 */
+		$subscription = new SubscriptionBuilder();
+
+		$start_date = new \DateTimeImmutable();
+
+		// Trial phase.
+		if ( $memberpress_subscription->in_trial() ) {
+			$trial_phase = ( new SubscriptionPhaseBuilder() )
+				->with_start_date( $start_date )
+				->with_amount( new TaxedMoney( $memberpress_subscription->trial_amount, MemberPress::get_currency() ) )
+				->with_interval( 'P' . $memberpress_subscription->trial_days . 'D' )
+				->with_total_periods( 1 )
+				->with_trial()
+				->create();
+
+			$subscription->with_phase( $trial_phase );
+
+			// Add trial date interval to regular phase start date.
+			$start_date = $start_date->add( $trial_phase->get_date_interval() );
+		}
+
 		// Total periods.
 		$total_periods = null;
 
@@ -194,18 +217,18 @@ class Pronamic {
 			$total_periods = $limit_cycles_number;
 		}
 
-		// Phase.
-		$phase = ( new SubscriptionPhaseBuilder() )
-			->with_start_date( new \DateTimeImmutable() )
+		// Regular phase.
+		$regular_phase = ( new SubscriptionPhaseBuilder() )
+			->with_start_date( $start_date )
 			->with_amount( new TaxedMoney( $memberpress_transaction->total, MemberPress::get_currency() ) )
 			->with_interval( 'P' . $memberpress_product->period . Core_Util::to_period( $memberpress_product->period_type ) )
 			->with_total_periods( $total_periods )
 			->create();
 
+		$subscription->with_phase( $regular_phase );
+
 		// Build subscription.
-		$subscription = ( new SubscriptionBuilder() )
-			->with_phase( $phase )
-			->create();
+		$subscription = $subscription->create();
 
 		return $subscription;
 	}
