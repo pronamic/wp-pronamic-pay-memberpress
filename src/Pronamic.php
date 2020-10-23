@@ -18,9 +18,9 @@ use Pronamic\WordPress\Pay\ContactName;
 use Pronamic\WordPress\Pay\Core\Util as Core_Util;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Payments\PaymentLines;
-use Pronamic\WordPress\Pay\Subscriptions\SubscriptionBuilder;
-use Pronamic\WordPress\Pay\Subscriptions\SubscriptionPhaseBuilder;
 use Pronamic\WordPress\Pay\Subscriptions\Subscription;
+use Pronamic\WordPress\Pay\Subscriptions\SubscriptionInterval;
+use Pronamic\WordPress\Pay\Subscriptions\SubscriptionPhase;
 
 /**
  * Pronamic
@@ -186,26 +186,27 @@ class Pronamic {
 		}
 
 		/**
-		 * Build subscription.
+		 * Subscription.
 		 */
-		$subscription = new SubscriptionBuilder();
+		$subscription = new Subscription();
 
 		$start_date = new \DateTimeImmutable();
 
 		// Trial phase.
 		if ( $memberpress_subscription->in_trial() ) {
-			$trial_phase = ( new SubscriptionPhaseBuilder() )
-				->with_start_date( $start_date )
-				->with_amount( new TaxedMoney( $memberpress_subscription->trial_amount, MemberPress::get_currency() ) )
-				->with_interval( 'P' . $memberpress_subscription->trial_days . 'D' )
-				->with_total_periods( 1 )
-				->with_trial()
-				->create();
+			$trial_phase = new SubscriptionPhase(
+				$subscription,
+				$start_date,
+				new SubscriptionInterval( 'P' . $memberpress_subscription->trial_days . 'D' ),
+				new TaxedMoney( $memberpress_subscription->trial_amount, MemberPress::get_currency() )
+			);
 
-			$subscription->with_phase( $trial_phase );
+			$trial_phase->set_total_periods( 1 );
+			$trial_phase->set_trial( true );
 
-			// Add trial date interval to regular phase start date.
-			$start_date = $start_date->add( $trial_phase->get_date_interval() );
+			$subscription->add_phase( $trial_phase );
+
+			$start_date = $trial_phase->get_end_date();
 		}
 
 		// Total periods.
@@ -218,17 +219,16 @@ class Pronamic {
 		}
 
 		// Regular phase.
-		$regular_phase = ( new SubscriptionPhaseBuilder() )
-			->with_start_date( $start_date )
-			->with_amount( new TaxedMoney( $memberpress_transaction->total, MemberPress::get_currency() ) )
-			->with_interval( 'P' . $memberpress_product->period . Core_Util::to_period( $memberpress_product->period_type ) )
-			->with_total_periods( $total_periods )
-			->create();
+		$regular_phase = new SubscriptionPhase(
+			$subscription,
+			$start_date,
+			new SubscriptionInterval( 'P' . $memberpress_product->period . Core_Util::to_period( $memberpress_product->period_type ) ),
+			new TaxedMoney( $memberpress_transaction->total, MemberPress::get_currency() )
+		);
 
-		$subscription->with_phase( $regular_phase );
+		$regular_phase->set_total_periods( $total_periods );
 
-		// Build subscription.
-		$subscription = $subscription->create();
+		$subscription->add_phase( $regular_phase );
 
 		return $subscription;
 	}
