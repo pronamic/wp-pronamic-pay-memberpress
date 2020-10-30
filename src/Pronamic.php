@@ -133,6 +133,8 @@ class Pronamic {
 		if ( $payment->subscription ) {
 			$payment->subscription_source_id = $memberpress_transaction->subscription_id;
 
+			$payment->add_period( $payment->subscription->new_period() );
+
 			if ( $memberpress_subscription->in_trial() ) {
 				$payment->set_total_amount(
 					new TaxedMoney(
