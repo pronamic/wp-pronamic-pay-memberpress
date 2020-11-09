@@ -591,20 +591,6 @@ class Gateway extends MeprBaseRealGateway {
 			return;
 		}
 
-		$sub->status = MeprSubscription::$cancelled_str;
-
-		$sub->store();
-
-		// Expire the grace period (confirmation) if no completed payments have come through.
-		if ( (int) $sub->txn_count <= 0 ) {
-			$sub->expire_txns();
-		}
-
-		$sub->limit_reached_actions();
-
-		// Send cancelled subscription notices.
-		MeprUtils::send_cancelled_sub_notices( $sub );
-
 		// Add note.
 		$note = sprintf(
 			/* translators: %s: extension name */
@@ -618,8 +604,30 @@ class Gateway extends MeprBaseRealGateway {
 		if ( ! in_array( $subscription->get_status(), array( SubscriptionStatus::CANCELLED, SubscriptionStatus::COMPLETED ), true ) ) {
 			$subscription->set_status( SubscriptionStatus::CANCELLED );
 
+			$subscription->next_payment_date          = null;
+			$subscription->next_payment_delivery_date = null;
+
+			// Delete next payment post meta.
+			$subscription->set_meta( 'next_payment', null );
+			$subscription->set_meta( 'next_payment_delivery_date', null );
+
 			$subscription->save();
 		}
+
+		// Cancel MemberPress subscription.
+		$sub->status = MeprSubscription::$cancelled_str;
+
+		$sub->store();
+
+		// Expire the grace period (confirmation) if no completed payments have come through.
+		if ( (int) $sub->txn_count <= 0 ) {
+			$sub->expire_txns();
+		}
+
+		$sub->limit_reached_actions();
+
+		// Send cancelled subscription notices.
+		MeprUtils::send_cancelled_sub_notices( $sub );
 	}
 
 	/**
@@ -682,7 +690,7 @@ class Gateway extends MeprBaseRealGateway {
 		}
 
 		/*
-		 * Update transaction subtotal.
+		 * Update trial transaction.
 		 *
 		 * Notes:
 		 * - MemberPress also uses trial amount for prorated upgrade/downgrade
@@ -694,6 +702,8 @@ class Gateway extends MeprBaseRealGateway {
 		$subscription = $txn->subscription();
 
 		if ( $subscription && $subscription->in_trial() ) {
+			$txn->expires_at = MeprUtils::ts_to_mysql_date( $payment->get_end_date()->getTimestamp(), 'Y-m-d 23:59:59' );
+
 			$txn->set_subtotal( $subscription->trial_amount );
 			$txn->store();
 		}

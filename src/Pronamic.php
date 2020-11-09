@@ -11,9 +11,6 @@
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 
 use MeprTransaction;
-use MeprOptions;
-use Pronamic\WordPress\DateTime\DateTime;
-use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Money\TaxedMoney;
 use Pronamic\WordPress\Pay\Address;
 use Pronamic\WordPress\Pay\Customer;
@@ -22,6 +19,8 @@ use Pronamic\WordPress\Pay\Core\Util as Core_Util;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Payments\PaymentLines;
 use Pronamic\WordPress\Pay\Subscriptions\Subscription;
+use Pronamic\WordPress\Pay\Subscriptions\SubscriptionInterval;
+use Pronamic\WordPress\Pay\Subscriptions\SubscriptionPhase;
 
 /**
  * Pronamic
@@ -134,6 +133,8 @@ class Pronamic {
 		if ( $payment->subscription ) {
 			$payment->subscription_source_id = $memberpress_transaction->subscription_id;
 
+			$payment->add_period( $payment->subscription->new_period() );
+
 			if ( $memberpress_subscription->in_trial() ) {
 				$payment->set_total_amount(
 					new TaxedMoney(
@@ -183,28 +184,53 @@ class Pronamic {
 		$memberpress_subscription = $memberpress_transaction->subscription();
 
 		if ( ! $memberpress_subscription ) {
-			return false;
+			return null;
 		}
 
-		// New subscription.
-		$subscription                  = new Subscription();
-		$subscription->interval        = $memberpress_product->period;
-		$subscription->interval_period = Core_Util::to_period( $memberpress_product->period_type );
+		/**
+		 * Subscription.
+		 */
+		$subscription = new Subscription();
 
-		// Frequency.
+		$start_date = new \DateTimeImmutable();
+
+		// Trial phase.
+		if ( $memberpress_subscription->in_trial() ) {
+			$trial_phase = new SubscriptionPhase(
+				$subscription,
+				$start_date,
+				new SubscriptionInterval( 'P' . $memberpress_subscription->trial_days . 'D' ),
+				new TaxedMoney( $memberpress_subscription->trial_amount, MemberPress::get_currency() )
+			);
+
+			$trial_phase->set_total_periods( 1 );
+			$trial_phase->set_trial( true );
+
+			$subscription->add_phase( $trial_phase );
+
+			$start_date = $trial_phase->get_end_date();
+		}
+
+		// Total periods.
+		$total_periods = null;
+
 		$limit_cycles_number = (int) $memberpress_subscription->limit_cycles_num;
 
 		if ( $memberpress_subscription->limit_cycles && $limit_cycles_number > 0 ) {
-			$subscription->frequency = $limit_cycles_number;
+			$total_periods = $limit_cycles_number;
 		}
 
-		// Amount.
-		$subscription->set_total_amount(
-			new TaxedMoney(
-				$memberpress_transaction->total,
-				MemberPress::get_currency()
-			)
+		// Regular phase.
+		$regular_phase = new SubscriptionPhase(
+			$subscription,
+			$start_date,
+			new SubscriptionInterval( 'P' . $memberpress_product->period . Core_Util::to_period( $memberpress_product->period_type ) ),
+			new TaxedMoney( $memberpress_transaction->total, MemberPress::get_currency() )
 		);
+
+		$regular_phase->set_total_periods( $total_periods );
+
+		$subscription->add_phase( $regular_phase );
 
 		return $subscription;
 	}
