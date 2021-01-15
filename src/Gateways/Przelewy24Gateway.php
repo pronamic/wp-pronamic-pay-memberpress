@@ -11,6 +11,7 @@
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways;
 
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
+use Pronamic\WordPress\Pay\Extensions\MemberPress\Pronamic;
 
 /**
  * WordPress pay MemberPress Przelewy24 gateway
@@ -34,5 +35,15 @@ class Przelewy24Gateway extends Gateway {
 	 */
 	public function get_alias() {
 		return 'MeprPrzelewy24Gateway';
+	}
+
+	/**
+	 * Get icon function, please note that this is not a MemberPress function.
+	 *
+	 * @since 2.0.8
+	 * @return string
+	 */
+	protected function get_icon() {
+		return Pronamic::get_method_icon_url( $this->payment_method );
 	}
 }
