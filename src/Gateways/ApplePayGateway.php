@@ -1,6 +1,6 @@
 <?php
 /**
- * Przelewy24 gateway
+ * Apple Pay gateway
  *
  * @author    Pronamic <info@pronamic.eu>
  * @copyright 2005-2020 Pronamic
@@ -14,19 +14,37 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Extensions\MemberPress\Pronamic;
 
 /**
- * WordPress pay MemberPress Przelewy24 gateway
+ * WordPress pay MemberPress Apple Pay gateway
  *
  * @author  Reüel van der Steege
- * @version 2.2.0
- * @since   2.2.0
+ * @version 2.3.0
+ * @since   2.3.0
  */
-class Przelewy24Gateway extends Gateway {
+class ApplePayGateway extends Gateway {
 	/**
 	 * Payment method.
 	 *
 	 * @var string
 	 */
-	protected $payment_method = PaymentMethods::PRZELEWY24;
+	protected $payment_method = PaymentMethods::APPLE_PAY;
+
+	/**
+	 * Constructs and initialize Apple Pay gateway.
+	 */
+	public function __construct() {
+		parent::__construct();
+
+		// Capabilities.
+		$this->capabilities = array(
+			'process-payments',
+			'create-subscriptions',
+			'cancel-subscriptions',
+			'update-subscriptions',
+			'suspend-subscriptions',
+			'resume-subscriptions',
+			'subscription-trial-payment',
+		);
+	}
 
 	/**
 	 * Get alias class name of this gateway.
@@ -34,7 +52,7 @@ class Przelewy24Gateway extends Gateway {
 	 * @return string
 	 */
 	public function get_alias() {
-		return 'MeprPrzelewy24Gateway';
+		return 'MeprApplePayGateway';
 	}
 
 	/**
