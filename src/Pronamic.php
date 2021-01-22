@@ -33,7 +33,7 @@ class Pronamic {
 	/**
 	 * Get payment method icon URL.
 	 *
-	 * @param $method
+	 * @param string $method Payment method.
 	 * @return string
 	 */
 	public static function get_method_icon_url( $method ) {

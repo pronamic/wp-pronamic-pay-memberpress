@@ -494,6 +494,10 @@ class Extension extends AbstractPluginIntegration {
 
 		$status = SubscriptionStatuses::transform( $status_new );
 
+		if ( null === $status ) {
+			return;
+		}
+
 		$subscription->set_status( $status );
 
 		$subscription->save();
