@@ -37,9 +37,12 @@ class SubscriptionStatuses {
 			case MeprSubscription::$active_str:
 				return SubscriptionStatus::ACTIVE;
 			case MeprSubscription::$suspended_str:
+				// @todo return status 'On hold'?
 				return null;
 			case MeprSubscription::$cancelled_str:
 				return SubscriptionStatus::CANCELLED;
 		}
+
+		return null;
 	}
 }
