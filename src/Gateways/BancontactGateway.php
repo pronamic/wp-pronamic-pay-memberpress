@@ -11,7 +11,6 @@
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways;
 
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
-use Pronamic\WordPress\Pay\Extensions\MemberPress\Pronamic;
 
 /**
  * WordPress pay MemberPress Bancontact/Mister Cash gateway
@@ -44,6 +43,6 @@ class BancontactGateway extends Gateway {
 	 * @return string
 	 */
 	protected function get_icon() {
-		return Pronamic::get_method_icon_url( $this->payment_method );
+		return PaymentMethods::get_icon_url( PaymentMethods::BANCONTACT );
 	}
 }
