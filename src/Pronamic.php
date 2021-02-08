@@ -26,14 +26,14 @@ use Pronamic\WordPress\Pay\Subscriptions\SubscriptionPhase;
  * Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.0.10
+ * @version 2.2.3
  * @since   2.0.5
  */
 class Pronamic {
 	/**
 	 * Get payment method icon URL.
 	 *
-	 * @param $method
+	 * @param string $method Payment method.
 	 * @return string
 	 */
 	public static function get_method_icon_url( $method ) {

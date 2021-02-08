@@ -17,7 +17,7 @@ use Pronamic\WordPress\Pay\Subscriptions\SubscriptionStatus;
  * Subscription statuses
  *
  * @author  Remco Tolsma
- * @version 2.0.1
+ * @version 2.2.3
  * @since   2.0.1
  */
 class SubscriptionStatuses {
@@ -37,9 +37,12 @@ class SubscriptionStatuses {
 			case MeprSubscription::$active_str:
 				return SubscriptionStatus::ACTIVE;
 			case MeprSubscription::$suspended_str:
+				// @todo set to 'On hold'?
 				return null;
 			case MeprSubscription::$cancelled_str:
 				return SubscriptionStatus::CANCELLED;
 		}
+
+		return null;
 	}
 }

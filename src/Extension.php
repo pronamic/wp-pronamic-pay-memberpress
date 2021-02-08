@@ -27,7 +27,7 @@ use Pronamic\WordPress\Pay\Subscriptions\SubscriptionStatus;
  * WordPress pay MemberPress extension
  *
  * @author  Remco Tolsma
- * @version 2.0.4
+ * @version 2.2.3
  * @since   1.0.0
  */
 class Extension extends AbstractPluginIntegration {
@@ -493,6 +493,10 @@ class Extension extends AbstractPluginIntegration {
 		}
 
 		$status = SubscriptionStatuses::transform( $status_new );
+
+		if ( null === $status ) {
+			return;
+		}
 
 		$subscription->set_status( $status );
 

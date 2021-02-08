@@ -32,7 +32,7 @@ use ReflectionClass;
  * WordPress pay MemberPress gateway
  *
  * @author  Remco Tolsma
- * @version 2.1.2
+ * @version 2.2.3
  * @since   1.0.0
  */
 class Gateway extends MeprBaseRealGateway {
@@ -734,7 +734,16 @@ class Gateway extends MeprBaseRealGateway {
 
 		$gateway = Plugin::get_gateway( $config_id );
 
-		if ( $gateway && '' === $gateway->get_input_html() ) {
+		// Check gateway.
+		if ( null === $gateway ) {
+			return;
+		}
+
+		$gateway->set_payment_method( $this->payment_method );
+
+		$html = $gateway->get_input_html();
+
+		if ( empty( $html ) ) {
 			$this->payment_redirect( $txn );
 		}
 	}
@@ -824,7 +833,9 @@ class Gateway extends MeprBaseRealGateway {
 
 				$gateway = Plugin::get_gateway( $config_id );
 
-				if ( $gateway ) {
+				if ( null !== $gateway ) {
+					$gateway->set_payment_method( $this->payment_method );
+
 					// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 					echo $gateway->get_input_html();
 				}

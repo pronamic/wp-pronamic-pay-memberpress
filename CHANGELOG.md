@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [2.2.3] - 2021-02-08
+- Fixed showing payment method specific input fields.
+
 ## [2.2.2] - 2021-01-18
 - Added support for recurring payments with Apple Pay.
 - Updated payment method icons to use wp-pay/logos library.
@@ -113,7 +116,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.2.2...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.2.3...HEAD
+[2.2.3]: https://github.com/wp-pay-extensions/memberpress/compare/2.2.2...2.2.3
 [2.2.2]: https://github.com/wp-pay-extensions/memberpress/compare/2.2.1...2.2.2
 [2.2.1]: https://github.com/wp-pay-extensions/memberpress/compare/2.2.0...2.2.1
 [2.2.0]: https://github.com/wp-pay-extensions/memberpress/compare/2.1.3...2.2.0
