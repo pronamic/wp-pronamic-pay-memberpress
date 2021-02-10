@@ -83,6 +83,9 @@ class Gateway extends MeprBaseRealGateway {
 
 		// Setup the notification actions for this gateway.
 		$this->notifiers = array();
+
+		// Support single-page checkout.
+		$this->has_spc_form = true;
 	}
 
 	/**
@@ -757,14 +760,10 @@ class Gateway extends MeprBaseRealGateway {
 	 *
 	 * @param MeprTransaction $txn MemberPress transaction object.
 	 *
-	 * @return bool
+	 * @return void
 	 * @throws \Exception Throws exception on gateway payment start error.
 	 */
 	public function process_payment_form( $txn ) {
-		if ( ! filter_has_var( INPUT_POST, 'pronamic_pay_memberpress_pay' ) ) {
-			return false;
-		}
-
 		// Gateway.
 		$config_id = $this->settings->config_id;
 
@@ -806,7 +805,7 @@ class Gateway extends MeprBaseRealGateway {
 
 		$txn = new MeprTransaction( $txn_id );
 
-		// Artifically set the price of the $prd in case a coupon was used.
+		// Artificially set the price of the $prd in case a coupon was used.
 		if ( $product->price !== $amount ) {
 			$coupon         = true;
 			$product->price = $amount;
@@ -856,6 +855,33 @@ class Gateway extends MeprBaseRealGateway {
 			</form>
 		</div>
 		<?php
+	}
+
+	/**
+	 * Single-page checkout payment fields.
+	 *
+	 * @return string
+	 */
+	public function spc_payment_fields() {
+		// Gateway.
+		$config_id = $this->settings->config_id;
+
+		$gateway = Plugin::get_gateway( $config_id );
+
+		// Check gateway.
+		if ( null === $gateway ) {
+			return '';
+		}
+
+		$gateway->set_payment_method( $this->payment_method );
+
+		$html = $gateway->get_input_html();
+
+		if ( empty( $html ) ) {
+			return '';
+		}
+
+		return $html;
 	}
 
 	/**
