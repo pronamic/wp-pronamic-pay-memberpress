@@ -386,7 +386,7 @@ class Gateway extends MeprBaseRealGateway {
 	}
 
 	/**
-	 * Reord trial payment.
+	 * Record trial payment.
 	 *
 	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L159-161
 	 *
@@ -712,7 +712,7 @@ class Gateway extends MeprBaseRealGateway {
 		}
 
 		if ( $error instanceof \Exception ) {
-			// Rethrow error, catched by MemberPress.
+			// Rethrow error, caught by MemberPress.
 			throw $error;
 		}
 
