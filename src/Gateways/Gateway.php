@@ -86,6 +86,15 @@ class Gateway extends MeprBaseRealGateway {
 
 		// Support single-page checkout.
 		$this->has_spc_form = true;
+
+		// Key.
+		$key = 'pronamic_pay';
+
+		if ( null !== $this->payment_method ) {
+			$key = sprintf( 'pronamic_pay_%s', $this->payment_method );
+		}
+
+		$this->key = $key;
 	}
 
 	/**
