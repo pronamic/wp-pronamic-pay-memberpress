@@ -3,7 +3,7 @@
  * IDeal gateway
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2020 Pronamic
+ * @copyright 2005-2021 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
@@ -11,7 +11,6 @@
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways;
 
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
-use Pronamic\WordPress\Pay\Extensions\MemberPress\Pronamic;
 
 /**
  * WordPress pay MemberPress iDEAL gateway
@@ -44,6 +43,6 @@ class IDealGateway extends Gateway {
 	 * @return string
 	 */
 	protected function get_icon() {
-		return Pronamic::get_method_icon_url( $this->payment_method );
+		return PaymentMethods::get_icon_url( PaymentMethods::IDEAL );
 	}
 }
