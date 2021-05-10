@@ -130,10 +130,10 @@ class Pronamic {
 			if ( $memberpress_subscription->in_trial() ) {
 				$payment->set_total_amount(
 					new TaxedMoney(
-						$memberpress_subscription->trial_amount,
+						$memberpress_subscription->trial_total,
 						MemberPress::get_currency(),
-						null, // Calculate tax value based on tax percentage.
-						$memberpress_transaction->tax_rate
+						$memberpress_subscription->trial_tax_amount,
+						$memberpress_subscription->tax_rate
 					)
 				);
 			}
