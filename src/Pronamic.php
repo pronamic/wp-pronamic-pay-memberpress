@@ -27,7 +27,7 @@ use Pronamic\WordPress\Pay\Subscriptions\SubscriptionPhase;
  * Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.2.3
+ * @version 2.3.1
  * @since   2.0.5
  */
 class Pronamic {
@@ -82,14 +82,16 @@ class Pronamic {
 		 *
 		 * @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/models/MeprUser.php#L1191-L1216
 		 */
-		$address = AddressHelper::from_array( array(
-			'line_1'       => $memberpress_user->address( 'one', false ),
-			'line_2'       => $memberpress_user->address( 'two', false ),
-			'postal_code'  => $memberpress_user->address( 'zip', false ),
-			'city'         => $memberpress_user->address( 'city', false ),
-			'region'       => $memberpress_user->address( 'state', false ),
-			'country_code' => $memberpress_user->address( 'country', false ),
-		) );
+		$address = AddressHelper::from_array(
+			array(
+				'line_1'       => $memberpress_user->address( 'one', false ),
+				'line_2'       => $memberpress_user->address( 'two', false ),
+				'postal_code'  => $memberpress_user->address( 'zip', false ),
+				'city'         => $memberpress_user->address( 'city', false ),
+				'region'       => $memberpress_user->address( 'state', false ),
+				'country_code' => $memberpress_user->address( 'country', false ),
+			)
+		);
 
 		if ( null !== $address ) {
 			$address->set_name( $contact_name );

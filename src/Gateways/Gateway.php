@@ -32,7 +32,7 @@ use ReflectionClass;
  * WordPress pay MemberPress gateway
  *
  * @author  Remco Tolsma
- * @version 2.2.3
+ * @version 2.3.1
  * @since   1.0.0
  */
 class Gateway extends MeprBaseRealGateway {
