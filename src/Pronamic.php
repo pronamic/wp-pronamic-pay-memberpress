@@ -13,6 +13,7 @@ namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 use MeprTransaction;
 use Pronamic\WordPress\Money\TaxedMoney;
 use Pronamic\WordPress\Pay\Address;
+use Pronamic\WordPress\Pay\AddressHelper;
 use Pronamic\WordPress\Pay\Customer;
 use Pronamic\WordPress\Pay\ContactName;
 use Pronamic\WordPress\Pay\Core\Util as Core_Util;
@@ -26,7 +27,7 @@ use Pronamic\WordPress\Pay\Subscriptions\SubscriptionPhase;
  * Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.2.3
+ * @version 2.3.1
  * @since   2.0.5
  */
 class Pronamic {
@@ -76,31 +77,24 @@ class Pronamic {
 
 		$payment->set_customer( $customer );
 
-		/*
+		/**
 		 * Address.
+		 *
 		 * @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/models/MeprUser.php#L1191-L1216
 		 */
-		$address = new Address();
-
-		$address->set_name( $contact_name );
-
-		$address_fields = array(
-			'one'     => 'set_line_1',
-			'two'     => 'set_line_2',
-			'city'    => 'set_city',
-			'state'   => 'set_region',
-			'zip'     => 'set_postal_code',
-			'country' => 'set_country_code',
+		$address = AddressHelper::from_array(
+			array(
+				'line_1'       => $memberpress_user->address( 'one', false ),
+				'line_2'       => $memberpress_user->address( 'two', false ),
+				'postal_code'  => $memberpress_user->address( 'zip', false ),
+				'city'         => $memberpress_user->address( 'city', false ),
+				'region'       => $memberpress_user->address( 'state', false ),
+				'country_code' => $memberpress_user->address( 'country', false ),
+			)
 		);
 
-		foreach ( $address_fields as $field => $function ) {
-			$value = $memberpress_user->address( $field, false );
-
-			if ( empty( $value ) ) {
-				continue;
-			}
-
-			call_user_func( array( $address, $function ), $value );
+		if ( null !== $address ) {
+			$address->set_name( $contact_name );
 		}
 
 		$payment->set_billing_address( $address );
@@ -138,10 +132,10 @@ class Pronamic {
 			if ( $memberpress_subscription->in_trial() ) {
 				$payment->set_total_amount(
 					new TaxedMoney(
-						$memberpress_subscription->trial_amount,
+						$memberpress_subscription->trial_total,
 						MemberPress::get_currency(),
-						null, // Calculate tax value based on tax percentage.
-						$memberpress_transaction->tax_rate
+						$memberpress_subscription->trial_tax_amount,
+						$memberpress_subscription->tax_rate
 					)
 				);
 			}
