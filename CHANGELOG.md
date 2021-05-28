@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [2.3.2] - 2021-05-28
+- Improved setting tax amount and rate in trial phase.
+
 ## [2.3.1] - 2021-05-11
 - Use default gateway configuration setting.
 - Reduced magic in MemberPress payment address transformation function.
@@ -124,7 +127,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.3.1...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.3.2...HEAD
+[2.3.2]: https://github.com/wp-pay-extensions/memberpress/compare/2.3.1...2.3.2
 [2.3.1]: https://github.com/wp-pay-extensions/memberpress/compare/2.3.0...2.3.1
 [2.3.0]: https://github.com/wp-pay-extensions/memberpress/compare/2.2.3...2.3.0
 [2.2.3]: https://github.com/wp-pay-extensions/memberpress/compare/2.2.2...2.2.3
