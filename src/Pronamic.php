@@ -12,7 +12,6 @@ namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 
 use MeprTransaction;
 use Pronamic\WordPress\Money\TaxedMoney;
-use Pronamic\WordPress\Pay\Address;
 use Pronamic\WordPress\Pay\AddressHelper;
 use Pronamic\WordPress\Pay\Customer;
 use Pronamic\WordPress\Pay\ContactName;
@@ -27,7 +26,7 @@ use Pronamic\WordPress\Pay\Subscriptions\SubscriptionPhase;
  * Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.3.1
+ * @version 2.3.2
  * @since   2.0.5
  */
 class Pronamic {
@@ -194,7 +193,12 @@ class Pronamic {
 				$subscription,
 				$start_date,
 				new SubscriptionInterval( 'P' . $memberpress_subscription->trial_days . 'D' ),
-				new TaxedMoney( $memberpress_subscription->trial_amount, MemberPress::get_currency() )
+				new TaxedMoney(
+					$memberpress_subscription->trial_total,
+					MemberPress::get_currency(),
+					$memberpress_subscription->trial_tax_amount,
+					$memberpress_subscription->tax_rate
+				)
 			);
 
 			$trial_phase->set_total_periods( 1 );
