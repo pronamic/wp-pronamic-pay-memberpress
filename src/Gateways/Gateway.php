@@ -1008,7 +1008,36 @@ class Gateway extends MeprBaseRealGateway {
 	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/controllers/MeprAccountCtrl.php#L388
 	 */
 	public function display_update_account_form( $sub_id, $errors = array(), $message = '' ) {
+		$subscriptions = \get_pronamic_subscriptions_by_source( 'memberpress', (int) $sub_id );
 
+		$message = \__( 'The payment method for this subscription can not be updated manually.', 'pronamic_ideal' );
+
+		if ( \is_array( $subscriptions ) ) {
+			$subscription = \array_shift( $subscriptions );
+
+			$message = \sprintf(
+				/* translators: %s: mandate selection URL anchor */
+				\__( 'To update the payment method for this subscription, please visit the %s page.', 'pronamic_ideal' ),
+				\sprintf(
+					'<a href="%1$s" title="%2$s">%3$s</a>',
+					\esc_url( $subscription->get_mandate_selection_url() ),
+					\esc_attr( \__( 'payment method update', 'pronamic_ideal' ) ),
+					\esc_html( \__( 'payment method update', 'pronamic_ideal' ) )
+				)
+			);
+		}
+
+		?>
+
+		<h3>
+			<?php echo \esc_html( __( 'Update payment method', 'pronamic_ideal' ) ); ?>
+		</h3>
+
+		<div>
+			<?php echo \wp_kses_post( $message ); ?>
+		</div>
+
+		<?php
 	}
 
 	/**
