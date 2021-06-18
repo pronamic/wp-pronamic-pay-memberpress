@@ -7,6 +7,10 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [2.3.3] - 2021-06-18
+- Added subscription mandate selection link to account update page.
+- Fixed updating gateway in subscription/transaction on payment method update (via mandate selection URL).
+
 ## [2.3.2] - 2021-05-28
 - Improved setting tax amount and rate in trial phase.
 
@@ -127,7 +131,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.3.2...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.3.3...HEAD
+[2.3.3]: https://github.com/wp-pay-extensions/memberpress/compare/2.3.2...2.3.3
 [2.3.2]: https://github.com/wp-pay-extensions/memberpress/compare/2.3.1...2.3.2
 [2.3.1]: https://github.com/wp-pay-extensions/memberpress/compare/2.3.0...2.3.1
 [2.3.0]: https://github.com/wp-pay-extensions/memberpress/compare/2.2.3...2.3.0
