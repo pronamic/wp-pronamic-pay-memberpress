@@ -81,6 +81,10 @@ class Extension extends AbstractPluginIntegration {
 
 		\add_action( 'mepr_subscription_transition_status', array( $this, 'memberpress_subscription_transition_status' ), 10, 3 );
 
+		// MemberPress subscription email parameters.
+		\add_filter( 'mepr_subscription_email_params', array( $this, 'subscription_email_params' ), 10, 2 );
+		\add_filter( 'mepr_transaction_email_params', array( $this, 'transaction_email_params' ), 10, 2 );
+
 		// Hide MemberPress columns for payments and subscriptions.
 		\add_filter( 'registered_post_type', array( $this, 'post_type_columns_hide' ), 15, 1 );
 
@@ -397,6 +401,69 @@ class Extension extends AbstractPluginIntegration {
 
 			$subscription->save();
 		}
+	}
+
+	/**
+	 * Subscription email parameters.
+	 *
+	 * @param array            $params                   Email parameters.
+	 * @param MeprSubscription $memberpress_subscription MemberPress subscription.
+	 * @return array
+	 */
+	public function subscription_email_params( $params, MeprSubscription $memberpress_subscription ) {
+		$subscriptions = \get_pronamic_subscriptions_by_source( 'memberpress', $memberpress_subscription->id );
+
+		if ( empty( $subscriptions ) ) {
+			return $params;
+		}
+
+		$subscription = reset( $subscriptions );
+
+		// Add parameters.
+		$next_payment_date = $subscription->get_next_payment_date();
+
+		return \array_merge(
+			$params,
+			array(
+				'pronamic_subscription_id'           => $subscription->get_id(),
+				'pronamic_subscription_cancel_url'   => $subscription->get_cancel_url(),
+				'pronamic_subscription_renewal_url'  => $subscription->get_renewal_url(),
+				'pronamic_subscription_renewal_date' => null === $next_payment_date ? '' : \date_i18n( \get_option( 'date_format' ), $next_payment_date->getTimestamp() ),
+			)
+		);
+	}
+
+	/**
+	 * Transaction email parameters.
+	 *
+	 * @param array           $params      Parameters.
+	 * @param MeprTransaction $transaction MemberPress transaction.
+	 * @return array
+	 */
+	public function transaction_email_params( $params, MeprTransaction $transaction ) {
+		$payments = \get_pronamic_payments_by_source( 'memberpress', $transaction->id );
+
+		if ( null === $payments ) {
+			return $params;
+		}
+
+		$payment = reset( $payments );
+
+		// Get subscription.
+		$periods = $payment->get_periods();
+
+		if ( null === $periods ) {
+			return $params;
+		}
+
+		$period = reset( $periods );
+
+		$subscription = $period->get_phase()->get_subscription();
+
+		// Add parameters.
+		$memberpress_subscription = new MeprSubscription( $subscription->get_source_id() );
+
+		return $this->subscription_email_params( $params, $memberpress_subscription );
 	}
 
 	/**
