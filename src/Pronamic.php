@@ -223,7 +223,7 @@ class Pronamic {
 			$subscription,
 			$start_date,
 			new SubscriptionInterval( 'P' . $memberpress_product->period . Core_Util::to_period( $memberpress_product->period_type ) ),
-			new TaxedMoney( $memberpress_transaction->total, MemberPress::get_currency() )
+			new Money( $memberpress_transaction->total, MemberPress::get_currency() )
 		);
 
 		$regular_phase->set_total_periods( $total_periods );
