@@ -872,7 +872,7 @@ class Gateway extends MeprBaseRealGateway {
 				<div class="mepr_spacer">&nbsp;</div>
 
 				<input type="submit" class="mepr-submit" value="<?php esc_attr_e( 'Pay', 'pronamic_ideal' ); ?>"/>
-				<img src="<?php echo esc_attr( admin_url( 'images/loading.gif' ) ); ?>" style="display: none;" class="mepr-loading-gif"/>
+				<img src="<?php echo \esc_url( admin_url( 'images/loading.gif' ) ); ?>" style="display: none;" class="mepr-loading-gif"/>
 				<?php MeprView::render( '/shared/has_errors', get_defined_vars() ); ?>
 
 				<noscript>
