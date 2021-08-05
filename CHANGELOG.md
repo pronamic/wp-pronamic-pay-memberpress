@@ -7,6 +7,13 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [3.0.0] - 2021-08-05
+- Updated to `pronamic/wp-pay-core`  version `3.0.0`.
+- Updated to `pronamic/wp-money`  version `2.0.0`.
+- Changed `TaxedMoney` to `Money`, no tax info.
+- Switched to `pronamic/wp-coding-standards`.
+- Added subscription email parameters.
+
 ## [2.3.3] - 2021-06-18
 - Added subscription mandate selection link to account update page.
 - Fixed updating gateway in subscription/transaction on payment method update (via mandate selection URL).
@@ -131,7 +138,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/2.3.3...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/3.0.0...HEAD
+[3.0.0]: https://github.com/wp-pay-extensions/memberpress/compare/2.3.3...3.0.0
 [2.3.3]: https://github.com/wp-pay-extensions/memberpress/compare/2.3.2...2.3.3
 [2.3.2]: https://github.com/wp-pay-extensions/memberpress/compare/2.3.1...2.3.2
 [2.3.1]: https://github.com/wp-pay-extensions/memberpress/compare/2.3.0...2.3.1
