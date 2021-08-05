@@ -86,7 +86,7 @@ class Extension extends AbstractPluginIntegration {
 		\add_filter( 'mepr_transaction_email_params', array( $this, 'transaction_email_params' ), 10, 2 );
 
 		// Hide MemberPress columns for payments and subscriptions.
-		\add_filter( 'registered_post_type', array( $this, 'post_type_columns_hide' ), 15, 1 );
+		\add_action( 'registered_post_type', array( $this, 'post_type_columns_hide' ), 15, 1 );
 
 		if ( \is_admin() ) {
 			$this->admin_subscriptions = new Admin\AdminSubscriptions();
