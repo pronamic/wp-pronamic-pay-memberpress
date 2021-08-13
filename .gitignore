@@ -13,6 +13,9 @@
 /.project
 /.settings
 
+# JetBrains IDEs (https://github.com/github/gitignore/blob/master/Global/JetBrains.gitignore)
+/.idea
+
 # Node.js
 /package-lock.json
 /node_modules/
