@@ -11,6 +11,7 @@
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 
 use MeprTransaction;
+use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Money\TaxedMoney;
 use Pronamic\WordPress\Pay\AddressHelper;
 use Pronamic\WordPress\Pay\Customer;
@@ -26,7 +27,7 @@ use Pronamic\WordPress\Pay\Subscriptions\SubscriptionPhase;
  * Pronamic
  *
  * @author  Remco Tolsma
- * @version 2.3.2
+ * @version 3.0.1
  * @since   2.0.5
  */
 class Pronamic {
