@@ -447,7 +447,11 @@ class Extension extends AbstractPluginIntegration {
 			return $params;
 		}
 
-		$payment = reset( $payments );
+		$payment = \reset( $payments );
+
+		if ( false === $payment ) {
+			return $params;
+		}
 
 		// Get subscription.
 		$periods = $payment->get_periods();
@@ -456,7 +460,11 @@ class Extension extends AbstractPluginIntegration {
 			return $params;
 		}
 
-		$period = reset( $periods );
+		$period = \reset( $periods );
+
+		if ( false === $period ) {
+			return $params;
+		}
 
 		$subscription = $period->get_phase()->get_subscription();
 
