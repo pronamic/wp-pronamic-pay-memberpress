@@ -7,7 +7,7 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
-## [3.0.2] - 2021-08-17
+## [3.0.2] - 2021-08-16
 - Fixed "Fatal error: Uncaught Error: Call to a member function get_periods() on bool".
 
 ## [3.0.1] - 2021-08-13
