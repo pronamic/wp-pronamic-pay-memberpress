@@ -5,7 +5,7 @@ All notable changes to this project will be documented in this file.
 This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased][unreleased]
--
+- Added Giropay gateway.
 
 ## [3.0.2] - 2021-08-16
 - Fixed "Fatal error: Uncaught Error: Call to a member function get_periods() on bool".
