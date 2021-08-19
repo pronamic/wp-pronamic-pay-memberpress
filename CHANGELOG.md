@@ -5,6 +5,9 @@ All notable changes to this project will be documented in this file.
 This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased][unreleased]
+-
+
+## [3.0.3] - 2021-08-19
 - Added Giropay gateway.
 
 ## [3.0.2] - 2021-08-16
@@ -144,7 +147,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/3.0.2...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/3.0.3...HEAD
+[3.0.3]: https://github.com/wp-pay-extensions/memberpress/compare/3.0.2...3.0.3
 [3.0.2]: https://github.com/wp-pay-extensions/memberpress/compare/3.0.1...3.0.2
 [3.0.1]: https://github.com/wp-pay-extensions/memberpress/compare/3.0.0...3.0.1
 [3.0.0]: https://github.com/wp-pay-extensions/memberpress/compare/2.3.3...3.0.0

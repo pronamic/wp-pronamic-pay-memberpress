@@ -16,8 +16,8 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
  * WordPress pay MemberPress Giropay gateway
  *
  * @author  Remco Tolsma
- * @version 2.0.1
- * @since   1.0.0
+ * @version 3.0.3
+ * @since   3.0.3
  */
 class GiropayGateway extends Gateway {
 	/**
