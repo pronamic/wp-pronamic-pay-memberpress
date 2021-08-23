@@ -114,9 +114,10 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Load the specified settings.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L69-70
-	 *
-	 * @param array $settings MemberPress gateway settings array.
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L73-L74
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprGatewayFactory.php#L18
+	 * @param mixed $settings MemberPress gateway settings array.
+	 * @return void
 	 */
 	public function load( $settings ) {
 		$this->settings = (object) $settings;
@@ -169,7 +170,8 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Set the default settings.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L72-73
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L76-L77
+	 * @return void
 	 */
 	protected function set_defaults() {
 		if ( ! isset( $this->settings ) ) {
@@ -206,9 +208,9 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Process payment.
 	 *
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L149-L152
 	 * @param MeprTransaction $txn MemberPress transaction object.
-	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L119-122
+	 * @return void
 	 */
 	public function process_payment( $txn ) {
 
@@ -217,7 +219,8 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Record subscription payment.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L140-145
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L170-L175
+	 * @return void
 	 */
 	public function record_subscription_payment() {
 		$transaction = $this->mp_txn;
@@ -249,14 +252,13 @@ class Gateway extends MeprBaseRealGateway {
 		}
 
 		$this->send_transaction_notices( $transaction, 'send_transaction_receipt_notices' );
-
-		return $transaction;
 	}
 
 	/**
 	 * Record payment failure.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L147-148
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L177-L178
+	 * @return void
 	 */
 	public function record_payment_failure() {
 		$transaction = $this->mp_txn;
@@ -276,14 +278,13 @@ class Gateway extends MeprBaseRealGateway {
 		}
 
 		$this->send_transaction_notices( $transaction, 'send_failed_txn_notices' );
-
-		return $transaction;
 	}
 
 	/**
 	 * Record payment.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L124-129
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L154-L159
+	 * @return void
 	 */
 	public function record_payment() {
 		$transaction = $this->mp_txn;
@@ -364,16 +365,14 @@ class Gateway extends MeprBaseRealGateway {
 
 		$this->send_transaction_notices( $transaction, 'send_signup_notices' );
 		$this->send_transaction_notices( $transaction, 'send_transaction_receipt_notices' );
-
-		return $transaction;
 	}
 
 	/**
 	 * Process refund.
 	 *
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L161-L163
 	 * @param MeprTransaction $txn MemberPress transaction object.
-	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L131-133
+	 * @return void
 	 */
 	public function process_refund( MeprTransaction $txn ) {
 
@@ -382,7 +381,8 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Record refund.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L135-138
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L165-L168
+	 * @return void
 	 */
 	public function record_refund() {
 
@@ -391,9 +391,9 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Process trial payment.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L150-157
-	 *
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L180-L187
 	 * @param MeprTransaction $transaction MemberPress transaction object.
+	 * @return void
 	 */
 	public function process_trial_payment( $transaction ) {
 
@@ -402,9 +402,9 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Record trial payment.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L159-161
-	 *
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L189-L191
 	 * @param MeprTransaction $transaction MemberPress transaction object.
+	 * @return void
 	 */
 	public function record_trial_payment( $transaction ) {
 
@@ -413,9 +413,9 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Process create subscription.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L163-167
-	 *
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L193-L197	 *
 	 * @param MeprTransaction $txn MemberPress transaction object.
+	 * @return void
 	 */
 	public function process_create_subscription( $txn ) {
 
@@ -424,7 +424,8 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Record create subscription.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L169-174
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L199-L204
+	 * @return void
 	 */
 	public function record_create_subscription() {
 
@@ -433,10 +434,9 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Process update subscription.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L176
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/lib/MeprBaseGateway.php#L194
-	 *
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L206
 	 * @param int $sub_id Subscription ID.
+	 * @return void
 	 */
 	public function process_update_subscription( $sub_id ) {
 
@@ -445,7 +445,8 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Record update subscription.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L178-182
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L208-L212
+	 * @return void
 	 */
 	public function record_update_subscription() {
 
@@ -454,9 +455,9 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Process suspend subscription.
 	 *
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L214-L216
 	 * @param int $sub_id Subscription id.
-	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L184-186
+	 * @return void
 	 */
 	public function process_suspend_subscription( $sub_id ) {
 		if ( ! MeprSubscription::exists( $sub_id ) ) {
@@ -502,7 +503,8 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Record suspend subscription.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L188-191
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L218-L221
+	 * @return void
 	 */
 	public function record_suspend_subscription() {
 
@@ -511,9 +513,9 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Process resume subscription.
 	 *
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L223-L225
 	 * @param int $sub_id Subscription id.
-	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L193-195
+	 * @return void
 	 */
 	public function process_resume_subscription( $sub_id ) {
 		if ( ! MeprSubscription::exists( $sub_id ) ) {
@@ -577,7 +579,8 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Record resume subscription.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L197-201
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L227-L230
+	 * @return void
 	 */
 	public function record_resume_subscription() {
 
@@ -586,9 +589,9 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Process cancel subscription.
 	 *
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L232-L236
 	 * @param int $sub_id Subscription id.
-	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L202-206
+	 * @return void
 	 */
 	public function process_cancel_subscription( $sub_id ) {
 		if ( ! MeprSubscription::exists( $sub_id ) ) {
@@ -650,7 +653,8 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Record cancel subscription.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L208-212
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L238-L242
+	 * @return void
 	 */
 	public function record_cancel_subscription() {
 
@@ -662,11 +666,9 @@ class Gateway extends MeprBaseRealGateway {
 	 * Gets called when the signup form is posted used for running any payment
 	 * method specific actions when processing the customer signup form.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L214-217
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/controllers/MeprCheckoutCtrl.php#L262
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/lib/MeprBaseGateway.php#L232-L235
-	 *
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L244-L247
 	 * @param MeprTransaction $txn MemberPress transaction object.
+	 * @return void
 	 */
 	public function process_signup_form( $txn ) {
 
@@ -675,10 +677,10 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Payment redirect.
 	 *
-	 * @param MeprTransaction $txn MemberPress transaction object.
-	 *
-	 * @throws \Exception Throws exception on gateway payment start error.
 	 * @since 1.0.2
+	 * @param MeprTransaction $txn MemberPress transaction object.
+	 * @return void
+	 * @throws \Exception Throws exception on gateway payment start error.
 	 */
 	public function payment_redirect( $txn ) {
 		// Gateway.
@@ -737,12 +739,9 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Display payment page.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L219-223
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/controllers/MeprCheckoutCtrl.php#L290
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/gateways/MeprPayPalGateway.php#L775-L850
-	 *
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L249-L253
 	 * @param MeprTransaction $txn MemberPress transaction object.
-	 *
+	 * @return void
 	 * @throws \Exception Throws exception on gateway payment start error.
 	 */
 	public function display_payment_page( $txn ) {
@@ -794,7 +793,8 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Enqueue payment form scripts.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L219-223
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L255-L258
+	 * @return void
 	 */
 	public function enqueue_payment_form_scripts() {
 
@@ -806,14 +806,12 @@ class Gateway extends MeprBaseRealGateway {
 	 * This spits out html for the payment form on the registration / payment
 	 * page for the user to fill out for payment.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L230-233
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/lib/MeprBaseGateway.php#L248-L251
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/controllers/MeprCheckoutCtrl.php#L318
-	 *
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/controllers/MeprCheckoutCtrl.php#L571
 	 * @param float    $amount     Transaction amount to create a payment form for.
 	 * @param MeprUser $user       MemberPress user object.
 	 * @param int      $product_id Product ID.
 	 * @param int      $txn_id     Transaction ID.
+	 * @return void
 	 */
 	public function display_payment_form( $amount, $user, $product_id, $txn_id ) {
 		// Gateway.
@@ -860,7 +858,7 @@ class Gateway extends MeprBaseRealGateway {
 		<div class="mp_wrapper mp_payment_form_wrapper">
 			<form action="" method="post" id="payment-form" class="mepr-form" novalidate>
 				<input type="hidden" name="mepr_process_payment_form" value="Y"/>
-				<input type="hidden" name="mepr_transaction_id" value="<?php echo esc_attr( $txn_id ); ?>"/>
+				<input type="hidden" name="mepr_transaction_id" value="<?php echo \esc_attr( (string) $txn_id ); ?>"/>
 				<input type="hidden" name="pronamic_pay_memberpress_pay" value="1"/>
 
 				<div class="mepr_spacer">&nbsp;</div>
@@ -920,12 +918,9 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Validate payment form.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L235-236
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/controllers/MeprCheckoutCtrl.php#L330
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/lib/MeprBaseGateway.php#L253-L254
-	 *
-	 * @param array $errors Array with errors.
-	 * @return array
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/controllers/MeprCheckoutCtrl.php#L648
+	 * @param string[] $errors Array with errors.
+	 * @return string[]
 	 */
 	public function validate_payment_form( $errors ) {
 		return $errors;
@@ -980,12 +975,9 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Validate options form.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L294-295
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/gateways/MeprPayPalGateway.php#L909-L924
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprOptions.php#L416-L423
-	 *
-	 * @param array $errors Array with errors.
-	 * @return array
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprOptions.php#L468
+	 * @param string[] $errors Array with errors.
+	 * @return string[]
 	 */
 	public function validate_options_form( $errors ) {
 		return $errors;
@@ -1005,9 +997,9 @@ class Gateway extends MeprBaseRealGateway {
 	 * Display update account form.
 	 *
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/controllers/MeprAccountCtrl.php#L423
-	 * @param int    $sub_id  Subscription ID.
-	 * @param array  $errors  Array with errors.
-	 * @param string $message Update message.
+	 * @param int      $sub_id  Subscription ID.
+	 * @param string[] $errors  Array with errors.
+	 * @param string   $message Update message.
 	 * @return void
 	 */
 	public function display_update_account_form( $sub_id, $errors = array(), $message = '' ) {

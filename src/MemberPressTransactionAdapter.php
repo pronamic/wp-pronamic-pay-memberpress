@@ -37,16 +37,55 @@ class MemberPressTransactionAdapter {
 	}
 
 	/**
+	 * Get property value.
+	 * 
+	 * @param string $property Property name.
+	 * @return mixed
+	 */
+	public function get_property( $property ) {
+		if ( ! \property_exists( $this->transaction, $property ) ) {
+			throw new \Exception(
+				\sprintf(
+					'Property `%s` does not exists.',
+					$property
+				)
+			);
+		}
+
+		return $this->transaction->{$property};
+	}
+
+	/**
 	 * Get ID.
 	 * 
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprTransaction.php#L10
 	 * @return int|null
 	 */
 	public function get_id() {
-		if ( \property_exists( $this->transaction, 'id' ) ) {
-			return $this->transaction->id;
+		return $this->get_property( 'id' );
+	}
+
+	/**
+	 * Get status.
+	 * 
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprTransaction.php#L21
+	 * @return string|null
+	 */
+	public function get_status() {
+		return $this->get_property( 'status' );
+	}
+
+	/**
+	 * Has status.
+	 *
+	 * @param string|string[]    $status      MemberPress transaction status string.
+	 * @return bool Returns true if the transaction has the specified status, false otherwise.
+	 */
+	public function has_status( $status ) {
+		if ( \is_array( $status ) ) {
+			return \in_array( $this->get_status(), $status, true );
 		}
 
-		return null;
+		return ( $this->get_status() === $status );
 	}
 }

@@ -100,10 +100,9 @@ class Extension extends AbstractPluginIntegration {
 	/**
 	 * Gateway paths.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprGatewayFactory.php#L48-50
-	 *
-	 * @param array $paths Array with gateway paths.
-	 * @return array
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprGatewayFactory.php#L49
+	 * @param string[] $paths Array with gateway paths.
+	 * @return string[]
 	 */
 	public function gateway_paths( $paths ) {
 		$paths[] = dirname( __FILE__ ) . '/../gateways/';
@@ -191,12 +190,13 @@ class Extension extends AbstractPluginIntegration {
 	/**
 	 * Update lead status of the specified payment.
 	 *
-	 * @link https://github.com/Charitable/Charitable/blob/1.1.4/includes/gateways/class-charitable-gateway-paypal.php#L229-L357
-	 *
 	 * @param Payment $payment The payment whose status is updated.
+	 * @return void
 	 */
 	public function status_update( Payment $payment ) {
 		$transaction = new MeprTransaction( $payment->get_source_id() );
+
+		$transaction_adapter = new MemberPressTransactionAdapter( $transaction );
 
 		if ( $payment->get_recurring() || empty( $transaction->id ) ) {
 			$subscription_id = $payment->get_subscription()->get_source_id();
@@ -320,7 +320,7 @@ class Extension extends AbstractPluginIntegration {
 			}
 		}
 
-		$should_update = ! MemberPress::transaction_has_status(
+		$should_update = ! $transaction_adapter->has_status(
 			$transaction,
 			array(
 				MeprTransaction::$failed_str,
@@ -378,6 +378,7 @@ class Extension extends AbstractPluginIntegration {
 	 * Subscription deleted.
 	 *
 	 * @param int $subscription_id MemberPress subscription id.
+	 * @return void
 	 */
 	public function subscription_pre_delete( $subscription_id ) {
 		$subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_source_id', $subscription_id );
@@ -406,9 +407,9 @@ class Extension extends AbstractPluginIntegration {
 	/**
 	 * Subscription email parameters.
 	 *
-	 * @param array            $params                   Email parameters.
-	 * @param MeprSubscription $memberpress_subscription MemberPress subscription.
-	 * @return array
+	 * @param array<string, string> $params                   Email parameters.
+	 * @param MeprSubscription      $memberpress_subscription MemberPress subscription.
+	 * @return array<string, string>
 	 */
 	public function subscription_email_params( $params, MeprSubscription $memberpress_subscription ) {
 		$subscriptions = \get_pronamic_subscriptions_by_source( 'memberpress', $memberpress_subscription->id );
@@ -425,7 +426,7 @@ class Extension extends AbstractPluginIntegration {
 		return \array_merge(
 			$params,
 			array(
-				'pronamic_subscription_id'           => $subscription->get_id(),
+				'pronamic_subscription_id'           => (string) $subscription->get_id(),
 				'pronamic_subscription_cancel_url'   => $subscription->get_cancel_url(),
 				'pronamic_subscription_renewal_url'  => $subscription->get_renewal_url(),
 				'pronamic_subscription_renewal_date' => null === $next_payment_date ? '' : \date_i18n( \get_option( 'date_format' ), $next_payment_date->getTimestamp() ),
@@ -436,9 +437,10 @@ class Extension extends AbstractPluginIntegration {
 	/**
 	 * Transaction email parameters.
 	 *
-	 * @param array           $params      Parameters.
-	 * @param MeprTransaction $transaction MemberPress transaction.
-	 * @return array
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/helpers/MeprTransactionsHelper.php#L233
+	 * @param array<string, string> $params      Parameters.
+	 * @param MeprTransaction       $transaction MemberPress transaction.
+	 * @return array<string, string>
 	 */
 	public function transaction_email_params( $params, MeprTransaction $transaction ) {
 		$payments = \get_pronamic_payments_by_source( 'memberpress', $transaction->id );
@@ -600,10 +602,11 @@ class Extension extends AbstractPluginIntegration {
 	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/controllers/MeprSubscriptionsCtrl.php#L92-L111
 	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprSubscription.php#L100-L123
 	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprSubscription.php#L112
-	 *
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprSubscription.php#L122
 	 * @param string           $status_old               Old status identifier.
 	 * @param string           $status_new               New status identifier.
 	 * @param MeprSubscription $memberpress_subscription MemberPress subscription object.
+	 * @return void
 	 */
 	public function memberpress_subscription_transition_status( $status_old, $status_new, $memberpress_subscription ) {
 		$subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_source_id', $memberpress_subscription->id );

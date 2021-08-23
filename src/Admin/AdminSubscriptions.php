@@ -151,7 +151,7 @@ class AdminSubscriptions {
 			printf(
 				'<a href="%s">%s</a>',
 				esc_attr( get_edit_post_link( $pronamic_subscription_post ) ),
-				esc_html( $pronamic_subscription_post->ID )
+				\esc_html( (string) $pronamic_subscription_post->ID )
 			);
 		} else {
 			echo '—';
@@ -167,9 +167,9 @@ class AdminSubscriptions {
 	 * @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/views/admin/subscriptions/edit.php
 	 * @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/views/admin/subscriptions/form.php
 	 *
-	 * @param string $view View.
-	 * @param string $slug Slug.
-	 * @param array  $vars Variables.
+	 * @param string  $view View.
+	 * @param string  $slug Slug.
+	 * @param mixed[] $vars Variables.
 	 * @return string
 	 */
 	public function extend_subscription_form( $view, $slug, $vars ) {
