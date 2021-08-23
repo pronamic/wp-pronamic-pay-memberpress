@@ -1045,11 +1045,9 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Validate update account form.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L368-369
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/gateways/MeprStripeGateway.php#L1170-L1173
-	 *
-	 * @param  array $errors Array with errors.
-	 * @return array
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprAuthorizeGateway.php#L1182-L1197
+	 * @param string[] $errors Array with errors.
+	 * @return string[]
 	 */
 	public function validate_update_account_form( $errors = array() ) {
 		return $errors;
