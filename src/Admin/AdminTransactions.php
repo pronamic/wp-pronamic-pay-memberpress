@@ -22,6 +22,8 @@ use WP_Query;
 class AdminTransactions {
 	/**
 	 * Setup.
+	 * 
+	 * @return void
 	 */
 	public function setup() {
 		// @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/controllers/MeprTransactionsCtrl.php
@@ -37,6 +39,7 @@ class AdminTransactions {
 	 * Manage transactions columns.
 	 *
 	 * @param array $columns Columns.
+	 * @return array
 	 */
 	public function manage_transactions_columns( $columns ) {
 		/*

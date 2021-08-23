@@ -29,6 +29,8 @@ class AdminSubscriptions {
 
 	/**
 	 * Setup.
+	 * 
+	 * @return void
 	 */
 	public function setup() {
 		// @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/controllers/MeprSubscriptionsCtrl.php#L19-L26
@@ -45,6 +47,7 @@ class AdminSubscriptions {
 	 * Manage subscriptions columns.
 	 *
 	 * @param array $columns Columns.
+	 * @return array
 	 */
 	public function manage_subscriptions_columns( $columns ) {
 		$columns['pronamic_subscription'] = __( 'Pronamic Subscription', 'pronamic_ideal' );
@@ -124,6 +127,7 @@ class AdminSubscriptions {
 	 * @param object $rec         Record.
 	 * @param object $table       Table.
 	 * @param string $attributes  Attributes.
+	 * @return void
 	 */
 	public function admin_subscriptions_cell( $column_name, $rec, $table, $attributes ) {
 		if ( 'pronamic_subscription' !== $column_name ) {
