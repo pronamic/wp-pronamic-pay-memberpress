@@ -321,7 +321,6 @@ class Extension extends AbstractPluginIntegration {
 		}
 
 		$should_update = ! $transaction_adapter->has_status(
-			$transaction,
 			array(
 				MeprTransaction::$failed_str,
 				MeprTransaction::$complete_str,
