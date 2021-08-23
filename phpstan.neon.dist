@@ -7,6 +7,7 @@ parameters:
 		- tests/phpstan/bootstrap.php
 	paths:
 		- src/
+		- views/
 	universalObjectCratesClasses:
 		- MeprProduct
 		- MeprSubscription
