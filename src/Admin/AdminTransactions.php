@@ -38,8 +38,8 @@ class AdminTransactions {
 	/**
 	 * Manage transactions columns.
 	 *
-	 * @param array $columns Columns.
-	 * @return array
+	 * @param array<string, string> $columns Columns.
+	 * @return array<string, string>
 	 */
 	public function manage_transactions_columns( $columns ) {
 		/*
@@ -55,13 +55,10 @@ class AdminTransactions {
 	/**
 	 * Extend transaction row.
 	 *
-	 * @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/controllers/MeprTransactionsCtrl.php#L479-L486
-	 * @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/views/admin/transactions/list.php
-	 * @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/views/admin/transactions/row.php
-	 *
-	 * @param string $view View.
-	 * @param string $slug Slug.
-	 * @param array  $vars Variables.
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprView.php#L48-L49
+	 * @param string  $view View.
+	 * @param string  $slug Slug.
+	 * @param mixed[] $vars Variables.
 	 * @return string
 	 */
 	public function extend_transaction_row( $view, $slug, $vars ) {
@@ -83,9 +80,9 @@ class AdminTransactions {
 	/**
 	 * Extend transaction form.
 	 *
-	 * @param string $view View.
-	 * @param string $slug Slug.
-	 * @param array  $vars Variables.
+	 * @param string  $view View.
+	 * @param string  $slug Slug.
+	 * @param mixed[] $vars Variables.
 	 * @return string
 	 */
 	public function extend_transaction_form( $view, $slug, $vars ) {

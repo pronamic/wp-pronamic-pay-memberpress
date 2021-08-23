@@ -39,7 +39,7 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Payment method.
 	 *
-	 * @var string
+	 * @var string|null
 	 */
 	protected $payment_method;
 
@@ -65,7 +65,10 @@ class Gateway extends MeprBaseRealGateway {
 	public $pronamic_payment;
 
 	/**
-	 * Constructs and initialize iDEAL gateway.
+	 * Constructs and initialize gateway.
+	 * 
+	 * @param string      $class_alias    Class alias.
+	 * @param string|null $payment_method Payment method.
 	 */
 	public function __construct( $class_alias = 'MeprPronamicGateway', $payment_method = null ) {
 		$this->class_alias = $class_alias;
@@ -931,8 +934,8 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Display options form.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L291-292
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/gateways/MeprAuthorizeGateway.php#L1027-1037
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/views/admin/options/gateway.php#L41
+	 * @return void
 	 */
 	public function display_options_form() {
 		$mepr_options = MeprOptions::fetch();
@@ -991,7 +994,8 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Enqueue user account scripts.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L297-302
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/controllers/MeprAccountCtrl.php#L126
+	 * @return void
 	 */
 	public function enqueue_user_account_scripts() {
 
@@ -1000,14 +1004,11 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Display update account form.
 	 *
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/controllers/MeprAccountCtrl.php#L423
 	 * @param int    $sub_id  Subscription ID.
 	 * @param array  $errors  Array with errors.
 	 * @param string $message Update message.
-	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L365-366
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/lib/MeprBaseStaticGateway.php#L160-L161
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/gateways/MeprStripeGateway.php#L1108-L1168
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/controllers/MeprAccountCtrl.php#L388
+	 * @return void
 	 */
 	public function display_update_account_form( $sub_id, $errors = array(), $message = '' ) {
 		$subscriptions = \get_pronamic_subscriptions_by_source( 'memberpress', (int) $sub_id );
@@ -1056,10 +1057,9 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Process update account form.
 	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L371-372
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/gateways/MeprStripeGateway.php#L1175-L1181
-	 *
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/controllers/MeprAccountCtrl.php#L430
 	 * @param int $sub_id Subscription ID.
+	 * @return void
 	 */
 	public function process_update_account_form( $sub_id ) {
 

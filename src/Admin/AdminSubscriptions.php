@@ -10,6 +10,7 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress\Admin;
 
+use WP_Post;
 use WP_Query;
 
 /**
@@ -23,7 +24,7 @@ class AdminSubscriptions {
 	/**
 	 * Subscriptions map.
 	 *
-	 * @var array|null
+	 * @var array<int, WP_Post>|null
 	 */
 	private $subscriptions_map;
 
@@ -46,8 +47,8 @@ class AdminSubscriptions {
 	/**
 	 * Manage subscriptions columns.
 	 *
-	 * @param array $columns Columns.
-	 * @return array
+	 * @param array<string, string> $columns Columns.
+	 * @return array<string, string>
 	 */
 	public function manage_subscriptions_columns( $columns ) {
 		$columns['pronamic_subscription'] = __( 'Pronamic Subscription', 'pronamic_ideal' );
@@ -59,7 +60,7 @@ class AdminSubscriptions {
 	 * Get subscriptions map.
 	 *
 	 * @param object $table Table.
-	 * @return array
+	 * @return array<int, WP_Post>
 	 */
 	private function get_subscriptions_map( $table ) {
 		if ( is_array( $this->subscriptions_map ) ) {

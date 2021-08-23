@@ -21,6 +21,13 @@ use MeprTransaction;
  */
 class MemberPressTransactionAdapter {
 	/**
+	 * MemberPress transaction.
+	 * 
+	 * @var MeprTransaction
+	 */
+	private $transaction;
+
+	/**
 	 * Construct MemberPress transaction adapter.
 	 *
 	 * @param MeprTransaction $transaction MemberPress transaction.
@@ -33,7 +40,7 @@ class MemberPressTransactionAdapter {
 	 * Get ID.
 	 * 
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprTransaction.php#L10
-	 * @return int
+	 * @return int|null
 	 */
 	public function get_id() {
 		if ( \property_exists( $this->transaction, 'id' ) ) {
