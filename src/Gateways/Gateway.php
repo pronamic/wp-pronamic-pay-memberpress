@@ -51,6 +51,19 @@ class Gateway extends MeprBaseRealGateway {
 	protected $class_alias;
 
 	/**
+	 * Key.
+	 * 
+	 * The key property is not defined in the MemberPress library,
+	 * but it is a MemberPress property.
+	 * 
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprStripeGateway.php#L12
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/helpers/MeprOptionsHelper.php#L192
+	 * @var string
+	 */
+	public $key;
+
+	/**
 	 * MemberPress transaction.
 	 *
 	 * @var MeprTransaction
