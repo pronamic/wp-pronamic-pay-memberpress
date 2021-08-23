@@ -126,38 +126,6 @@ class Gateway extends MeprBaseRealGateway {
 	}
 
 	/**
-	 * Custom helper function to send transaction notices.
-	 *
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/lib/MeprUtils.php#L1333-L1351
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprTransaction.php
-	 *
-	 * @param MeprTransaction $transaction MemberPress transaction object.
-	 * @param string          $method      PHP function name to call.
-	 *
-	 * @return mixed
-	 */
-	public function send_transaction_notices( $transaction, $method ) {
-		$class = 'MeprUtils';
-
-		if ( ! Core_Util::class_method_exists( $class, $method ) ) {
-			$class = $this;
-		}
-
-		// `send_product_welcome_notices` is called from `send_signup_notices` in newer versions.
-		if ( 'send_product_welcome_notices' === $method ) {
-			if ( 'MeprUtils' === $class ) {
-				return null;
-			}
-
-			if ( ! \method_exists( $class, 'send_product_welcome_notices' ) ) {
-				return null;
-			}
-		}
-
-		return call_user_func( array( $class, $method ), $transaction );
-	}
-
-	/**
 	 * Get icon function (this is not a MemberPress function).
 	 *
 	 * @since 1.0.2
