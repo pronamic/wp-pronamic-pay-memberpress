@@ -154,7 +154,12 @@ class Pronamic {
 		$line->set_quantity( 1 );
 		$line->set_unit_price( $payment->get_total_amount() );
 		$line->set_total_amount( $payment->get_total_amount() );
-		$line->set_product_url( get_permalink( $memberpress_product->ID ) );
+
+		$product_url = \get_permalink( $memberpress_product->ID );
+
+		if ( false !== $product_url ) {		
+			$line->set_product_url( $product_url );
+		}
 
 		/*
 		 * Return.
