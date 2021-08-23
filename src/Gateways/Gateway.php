@@ -366,10 +366,8 @@ class Gateway extends MeprBaseRealGateway {
 		if ( 'lifetime' === $product->period_type ) {
 			if ( $upgrade ) {
 				$this->upgraded_sub( $transaction, $event_transaction );
-				$this->send_transaction_notices( $transaction, 'send_upgraded_txn_notices' );
 			} elseif ( $downgrade ) {
 				$this->downgraded_sub( $transaction, $event_transaction );
-				$this->send_transaction_notices( $transaction, 'send_downgraded_txn_notices' );
 			} else {
 				$this->new_sub( $transaction );
 			}
