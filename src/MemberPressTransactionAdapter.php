@@ -41,6 +41,7 @@ class MemberPressTransactionAdapter {
 	 * 
 	 * @param string $property Property name.
 	 * @return mixed
+	 * @throws \Exception Throws exception when property does not exists.
 	 */
 	public function get_property( $property ) {
 		if ( ! \property_exists( $this->transaction, $property ) ) {
@@ -78,7 +79,7 @@ class MemberPressTransactionAdapter {
 	/**
 	 * Has status.
 	 *
-	 * @param string|string[]    $status      MemberPress transaction status string.
+	 * @param string|string[] $status MemberPress transaction status string.
 	 * @return bool Returns true if the transaction has the specified status, false otherwise.
 	 */
 	public function has_status( $status ) {
