@@ -14,9 +14,3 @@
 ## Links
 
 *	[MemberPress](https://www.memberpress.com/)
-
-## Develop
-
-```
-curl https://mothership.caseproof.com/versions/latest/developer | jq
-```
