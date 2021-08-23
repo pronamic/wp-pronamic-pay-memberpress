@@ -251,7 +251,13 @@ class Gateway extends MeprBaseRealGateway {
 			$subscription->limit_payment_cycles();
 		}
 
-		$this->send_transaction_notices( $transaction, 'send_transaction_receipt_notices' );
+		/**
+		 * Send transaction receipt notices.
+		 * 
+		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprUtils.php#L1396-L1418
+		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprAuthorizeGateway.php#L249
+		 */
+		MeprUtils::send_transaction_receipt_notices( $transaction );
 	}
 
 	/**
@@ -277,7 +283,13 @@ class Gateway extends MeprBaseRealGateway {
 			}
 		}
 
-		$this->send_transaction_notices( $transaction, 'send_failed_txn_notices' );
+		/**
+		 * Send failed transaction notices.
+		 * 
+		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprUtils.php#L1515-L1528
+		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprAuthorizeGateway.php#L299
+		 */
+		MeprUtils::send_failed_txn_notices( $transaction );
 	}
 
 	/**
@@ -363,8 +375,19 @@ class Gateway extends MeprBaseRealGateway {
 			}
 		}
 
-		$this->send_transaction_notices( $transaction, 'send_signup_notices' );
-		$this->send_transaction_notices( $transaction, 'send_transaction_receipt_notices' );
+		/**
+		 * Send signup notices.
+		 * 
+		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprUtils.php#L1361-L1390
+		 */
+		MeprUtils::send_signup_notices( $transaction );
+
+		/**
+		 * Send transaction receipt notices.
+		 * 
+		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprUtils.php#L1396-L1418
+		 */
+		MeprUtils::send_transaction_receipt_notices( $transaction );
 	}
 
 	/**
@@ -413,7 +436,7 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Process create subscription.
 	 *
-	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L193-L197	 *
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L193-L197
 	 * @param MeprTransaction $txn MemberPress transaction object.
 	 * @return void
 	 */
