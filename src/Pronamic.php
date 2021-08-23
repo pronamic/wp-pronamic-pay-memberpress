@@ -38,8 +38,6 @@ class Pronamic {
 	 * @return Payment
 	 */
 	public static function get_payment( MeprTransaction $memberpress_transaction ) {
-		$transaction_adapter = new MemberPressTransactionAdapter( $memberpress_transaction );
-
 		$payment = new Payment();
 
 		// MemberPress.
@@ -54,16 +52,16 @@ class Pronamic {
 			sprintf(
 				/* translators: %s: order id */
 				__( 'MemberPress transaction %s', 'pronamic_ideal' ),
-				(string) $transaction_adapter->get_id()
+				$memberpress_transaction->id
 			)
 		);
 
-		$payment->order_id    = $transaction_adapter->get_id();
+		$payment->order_id    = $memberpress_transaction->id;
 		$payment->title       = $title;
 		$payment->description = $memberpress_product->post_title;
 		$payment->user_id     = $memberpress_user->ID;
 		$payment->source      = 'memberpress';
-		$payment->source_id   = $transaction_adapter->get_id();
+		$payment->source_id   = $memberpress_transaction->id;
 		$payment->issuer      = null;
 
 		// Contact.
@@ -106,10 +104,10 @@ class Pronamic {
 		 */
 		$payment->set_total_amount(
 			new TaxedMoney(
-				$transaction_adapter->get_property( 'total' ),
+				$memberpress_transaction->total,
 				MemberPress::get_currency(),
-				$transaction_adapter->get_property( 'tax_amount' ),
-				$transaction_adapter->get_property( 'tax_rate' )
+				$memberpress_transaction->tax_amount,
+				$memberpress_transaction->tax_rate
 			)
 		);
 
@@ -130,7 +128,7 @@ class Pronamic {
 			 * 
 			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprTransaction.php#L27
 			 */
-			$payment->subscription_source_id = $transaction_adapter->get_property( 'subscription_id' );
+			$payment->subscription_source_id = $memberpress_transaction->subscription_id;
 
 			$payment->add_period( $payment->subscription->new_period() );
 

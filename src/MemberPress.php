@@ -22,6 +22,22 @@ use MeprOptions;
  */
 class MemberPress {
 	/**
+	 * Transaction has status.
+	 *
+	 * @param MeprTransaction $transaction MemberPress transaction object.
+	 * @param string|array    $status      MemberPress transaction status string.
+	 *
+	 * @return bool Returns true if the transaction has the specified status, false otherwise.
+	 */
+	public static function transaction_has_status( MeprTransaction $transaction, $status ) {
+		if ( is_array( $status ) ) {
+			return in_array( $transaction->status, $status, true );
+		}
+
+		return ( $transaction->status === $status );
+	}
+
+	/**
 	 * Get currency.
 	 *
 	 * @return string

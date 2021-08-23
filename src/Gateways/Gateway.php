@@ -630,13 +630,15 @@ class Gateway extends MeprBaseRealGateway {
 
 	/**
 	 * Payment redirect.
+	 * 
+	 * Note: this is not a MemberPress method.
 	 *
 	 * @since 1.0.2
 	 * @param MeprTransaction $txn MemberPress transaction object.
 	 * @return void
 	 * @throws \Exception Throws exception on gateway payment start error.
 	 */
-	public function payment_redirect( $txn ) {
+	private function payment_redirect( $txn ) {
 		// Gateway.
 		$config_id = $this->get_config_id();
 

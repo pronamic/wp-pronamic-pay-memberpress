@@ -196,8 +196,6 @@ class Extension extends AbstractPluginIntegration {
 	public function status_update( Payment $payment ) {
 		$transaction = new MeprTransaction( $payment->get_source_id() );
 
-		$transaction_adapter = new MemberPressTransactionAdapter( $transaction );
-
 		if ( $payment->get_recurring() || empty( $transaction->id ) ) {
 			$subscription_id = $payment->get_subscription()->get_source_id();
 			$subscription    = new MeprSubscription( $subscription_id );
@@ -320,7 +318,8 @@ class Extension extends AbstractPluginIntegration {
 			}
 		}
 
-		$should_update = ! $transaction_adapter->has_status(
+		$should_update = ! MemberPress::transaction_has_status(
+			$transaction,
 			array(
 				MeprTransaction::$failed_str,
 				MeprTransaction::$complete_str,
