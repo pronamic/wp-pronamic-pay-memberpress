@@ -106,10 +106,10 @@ class Pronamic {
 		 */
 		$payment->set_total_amount(
 			new TaxedMoney(
-				$memberpress_transaction->total,
+				$transaction_adapter->get_property( 'total' ),
 				MemberPress::get_currency(),
-				$memberpress_transaction->tax_amount,
-				$memberpress_transaction->tax_rate
+				$transaction_adapter->get_property( 'tax_amount' ),
+				$transaction_adapter->get_property( 'tax_rate' )
 			)
 		);
 
@@ -121,12 +121,16 @@ class Pronamic {
 
 		/*
 		 * Subscription.
-		 * @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/models/MeprTransaction.php#L603-L618
 		 */
 		$payment->subscription = self::get_subscription( $memberpress_transaction );
 
 		if ( $payment->subscription ) {
-			$payment->subscription_source_id = $memberpress_transaction->subscription_id;
+			/**
+			 * MemberPress transaction subscription ID.
+			 * 
+			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprTransaction.php#L27
+			 */
+			$payment->subscription_source_id = $transaction_adapter->get_property( 'subscription_id' );
 
 			$payment->add_period( $payment->subscription->new_period() );
 
@@ -157,7 +161,7 @@ class Pronamic {
 
 		$product_url = \get_permalink( $memberpress_product->ID );
 
-		if ( false !== $product_url ) {		
+		if ( false !== $product_url ) {     
 			$line->set_product_url( $product_url );
 		}
 

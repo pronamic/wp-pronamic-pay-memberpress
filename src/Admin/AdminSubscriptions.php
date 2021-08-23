@@ -60,7 +60,7 @@ class AdminSubscriptions {
 	 * Get subscriptions map.
 	 *
 	 * @param object $table Table.
-	 * @return array<int, WP_Post>
+	 * @return array<int, WP_Post>|null
 	 */
 	private function get_subscriptions_map( $table ) {
 		if ( is_array( $this->subscriptions_map ) ) {
@@ -70,13 +70,13 @@ class AdminSubscriptions {
 		$this->subscriptions_map = array();
 
 		if ( ! isset( $table->items ) ) {
-			return;
+			return null;
 		}
 
 		$memberpress_subscriptions = $table->items;
 
 		if ( ! is_array( $memberpress_subscriptions ) || empty( $memberpress_subscriptions ) ) {
-			return;
+			return null;
 		}
 
 		$memberpress_subscription_ids = wp_list_pluck( $memberpress_subscriptions, 'id' );
@@ -135,7 +135,15 @@ class AdminSubscriptions {
 			return;
 		}
 
+		if ( ! \property_exists( $rec, 'id' ) ) {
+			return;
+		}
+
 		$map = $this->get_subscriptions_map( $table );
+
+		if ( null === $map ) {
+			return;
+		}
 
 		printf(
 			'<td %s>',
