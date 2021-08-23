@@ -21,28 +21,9 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
  */
 class BancontactGateway extends Gateway {
 	/**
-	 * Payment method.
-	 *
-	 * @var string
+	 * Constructs and initialize Bancontact/Mister Cash gateway.
 	 */
-	protected $payment_method = PaymentMethods::BANCONTACT;
-
-	/**
-	 * Get alias class name of this gateway.
-	 *
-	 * @return string
-	 */
-	public function get_alias() {
-		return 'MeprMisterCashGateway';
-	}
-
-	/**
-	 * Get icon function, please note that this is not a MemberPress function.
-	 *
-	 * @since 2.0.1
-	 * @return string
-	 */
-	protected function get_icon() {
-		return PaymentMethods::get_icon_url( PaymentMethods::BANCONTACT );
+	public function __construct() {
+		parent::__construct( 'MeprMisterCashGateway', PaymentMethods::BANCONTACT );
 	}
 }

@@ -21,28 +21,9 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
  */
 class PayPalGateway extends Gateway {
 	/**
-	 * Payment method.
-	 *
-	 * @var string
+	 * Constructs and initialize PayPal gateway.
 	 */
-	protected $payment_method = PaymentMethods::PAYPAL;
-
-	/**
-	 * Get alias class name of this gateway.
-	 *
-	 * @return string
-	 */
-	public function get_alias() {
-		return 'MeprPronamicPayPalGateway';
-	}
-
-	/**
-	 * Get icon function, please note that this is not a MemberPress function.
-	 *
-	 * @since 1.0.2
-	 * @return string
-	 */
-	protected function get_icon() {
-		return PaymentMethods::get_icon_url( PaymentMethods::PAYPAL );
+	public function __construct() {
+		parent::__construct( 'MeprPronamicPayPalGateway', PaymentMethods::PAYPAL );
 	}
 }

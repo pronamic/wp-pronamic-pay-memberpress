@@ -21,28 +21,9 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
  */
 class SofortGateway extends Gateway {
 	/**
-	 * Payment method.
-	 *
-	 * @var string
+	 * Constructs and initialize Sofort gateway.
 	 */
-	protected $payment_method = PaymentMethods::SOFORT;
-
-	/**
-	 * Get alias class name of this gateway.
-	 *
-	 * @return string
-	 */
-	public function get_alias() {
-		return 'MeprSofortGateway';
-	}
-
-	/**
-	 * Get icon function, please note that this is not a MemberPress function.
-	 *
-	 * @since 2.0.8
-	 * @return string
-	 */
-	protected function get_icon() {
-		return PaymentMethods::get_icon_url( PaymentMethods::SOFORT );
+	public function __construct() {
+		parent::__construct( 'MeprSofortGateway', PaymentMethods::SOFORT );
 	}
 }

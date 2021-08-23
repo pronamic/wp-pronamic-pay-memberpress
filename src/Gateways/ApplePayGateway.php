@@ -21,17 +21,10 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
  */
 class ApplePayGateway extends Gateway {
 	/**
-	 * Payment method.
-	 *
-	 * @var string
-	 */
-	protected $payment_method = PaymentMethods::APPLE_PAY;
-
-	/**
 	 * Constructs and initialize Apple Pay gateway.
 	 */
 	public function __construct() {
-		parent::__construct();
+		parent::__construct( 'MeprApplePayGateway', PaymentMethods::APPLE_PAY );
 
 		// Capabilities.
 		$this->capabilities = array(
@@ -43,24 +36,5 @@ class ApplePayGateway extends Gateway {
 			'resume-subscriptions',
 			'subscription-trial-payment',
 		);
-	}
-
-	/**
-	 * Get alias class name of this gateway.
-	 *
-	 * @return string
-	 */
-	public function get_alias() {
-		return 'MeprApplePayGateway';
-	}
-
-	/**
-	 * Get icon function, please note that this is not a MemberPress function.
-	 *
-	 * @since 2.0.8
-	 * @return string
-	 */
-	protected function get_icon() {
-		return PaymentMethods::get_icon_url( PaymentMethods::APPLE_PAY );
 	}
 }

@@ -22,17 +22,10 @@ use Pronamic\WordPress\Pay\Plugin;
  */
 class DirectDebitIDealGateway extends Gateway {
 	/**
-	 * Payment method.
-	 *
-	 * @var string
-	 */
-	protected $payment_method = PaymentMethods::DIRECT_DEBIT_IDEAL;
-
-	/**
 	 * Constructs and initialize credit card gateway.
 	 */
 	public function __construct() {
-		parent::__construct();
+		parent::__construct( 'MeprDirectDebitIDealGateway', PaymentMethods::DIRECT_DEBIT_IDEAL );
 
 		// Capabilities.
 		$this->capabilities = array(
@@ -44,24 +37,5 @@ class DirectDebitIDealGateway extends Gateway {
 			'resume-subscriptions',
 			'subscription-trial-payment',
 		);
-	}
-
-	/**
-	 * Get alias class name of this gateway.
-	 *
-	 * @return string
-	 */
-	public function get_alias() {
-		return 'MeprDirectDebitIDealGateway';
-	}
-
-	/**
-	 * Get icon function, please note that this is not a MemberPress function.
-	 *
-	 * @since 2.0.8
-	 * @return string
-	 */
-	protected function get_icon() {
-		return plugins_url( 'images/direct-debit-ideal/icon-32x32.png', Plugin::$file );
 	}
 }

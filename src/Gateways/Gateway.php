@@ -44,6 +44,13 @@ class Gateway extends MeprBaseRealGateway {
 	protected $payment_method;
 
 	/**
+	 * Class alias.
+	 *
+	 * @var string
+	 */
+	protected $class_alias;
+
+	/**
 	 * MemberPress transaction.
 	 *
 	 * @var MeprTransaction
@@ -60,7 +67,11 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Constructs and initialize iDEAL gateway.
 	 */
-	public function __construct() {
+	public function __construct( $class_alias = 'MeprPronamicGateway', $payment_method = null ) {
+		$this->class_alias = $class_alias;
+
+		$this->payment_method = $payment_method;
+
 		// Set the name of this gateway.
 		// @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L12-13.
 		$this->name = __( 'Pronamic', 'pronamic_ideal' );
@@ -146,19 +157,10 @@ class Gateway extends MeprBaseRealGateway {
 	 * Get icon function (this is not a MemberPress function).
 	 *
 	 * @since 1.0.2
-	 * @return string
+	 * @return string|null
 	 */
 	protected function get_icon() {
-		return '';
-	}
-
-	/**
-	 * Get class alias name.
-	 *
-	 * @return string
-	 */
-	public function get_alias() {
-		return 'MeprPronamicGateway';
+		return PaymentMethods::get_icon_url( $this->payment_method );
 	}
 
 	/**
@@ -173,7 +175,7 @@ class Gateway extends MeprBaseRealGateway {
 
 		$this->settings = (object) array_merge(
 			array(
-				'gateway'   => $this->get_alias(),
+				'gateway'   => $this->class_alias,
 				'id'        => $this->generate_id(),
 				'label'     => '',
 				'use_label' => true,

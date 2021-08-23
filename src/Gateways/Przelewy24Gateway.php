@@ -21,28 +21,9 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
  */
 class Przelewy24Gateway extends Gateway {
 	/**
-	 * Payment method.
-	 *
-	 * @var string
+	 * Constructs and initialize Przelewy24 gateway.
 	 */
-	protected $payment_method = PaymentMethods::PRZELEWY24;
-
-	/**
-	 * Get alias class name of this gateway.
-	 *
-	 * @return string
-	 */
-	public function get_alias() {
-		return 'MeprPrzelewy24Gateway';
-	}
-
-	/**
-	 * Get icon function, please note that this is not a MemberPress function.
-	 *
-	 * @since 2.0.8
-	 * @return string
-	 */
-	protected function get_icon() {
-		return PaymentMethods::get_icon_url( PaymentMethods::PRZELEWY24 );
+	public function __construct() {
+		parent::__construct( 'MeprPrzelewy24Gateway', PaymentMethods::PRZELEWY24 );
 	}
 }

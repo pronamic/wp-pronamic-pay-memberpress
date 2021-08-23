@@ -21,28 +21,9 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
  */
 class IDealGateway extends Gateway {
 	/**
-	 * Payment method.
-	 *
-	 * @var string
+	 * Constructs and initialize iDEAL gateway.
 	 */
-	protected $payment_method = PaymentMethods::IDEAL;
-
-	/**
-	 * Get alias class name of this gateway.
-	 *
-	 * @return string
-	 */
-	public function get_alias() {
-		return 'MeprIDealGateway';
-	}
-
-	/**
-	 * Get icon function, please note that this is not a MemberPress function.
-	 *
-	 * @since 1.0.2
-	 * @return string
-	 */
-	protected function get_icon() {
-		return PaymentMethods::get_icon_url( PaymentMethods::IDEAL );
+	public function __construct() {
+		parent::__construct( 'MeprIDealGateway', PaymentMethods::IDEAL );
 	}
 }
