@@ -325,41 +325,6 @@ class Gateway extends MeprBaseRealGateway {
 
 		$transaction->store();
 
-		/*
-		 * For some reasons the `send_product_welcome_notices` function accepts 1 or 3 arguments. We are not sure
-		 * if this is a difference in the 'Business' and 'Developer' edition or between version `1.2.4` and `1.2.7`.
-		 *
-		 * @link https://github.com/wp-premium/memberpress-developer/blob/1.2.4/app/lib/MeprBaseGateway.php#L596-L612
-		 * @link https://github.com/wp-premium/memberpress-business/blob/1.2.7/app/lib/MeprBaseGateway.php#L609-L619
-		 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprTransaction.php#L51
-		 */
-		$reflection = new ReflectionClass( 'MeprBaseRealGateway' );
-
-		if ( $reflection->hasMethod( 'send_product_welcome_notices' ) && 3 === $reflection->getMethod( 'send_product_welcome_notices' )->getNumberOfParameters() ) {
-			$uemail = MeprEmailFactory::fetch(
-				'MeprUserProductWelcomeEmail',
-				'MeprBaseProductEmail',
-				array(
-					array(
-						'product_id' => $transaction->product_id,
-					),
-				)
-			);
-
-			/**
-			 * The `send_product_welcome_notices` method is only available in earlier version of MemberPress.
-			 *
-			 * @scrutinizer ignore-call
-			 */
-			$this->send_product_welcome_notices(
-				$uemail,
-				MeprTransactionsHelper::get_email_params( $transaction ),
-				$transaction->user()
-			);
-		} else {
-			$this->send_transaction_notices( $transaction, 'send_product_welcome_notices' );
-		}
-
 		// Send upgrade/downgrade notices.
 		$product = $transaction->product();
 
