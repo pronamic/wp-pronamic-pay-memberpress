@@ -35,10 +35,11 @@ class Pronamic {
 	 * Get Pronamic payment from MemberPress transaction.
 	 *
 	 * @param MeprTransaction $memberpress_transaction MemberPress transaction object.
-	 *
 	 * @return Payment
 	 */
 	public static function get_payment( MeprTransaction $memberpress_transaction ) {
+		$transaction_adapter = new MemberPressTransactionAdapter( $memberpress_transaction );
+
 		$payment = new Payment();
 
 		// MemberPress.
@@ -53,16 +54,16 @@ class Pronamic {
 			sprintf(
 				/* translators: %s: order id */
 				__( 'MemberPress transaction %s', 'pronamic_ideal' ),
-				$memberpress_transaction->id
+				(string) $transaction_adapter->get_id()
 			)
 		);
 
-		$payment->order_id    = $memberpress_transaction->id;
+		$payment->order_id    = $transaction_adapter->get_id();
 		$payment->title       = $title;
 		$payment->description = $memberpress_product->post_title;
 		$payment->user_id     = $memberpress_user->ID;
 		$payment->source      = 'memberpress';
-		$payment->source_id   = $memberpress_transaction->id;
+		$payment->source_id   = $transaction_adapter->get_id();
 		$payment->issuer      = null;
 
 		// Contact.
