@@ -173,7 +173,6 @@ class Pronamic {
 	 * Get Pronamic subscription from MemberPress transaction.
 	 *
 	 * @param MeprTransaction $memberpress_transaction MemberPress transaction object.
-	 *
 	 * @return Subscription|null
 	 */
 	public static function get_subscription( MeprTransaction $memberpress_transaction ) {

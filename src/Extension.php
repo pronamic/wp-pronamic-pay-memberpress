@@ -214,7 +214,14 @@ class Extension extends AbstractPluginIntegration {
 		if ( null !== $subscription ) {
 			$subscription_source_id = $subscription->get_source_id();
 
-			$memberpress_subscription = new MeprSubscription( $subscription_source_id );
+			$memberpress_subscription = MemberPress::get_subscription_by_id( $subscription_source_id );
+
+			if ( null === $memberpress_subscription ) {
+				/**
+				 * @todo What to-do?
+				 */
+				throw new \Exception( 'Cannot find MemberPress subscription.' );
+			}
 
 			// Same source ID and first transaction ID for recurring payment means we need to add a new transaction.
 			if ( $payment_source_id === $subscription_source_id ) {
