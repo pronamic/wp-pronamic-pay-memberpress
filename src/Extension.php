@@ -194,7 +194,15 @@ class Extension extends AbstractPluginIntegration {
 	 * @return void
 	 */
 	public function status_update( Payment $payment ) {
-		$transaction = new MeprTransaction( $payment->get_source_id() );
+		$transaction = MemberPress::get_transaction_by_id( $payment->get_source_id() );
+
+		/**
+		 * If we can't find a MemberPress transaction by the payment source ID
+		 * we can't update the MemberPress transaction, bail out early.
+		 */
+		if ( null === $transaction ) {
+			return;
+		}
 
 		if ( $payment->get_recurring() || empty( $transaction->id ) ) {
 			$subscription_id = $payment->get_subscription()->get_source_id();

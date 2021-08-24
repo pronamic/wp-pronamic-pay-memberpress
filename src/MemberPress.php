@@ -22,6 +22,33 @@ use MeprOptions;
  */
 class MemberPress {
 	/**
+	 * MemberPress has no unambiguous way to request a transaction via an ID,
+	 * so we have implemented a method for this.
+	 * 
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprStripeGateway.php#L928-L933
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprTransaction.php#L156-L161
+	 * @param string $id ID.
+	 * @return MeprTransaction|null
+	 */
+	public function get_transaction_by_id( $id ) {
+		$object = MeprTransaction::get_one( $id );
+
+		if ( ! is_object( $object ) ) {
+			return null;
+		}
+
+		if ( ! isset( $object->id ) ) {
+			return null;
+		}
+
+		$transaction = new MeprTransaction();
+
+        $transaction->load_data( $object );
+
+        return $transaction;
+	}
+
+	/**
 	 * Transaction has status.
 	 *
 	 * @param MeprTransaction $transaction MemberPress transaction object.
