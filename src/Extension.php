@@ -204,8 +204,13 @@ class Extension extends AbstractPluginIntegration {
 			return;
 		}
 
-		if ( $payment->get_recurring() || empty( $memberpress_transaction->id ) ) {
-			$subscription_id = $payment->get_subscription()->get_source_id();
+		/**
+		 * Subscription.
+		 */
+		$subscription = $payment->get_subscription();
+
+		if ( null !== $subscription ) {
+			$subscription_id = $subscription->get_source_id();
 			$subscription    = new MeprSubscription( $subscription_id );
 
 			// Same source ID and first transaction ID for recurring payment means we need to add a new transaction.
