@@ -194,7 +194,9 @@ class Extension extends AbstractPluginIntegration {
 	 * @return void
 	 */
 	public function status_update( Payment $payment ) {
-		$memberpress_transaction = MemberPress::get_transaction_by_id( $payment->get_source_id() );
+		$payment_source_id = $payment->get_source_id();
+
+		$memberpress_transaction = MemberPress::get_transaction_by_id( $payment_source_id );
 
 		/**
 		 * If we can't find a MemberPress transaction by the payment source ID
@@ -210,12 +212,12 @@ class Extension extends AbstractPluginIntegration {
 		$subscription = $payment->get_subscription();
 
 		if ( null !== $subscription ) {
-			$subscription_id = $subscription->get_source_id();
+			$subscription_source_id = $subscription->get_source_id();
 
-			$memberpress_subscription = new MeprSubscription( $subscription_id );
+			$memberpress_subscription = new MeprSubscription( $subscription_source_id );
 
 			// Same source ID and first transaction ID for recurring payment means we need to add a new transaction.
-			if ( $payment->get_source_id() === $memberpress_subscription->id ) {
+			if ( $payment_source_id === $subscription_source_id ) {
 				// First transaction.
 				$first_txn = $memberpress_subscription->first_txn();
 
