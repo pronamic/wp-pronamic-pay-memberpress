@@ -24,7 +24,7 @@ class AdminSubscriptions {
 	/**
 	 * Subscriptions map.
 	 *
-	 * @var array<int, WP_Post>|null
+	 * @var array<string, WP_Post>|null
 	 */
 	private $subscriptions_map;
 
@@ -60,7 +60,7 @@ class AdminSubscriptions {
 	 * Get subscriptions map.
 	 *
 	 * @param object $table Table.
-	 * @return array<int, WP_Post>|null
+	 * @return array<string, WP_Post>|null
 	 */
 	private function get_subscriptions_map( $table ) {
 		if ( is_array( $this->subscriptions_map ) ) {
@@ -101,16 +101,16 @@ class AdminSubscriptions {
 			)
 		);
 
-		if ( $query->have_posts() ) {
-			while ( $query->have_posts() ) {
-				$query->the_post();
+		$subscription_posts = $query->get_posts();
 
-				$memberpress_subscription_id = get_post_meta( get_the_ID(), '_pronamic_subscription_source_id', true );
-
-				$this->subscriptions_map[ $memberpress_subscription_id ] = get_post();
+		foreach ( $subscription_posts as $subscription_post ) {
+			if ( ! $subscription_post instanceof WP_Post ) {
+				continue;
 			}
 
-			wp_reset_postdata();
+			$memberpress_subscription_id = (string) \get_post_meta( $subscription_post->ID, '_pronamic_subscription_source_id', true );
+
+			$this->subscriptions_map[ $memberpress_subscription_id ] = $subscription_post;
 		}
 
 		return $this->subscriptions_map;
@@ -156,9 +156,9 @@ class AdminSubscriptions {
 		if ( isset( $map[ $memberpress_subscription_id ] ) ) {
 			$pronamic_subscription_post = $map[ $memberpress_subscription_id ];
 
-			printf(
+			\printf(
 				'<a href="%s">%s</a>',
-				esc_attr( get_edit_post_link( $pronamic_subscription_post ) ),
+				\esc_attr( (string) \get_edit_post_link( $pronamic_subscription_post ) ),
 				\esc_html( (string) $pronamic_subscription_post->ID )
 			);
 		} else {

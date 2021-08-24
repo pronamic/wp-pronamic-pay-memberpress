@@ -8,6 +8,10 @@
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
 
+if ( ! isset( $memberpress_transaction_id ) ) {
+	return;
+}
+
 ?>
 <tr valign="top">
 	<th scope="row">

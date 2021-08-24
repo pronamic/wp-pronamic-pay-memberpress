@@ -89,11 +89,11 @@ class Extension extends AbstractPluginIntegration {
 		\add_action( 'registered_post_type', array( $this, 'post_type_columns_hide' ), 15, 1 );
 
 		if ( \is_admin() ) {
-			$this->admin_subscriptions = new Admin\AdminSubscriptions();
-			$this->admin_transactions  = new Admin\AdminTransactions();
+			$admin_subscriptions = new Admin\AdminSubscriptions();
+			$admin_transactions  = new Admin\AdminTransactions();
 
-			$this->admin_subscriptions->setup();
-			$this->admin_transactions->setup();
+			$admin_subscriptions->setup();
+			$admin_transactions->setup();
 		}
 	}
 
