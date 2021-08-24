@@ -211,18 +211,19 @@ class Extension extends AbstractPluginIntegration {
 
 		if ( null !== $subscription ) {
 			$subscription_id = $subscription->get_source_id();
-			$subscription    = new MeprSubscription( $subscription_id );
+
+			$memberpress_subscription = new MeprSubscription( $subscription_id );
 
 			// Same source ID and first transaction ID for recurring payment means we need to add a new transaction.
-			if ( $payment->get_source_id() === $subscription->id ) {
+			if ( $payment->get_source_id() === $memberpress_subscription->id ) {
 				// First transaction.
-				$first_txn = $subscription->first_txn();
+				$first_txn = $memberpress_subscription->first_txn();
 
 				if ( false === $first_txn || ! ( $first_txn instanceof MeprTransaction ) ) {
 					$first_txn             = new MeprTransaction();
-					$first_txn->user_id    = $subscription->user_id;
-					$first_txn->product_id = $subscription->product_id;
-					$first_txn->coupon_id  = $subscription->coupon_id;
+					$first_txn->user_id    = $memberpress_subscription->user_id;
+					$first_txn->product_id = $memberpress_subscription->product_id;
+					$first_txn->coupon_id  = $memberpress_subscription->coupon_id;
 					$first_txn->gateway    = null;
 				}
 
@@ -247,7 +248,7 @@ class Extension extends AbstractPluginIntegration {
 				$expires_at = MeprUtils::ts_to_mysql_date( $end_date->getTimestamp(), 'Y-m-d 23:59:59' );
 
 				// Determine gateway (can be different from original, i.e. via mandate update).
-				$old_gateway = $subscription->gateway;
+				$old_gateway = $memberpress_subscription->gateway;
 
 				$new_gateway = $old_gateway;
 
@@ -271,12 +272,12 @@ class Extension extends AbstractPluginIntegration {
 					// Set gateway, as payment method matches with this gateway.
 					$new_gateway = $mepr_gateway->id;
 
-					$subscription->gateway = $new_gateway;
+					$memberpress_subscription->gateway = $new_gateway;
 
-					$subscription->store();
+					$memberpress_subscription->store();
 
 					// Set expires at to subscription expiration date.
-					$expires_at = $subscription->expires_at;
+					$expires_at = $memberpress_subscription->expires_at;
 				}
 
 				$memberpress_transaction                  = new MeprTransaction();
@@ -289,7 +290,7 @@ class Extension extends AbstractPluginIntegration {
 				$memberpress_transaction->txn_type        = MeprTransaction::$payment_str;
 				$memberpress_transaction->status          = MeprTransaction::$pending_str;
 				$memberpress_transaction->expires_at      = $expires_at;
-				$memberpress_transaction->subscription_id = $subscription->id;
+				$memberpress_transaction->subscription_id = $memberpress_subscription->id;
 
 				$memberpress_transaction->set_gross( $payment->get_total_amount()->get_value() );
 
@@ -300,7 +301,7 @@ class Extension extends AbstractPluginIntegration {
 
 				$payment->source_id = $memberpress_transaction->id;
 
-				if ( MeprSubscription::$active_str === $subscription->status && $old_gateway === $new_gateway ) {
+				if ( MeprSubscription::$active_str === $memberpress_subscription->status && $old_gateway === $new_gateway ) {
 					/*
 					 * We create a 'confirmed' 'subscription_confirmation'
 					 * transaction for a grace period of 15 days.
@@ -321,7 +322,7 @@ class Extension extends AbstractPluginIntegration {
 					$subscription_confirmation->trans_num       = $trans_num;
 					$subscription_confirmation->txn_type        = MeprTransaction::$subscription_confirmation_str;
 					$subscription_confirmation->status          = MeprTransaction::$confirmed_str;
-					$subscription_confirmation->subscription_id = $subscription->id;
+					$subscription_confirmation->subscription_id = $memberpress_subscription->id;
 					$subscription_confirmation->expires_at      = MeprUtils::ts_to_mysql_date( strtotime( $payment->post->post_date_gmt ) + MeprUtils::days( 15 ), 'Y-m-d 23:59:59' );
 
 					$subscription_confirmation->set_subtotal( 0.00 );
