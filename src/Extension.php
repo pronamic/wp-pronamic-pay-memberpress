@@ -194,17 +194,17 @@ class Extension extends AbstractPluginIntegration {
 	 * @return void
 	 */
 	public function status_update( Payment $payment ) {
-		$transaction = MemberPress::get_transaction_by_id( $payment->get_source_id() );
+		$memberpress_transaction = MemberPress::get_transaction_by_id( $payment->get_source_id() );
 
 		/**
 		 * If we can't find a MemberPress transaction by the payment source ID
 		 * we can't update the MemberPress transaction, bail out early.
 		 */
-		if ( null === $transaction ) {
+		if ( null === $memberpress_transaction ) {
 			return;
 		}
 
-		if ( $payment->get_recurring() || empty( $transaction->id ) ) {
+		if ( $payment->get_recurring() || empty( $memberpress_transaction->id ) ) {
 			$subscription_id = $payment->get_subscription()->get_source_id();
 			$subscription    = new MeprSubscription( $subscription_id );
 
@@ -274,26 +274,26 @@ class Extension extends AbstractPluginIntegration {
 					$expires_at = $subscription->expires_at;
 				}
 
-				$transaction                  = new MeprTransaction();
-				$transaction->created_at      = $payment->post->post_date_gmt;
-				$transaction->user_id         = $first_txn->user_id;
-				$transaction->product_id      = $first_txn->product_id;
-				$transaction->coupon_id       = $first_txn->coupon_id;
-				$transaction->gateway         = $new_gateway;
-				$transaction->trans_num       = $trans_num;
-				$transaction->txn_type        = MeprTransaction::$payment_str;
-				$transaction->status          = MeprTransaction::$pending_str;
-				$transaction->expires_at      = $expires_at;
-				$transaction->subscription_id = $subscription->id;
+				$memberpress_transaction                  = new MeprTransaction();
+				$memberpress_transaction->created_at      = $payment->post->post_date_gmt;
+				$memberpress_transaction->user_id         = $first_txn->user_id;
+				$memberpress_transaction->product_id      = $first_txn->product_id;
+				$memberpress_transaction->coupon_id       = $first_txn->coupon_id;
+				$memberpress_transaction->gateway         = $new_gateway;
+				$memberpress_transaction->trans_num       = $trans_num;
+				$memberpress_transaction->txn_type        = MeprTransaction::$payment_str;
+				$memberpress_transaction->status          = MeprTransaction::$pending_str;
+				$memberpress_transaction->expires_at      = $expires_at;
+				$memberpress_transaction->subscription_id = $subscription->id;
 
-				$transaction->set_gross( $payment->get_total_amount()->get_value() );
+				$memberpress_transaction->set_gross( $payment->get_total_amount()->get_value() );
 
-				$transaction->store();
+				$memberpress_transaction->store();
 
 				// Set source ID.
-				$payment->set_meta( 'source_id', $transaction->id );
+				$payment->set_meta( 'source_id', $memberpress_transaction->id );
 
-				$payment->source_id = $transaction->id;
+				$payment->source_id = $memberpress_transaction->id;
 
 				if ( MeprSubscription::$active_str === $subscription->status && $old_gateway === $new_gateway ) {
 					/*
@@ -327,7 +327,7 @@ class Extension extends AbstractPluginIntegration {
 		}
 
 		$should_update = ! MemberPress::transaction_has_status(
-			$transaction,
+			$memberpress_transaction,
 			array(
 				MeprTransaction::$failed_str,
 				MeprTransaction::$complete_str,
@@ -335,7 +335,7 @@ class Extension extends AbstractPluginIntegration {
 		);
 
 		// Allow successful recurring payments to update failed transaction.
-		if ( $payment->get_recurring() && PaymentStatus::SUCCESS === $payment->get_status() && MeprTransaction::$failed_str === $transaction->status ) {
+		if ( $payment->get_recurring() && PaymentStatus::SUCCESS === $payment->get_status() && MeprTransaction::$failed_str === $memberpress_transaction->status ) {
 			$should_update = true;
 		}
 
@@ -343,7 +343,7 @@ class Extension extends AbstractPluginIntegration {
 			$gateway = new Gateway();
 
 			$gateway->pronamic_payment = $payment;
-			$gateway->mp_txn           = $transaction;
+			$gateway->mp_txn           = $memberpress_transaction;
 
 			switch ( $payment->get_status() ) {
 				case PaymentStatus::FAILURE:
