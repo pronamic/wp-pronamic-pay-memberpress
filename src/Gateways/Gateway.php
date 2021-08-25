@@ -205,7 +205,7 @@ class Gateway extends MeprBaseRealGateway {
 	 * @param MeprTransaction $memberpress_transaction MemberPress transaction.
 	 */
 	public function set_record_data( $pronamic_payment, $memberpress_transaction ) {
-		$this->pronamic_payment        = $pronamic_payment
+		$this->pronamic_payment        = $pronamic_payment;
 		$this->memberpress_transaction = $memberpress_transaction;
 	}
 

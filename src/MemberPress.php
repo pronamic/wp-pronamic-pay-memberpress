@@ -44,9 +44,9 @@ class MemberPress {
 
 		$transaction = new MeprTransaction();
 
-        $transaction->load_data( $object );
+		$transaction->load_data( $object );
 
-        return $transaction;
+		return $transaction;
 	}
 
 	/**
