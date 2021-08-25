@@ -144,7 +144,7 @@ class Gateway extends MeprBaseRealGateway {
 	 * @since 1.0.2
 	 * @return string|null
 	 */
-	private function get_icon() {
+	protected function get_icon() {
 		return PaymentMethods::get_icon_url( $this->payment_method );
 	}
 

@@ -38,4 +38,14 @@ class DirectDebitSofortGateway extends Gateway {
 			'subscription-trial-payment',
 		);
 	}
+
+	/**
+	 * Get icon function, please note that this is not a MemberPress function.
+	 *
+	 * @since 2.0.8
+	 * @return string
+	 */
+	protected function get_icon() {
+		return plugins_url( 'images/direct-debit-sofort/icon-32x32.png', Plugin::$file );
+	}
 }
