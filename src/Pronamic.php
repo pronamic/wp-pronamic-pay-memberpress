@@ -99,8 +99,8 @@ class Pronamic {
 		$payment->set_billing_address( $address );
 		$payment->set_shipping_address( $address );
 
-		/*
-		 * Totals.
+		/**
+		 * Total.
 		 */
 		$payment->set_total_amount(
 			new TaxedMoney(
@@ -111,13 +111,14 @@ class Pronamic {
 			)
 		);
 
-		/*
+		/**
 		 * Vat number.
+		 *
 		 * @link https://github.com/wp-premium/memberpress-business/search?utf8=%E2%9C%93&q=mepr_vat_number&type=
 		 * @todo
 		 */
 
-		/*
+		/**
 		 * Subscription.
 		 */
 		$payment->subscription = self::get_subscription( $memberpress_transaction );

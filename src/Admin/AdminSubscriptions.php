@@ -90,7 +90,7 @@ class AdminSubscriptions {
 					array(
 						'key'     => '_pronamic_subscription_source',
 						'compare' => '=',
-						'value'   => 'memberpress',
+						'value'   => 'memberpress_subscription',
 					),
 					array(
 						'key'     => '_pronamic_subscription_source_id',

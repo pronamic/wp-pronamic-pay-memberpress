@@ -398,8 +398,21 @@ class Extension extends AbstractPluginIntegration {
 				$downgrade = $memberpress_transaction->is_downgrade();
 
 				$event_txn = $memberpress_transaction->maybe_cancel_old_sub();
-		
+
 				$memberpress_transaction->store();
+
+				/**
+				 * MemberPress subscription.
+				 * 
+				 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprTransaction.php#L605-L620
+				 */
+				$memberpress_subscription = $memberpress_transaction->subscription();
+
+				if ( $memberpress_subscription instanceof MeprSubscription ) {
+					$memberpress_subscription->status = MeprSubscription::$active_str;
+				
+					$memberpress_subscription->store();
+				}
 
 				/**
 				 * Send signup notices.
