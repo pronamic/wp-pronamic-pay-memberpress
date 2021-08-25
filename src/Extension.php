@@ -72,6 +72,8 @@ class Extension extends AbstractPluginIntegration {
 		\add_filter( 'pronamic_payment_redirect_url_' . self::SLUG, array( $this, 'redirect_url' ), 10, 2 );
 		\add_action( 'pronamic_payment_status_update_' . self::SLUG, array( $this, 'status_update' ), 10, 1 );
 
+		\add_action( 'pronamic_pay_new_payment', array( $this, 'maybe_create_memberpress_transaction' ) );
+
 		\add_filter( 'pronamic_subscription_source_text_' . self::SLUG, array( $this, 'subscription_source_text' ), 10, 2 );
 		\add_filter( 'pronamic_subscription_source_url_' . self::SLUG, array( $this, 'subscription_source_url' ), 10, 2 );
 		\add_filter( 'pronamic_payment_source_text_' . self::SLUG, array( $this, 'source_text' ), 10, 2 );
@@ -185,6 +187,17 @@ class Extension extends AbstractPluginIntegration {
 		}
 
 		return $url;
+	}
+
+	/**
+	 * Maybe create create MemberPress transaction for the Pronamic payment.
+	 * 
+	 * @todo Implement.
+	 * @param Payment $payment Payment.
+	 * @return void
+	 */
+	public function maybe_create_memberpress_transaction( Payment $payment ) {
+		
 	}
 
 	/**
