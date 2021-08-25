@@ -210,6 +210,15 @@ class Gateway extends MeprBaseRealGateway {
 	}
 
 	/**
+	 * Get payment method.
+	 * 
+	 * @var string|null
+	 */
+	public function get_payment_method() {
+		return $this->payment_method;
+	}
+
+	/**
 	 * Record subscription payment.
 	 *
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L170-L175

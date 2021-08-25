@@ -216,6 +216,24 @@ class Extension extends AbstractPluginIntegration {
 		}
 
 		/**
+		 * If the payment method is changed we have to update the MemberPress
+		 * subscription.
+		 * 
+		 * @link https://github.com/wp-pay-extensions/memberpress/commit/3631bcb24f376fb637c1317e15f540cb1f9136f4#diff-6f62438f6bf291e85f644dbdbb14b2a71a9a7ed205b01ce44290ed85abe2aa07L259-L290
+		 */
+		$memberpress_gateways = MeprOptions::fetch()->payment_methods();
+
+		foreach ( $memberpress_gateways as $memberpress_gateway ) {
+			if ( ! $memberpress_gateway instanceof Gateway ) {
+				continue;
+			}
+
+			if ( $memberpress_gateway->get_payment_method() === $payment->get_method() ) {
+				$memberpress_subscription->gateway = $memberpress_gateway->id;
+			}
+		}
+
+		/**
 		 * Payment method.
 		 * 
 		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprTransaction.php#L634-L637
@@ -233,7 +251,31 @@ class Extension extends AbstractPluginIntegration {
 		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprStripeGateway.php#L587-L714
 		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprAuthorizeGateway.php#L205-L255
 		 */
-		// $memberpress_gateway->record_subscription_payment();
+		$memberpress_gateway->record_subscription_payment();
+
+		$memberpress_transaction = new MeprTransaction();
+
+		$memberpress_transaction->user_id         = $memberpress_subscription->user_id;
+		$memberpress_transaction->product_id      = $memberpress_subscription->product_id;
+		$memberpress_transaction->txn_type        = MeprTransaction::$payment_str;
+		$memberpress_transaction->status          = MeprTransaction::$pending_str;
+		$memberpress_transaction->coupon_id       = $memberpress_subscription->coupon_id;
+		$memberpress_transaction->trans_num       = $payment->get_transaction_id();
+		$memberpress_transaction->subscription_id = $memberpress_subscription->id;
+		$memberpress_transaction->gateway         = $memberpress_gateway->id;
+
+		/**
+		 * Gross.
+		 * 
+		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprTransaction.php#L1013-L1021
+		 */
+		$memberpress_transaction->set_gross( $payment->get_total_amount()->get_value() );
+
+		$memberpress_transaction->store();
+
+		$memberpress_subscription->store();
+
+		MeprUtils::send_transaction_receipt_notices( $memberpress_transaction );
 	}
 
 	/**
@@ -291,11 +333,7 @@ class Extension extends AbstractPluginIntegration {
 
 				break;
 			case PaymentStatus::SUCCESS:
-				if ( $payment->get_recurring() ) {
-					$memberpress_gateway->record_subscription_payment();
-				} else {
-					$memberpress_gateway->record_payment();
-				}
+				$memberpress_gateway->record_payment();
 
 				break;
 			case PaymentStatus::OPEN:
