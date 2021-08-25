@@ -64,20 +64,6 @@ class Gateway extends MeprBaseRealGateway {
 	public $key;
 
 	/**
-	 * MemberPress transaction.
-	 *
-	 * @var MeprTransaction|null
-	 */
-	private $memberpress_transaction;
-
-	/**
-	 * Pronamic payment.
-	 *
-	 * @var Payment|null
-	 */
-	private $pronamic_payment;
-
-	/**
 	 * Constructs and initialize gateway.
 	 * 
 	 * @param string      $class_alias    Class alias.
@@ -199,17 +185,6 @@ class Gateway extends MeprBaseRealGateway {
 	}
 
 	/**
-	 * Set record data.
-	 * 
-	 * @param Payment         $pronamic_payment        Pronamic payment.
-	 * @param MeprTransaction $memberpress_transaction MemberPress transaction.
-	 */
-	public function set_record_data( $pronamic_payment, $memberpress_transaction ) {
-		$this->pronamic_payment        = $pronamic_payment;
-		$this->memberpress_transaction = $memberpress_transaction;
-	}
-
-	/**
 	 * Get payment method.
 	 * 
 	 * @var string|null
@@ -225,49 +200,7 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function record_subscription_payment() {
-		if ( null === $this->pronamic_payment ) {
-			return;
-		}
 
-		if ( null === $this->memberpress_transaction ) {
-			return;
-		}
-
-		$transaction = $this->memberpress_transaction;
-
-		$transaction->status     = MeprTransaction::$complete_str;
-		$transaction->expires_at = MeprUtils::ts_to_mysql_date( $this->pronamic_payment->get_end_date()->getTimestamp(), 'Y-m-d 23:59:59' );
-		$transaction->store();
-
-		$subscription = $transaction->subscription();
-
-		if ( $subscription ) {
-			$should_activate = ! \in_array(
-				$subscription->status,
-				array(
-					MeprSubscription::$active_str,
-					MeprSubscription::$cancelled_str,
-				),
-				true
-			);
-
-			if ( $should_activate ) {
-				$subscription->status = MeprSubscription::$active_str;
-				$subscription->store();
-			}
-
-			$subscription->expire_confirmation_txn();
-
-			$subscription->limit_payment_cycles();
-		}
-
-		/**
-		 * Send transaction receipt notices.
-		 * 
-		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprUtils.php#L1396-L1418
-		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprAuthorizeGateway.php#L249
-		 */
-		MeprUtils::send_transaction_receipt_notices( $transaction );
 	}
 
 	/**
@@ -278,37 +211,7 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function record_payment_failure() {
-		if ( null === $this->pronamic_payment ) {
-			return;
-		}
 
-		if ( null === $this->memberpress_transaction ) {
-			return;
-		}
-
-		$transaction = $this->memberpress_transaction;
-
-		// @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprTransaction.php#L50.
-		$transaction->status = MeprTransaction::$failed_str;
-		$transaction->store();
-
-		// Expire associated subscription transactions for non-recurring payments.
-		if ( ! ( isset( $this->pronamic_payment ) && $this->pronamic_payment->get_recurring() ) ) {
-			$subscription = $transaction->subscription();
-
-			if ( $subscription ) {
-				$subscription->expire_txns();
-				$subscription->store();
-			}
-		}
-
-		/**
-		 * Send failed transaction notices.
-		 * 
-		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprUtils.php#L1515-L1528
-		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprAuthorizeGateway.php#L299
-		 */
-		MeprUtils::send_failed_txn_notices( $transaction );
 	}
 
 	/**
@@ -318,66 +221,7 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function record_payment() {
-		if ( null === $this->pronamic_payment ) {
-			return;
-		}
 
-		if ( null === $this->memberpress_transaction ) {
-			return;
-		}
-
-		$transaction = $this->memberpress_transaction;
-
-		$transaction->status = MeprTransaction::$complete_str;
-
-		// This will only work before maybe_cancel_old_sub is run.
-		$upgrade   = $transaction->is_upgrade();
-		$downgrade = $transaction->is_downgrade();
-
-		$event_transaction = $transaction->maybe_cancel_old_sub();
-
-		$subscription = $transaction->subscription();
-
-		if ( $subscription ) {
-			$event_subscription = $subscription->maybe_cancel_old_sub();
-
-			$subscription->status     = MeprSubscription::$active_str;
-			$subscription->created_at = $transaction->created_at;
-			$subscription->store();
-
-			if ( false === $event_transaction && false !== $event_subscription ) {
-				$event_transaction = $event_subscription;
-			}
-		}
-
-		$transaction->store();
-
-		// Send upgrade/downgrade notices.
-		$product = $transaction->product();
-
-		if ( 'lifetime' === $product->period_type ) {
-			if ( $upgrade ) {
-				$this->upgraded_sub( $transaction, $event_transaction );
-			} elseif ( $downgrade ) {
-				$this->downgraded_sub( $transaction, $event_transaction );
-			} else {
-				$this->new_sub( $transaction );
-			}
-		}
-
-		/**
-		 * Send signup notices.
-		 * 
-		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprUtils.php#L1361-L1390
-		 */
-		MeprUtils::send_signup_notices( $transaction );
-
-		/**
-		 * Send transaction receipt notices.
-		 * 
-		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprUtils.php#L1396-L1418
-		 */
-		MeprUtils::send_transaction_receipt_notices( $transaction );
 	}
 
 	/**

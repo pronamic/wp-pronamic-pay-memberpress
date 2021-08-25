@@ -272,6 +272,12 @@ class Extension extends AbstractPluginIntegration {
 		$memberpress_transaction->subscription_id = $memberpress_subscription->id;
 		$memberpress_transaction->gateway         = $memberpress_gateway->id;
 
+		$end_date = $payment->get_end_date();
+
+		if ( null !== $end_date ) {
+			$memberpress_transaction->expires_at = MeprUtils::ts_to_mysql_date( $end_date->getTimestamp(), 'Y-m-d 23:59:59' );
+		}
+
 		/**
 		 * Gross.
 		 * 
@@ -279,9 +285,7 @@ class Extension extends AbstractPluginIntegration {
 		 */
 		$memberpress_transaction->set_gross( $payment->get_total_amount()->get_value() );
 
-		$memberpress_transaction_id = $memberpress_transaction->store();
-
-		MeprUtils::send_transaction_receipt_notices( $memberpress_transaction );
+		$memberpress_transaction->store();
 
 		/**
 		 * Store the MemberPress subscription in case of gateway changes.
@@ -294,7 +298,7 @@ class Extension extends AbstractPluginIntegration {
 		 * @link https://github.com/wp-pay-extensions/restrict-content-pro/blob/3.0.0/src/Extension.php#L770-L776
 		 */
 		$payment->source    = 'memberpress_transaction';
-		$payment->source_id = $memberpress_transaction_id;
+		$payment->source_id = $memberpress_transaction->id;
 
 		$payment->save();
 	}
@@ -342,19 +346,74 @@ class Extension extends AbstractPluginIntegration {
 
 		if ( ! $memberpress_gateway instanceof Gateway ) {
 			return;
-		} 
+		}
 
-		$memberpress_gateway->set_record_data( $payment, $memberpress_transaction );
-
+		/**
+		 * Ok.
+		 */
 		switch ( $payment->get_status() ) {
 			case PaymentStatus::FAILURE:
 			case PaymentStatus::CANCELLED:
 			case PaymentStatus::EXPIRED:
 				$memberpress_gateway->record_payment_failure();
 
+				$memberpress_transaction->status = MeprTransaction::$failed_str;
+		
+				$memberpress_transaction->store();
+
+				/**
+				 * MemberPress subscription.
+				 * 
+				 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprTransaction.php#L605-L620
+				 */
+				$memberpress_subscription = $memberpress_transaction->subscription();
+
+				if ( $memberpress_subscription instanceof MeprSubscription ) {
+					$memberpress_subscription->expire_txns();
+				
+					$memberpress_subscription->store();
+				}
+
+				/**
+				 * Send failed transaction notices.
+				 * 
+				 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprUtils.php#L1515-L1528
+				 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprAuthorizeGateway.php#L299
+				 */
+				MeprUtils::send_failed_txn_notices( $memberpress_transaction );
+
 				break;
 			case PaymentStatus::SUCCESS:
 				$memberpress_gateway->record_payment();
+
+				$memberpress_transaction->trans_num = $payment->get_transaction_id();
+				$memberpress_transaction->status    = MeprTransaction::$complete_str;
+
+				/**
+				 * Upgrade/downgrade magic.
+				 * 
+				 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprPayPalProGateway.php#L350-L354
+				 */
+				$upgrade   = $memberpress_transaction->is_upgrade();
+				$downgrade = $memberpress_transaction->is_downgrade();
+
+				$event_txn = $memberpress_transaction->maybe_cancel_old_sub();
+		
+				$memberpress_transaction->store();
+
+				/**
+				 * Send signup notices.
+				 * 
+				 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprUtils.php#L1361-L1390
+				 */
+				MeprUtils::send_signup_notices( $memberpress_transaction );
+
+				/**
+				 * Send transaction receipt notices.
+				 * 
+				 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprUtils.php#L1396-L1418
+				 */
+				MeprUtils::send_transaction_receipt_notices( $memberpress_transaction );
 
 				break;
 			case PaymentStatus::OPEN:
