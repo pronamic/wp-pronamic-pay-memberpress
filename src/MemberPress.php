@@ -34,7 +34,7 @@ class MemberPress {
 	public static function get_transaction_by_id( $id ) {
 		$object = MeprTransaction::get_one( $id );
 
-		if ( ! is_object( $object ) ) {
+		if ( ! \is_object( $object ) ) {
 			return null;
 		}
 
@@ -58,13 +58,21 @@ class MemberPress {
 	 * @return MeprSubscription|null
 	 */
 	public static function get_subscription_by_id( $id ) {
-		$result = MeprSubscription::get_one_by_subscr_id( $id );
+		$object = MeprSubscription::get_one( $id );
 
-		if ( $result instanceof MeprSubscription ) {
-			return $result;
+		if ( ! \is_object( $object ) ) {
+			return null;
 		}
 
-		return null;
+		if ( ! isset( $object->id ) ) {
+			return null;
+		}
+
+		$subscription = new MeprSubscription();
+
+		$subscription->load_data( $object );
+
+		return $subscription;
 	}
 
 	/**

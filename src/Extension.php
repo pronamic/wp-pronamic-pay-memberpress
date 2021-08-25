@@ -40,26 +40,33 @@ class Extension extends AbstractPluginIntegration {
 
 	/**
 	 * Construct MemberPress plugin integration.
+	 * 
+	 * @param array $args Arguments.
 	 */
-	public function __construct() {
-		parent::__construct(
-			array(
-				'name' => __( 'MemberPress', 'pronamic_ideal' ),
-			)
-		);
+	public function __construct( $args = array() ) {
+		$args['name'] = __( 'MemberPress', 'pronamic_ideal' );
+
+		parent::__construct( $args );
 
 		// Dependencies.
 		$dependencies = $this->get_dependencies();
 
 		$dependencies->add( new MemberPressDependency() );
+
+		// Upgrades.
+		$upgrades = $this->get_upgrades();
+
+		$upgrades->set_executable( true );
+
+		$upgrades->add( new Upgrade310() );
 	}
 
 	/**
 	 * Setup.
 	 */
 	public function setup() {
-		\add_filter( 'pronamic_subscription_source_description_' . self::SLUG, array( $this, 'subscription_source_description' ), 10, 2 );
-		\add_filter( 'pronamic_payment_source_description_' . self::SLUG, array( $this, 'source_description' ), 10, 2 );
+		\add_filter( 'pronamic_subscription_source_description_memberpress_transaction', array( $this, 'subscription_source_description' ), 10, 2 );
+		\add_filter( 'pronamic_payment_source_description_memberpress_transaction', array( $this, 'source_description' ), 10, 2 );
 
 		// Check if dependencies are met and integration is active.
 		if ( ! $this->is_active() ) {
@@ -69,15 +76,15 @@ class Extension extends AbstractPluginIntegration {
 		// @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprGatewayFactory.php#L48-50
 		\add_filter( 'mepr-gateway-paths', array( $this, 'gateway_paths' ) );
 
-		\add_filter( 'pronamic_payment_redirect_url_' . self::SLUG, array( $this, 'redirect_url' ), 10, 2 );
-		\add_action( 'pronamic_payment_status_update_' . self::SLUG, array( $this, 'status_update' ), 10, 1 );
+		\add_filter( 'pronamic_payment_redirect_url_memberpress_transaction', array( $this, 'redirect_url' ), 10, 2 );
+		\add_action( 'pronamic_payment_status_update_memberpress_transaction', array( $this, 'status_update' ), 10, 1 );
 
 		\add_action( 'pronamic_pay_new_payment', array( $this, 'maybe_create_memberpress_transaction' ), 10, 1 );
 
-		\add_filter( 'pronamic_subscription_source_text_' . self::SLUG, array( $this, 'subscription_source_text' ), 10, 2 );
-		\add_filter( 'pronamic_subscription_source_url_' . self::SLUG, array( $this, 'subscription_source_url' ), 10, 2 );
-		\add_filter( 'pronamic_payment_source_text_' . self::SLUG, array( $this, 'source_text' ), 10, 2 );
-		\add_filter( 'pronamic_payment_source_url_' . self::SLUG, array( $this, 'source_url' ), 10, 2 );
+		\add_filter( 'pronamic_subscription_source_text_memberpress_subscription', array( $this, 'subscription_source_text' ), 10, 2 );
+		\add_filter( 'pronamic_subscription_source_url_memberpress_subscription', array( $this, 'subscription_source_url' ), 10, 2 );
+		\add_filter( 'pronamic_payment_source_text_memberpress_transaction', array( $this, 'source_text' ), 10, 2 );
+		\add_filter( 'pronamic_payment_source_url_memberpress_transaction', array( $this, 'source_url' ), 10, 2 );
 
 		\add_action( 'mepr_subscription_pre_delete', array( $this, 'subscription_pre_delete' ), 10, 1 );
 
@@ -196,6 +203,7 @@ class Extension extends AbstractPluginIntegration {
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprStripeGateway.php#L587-L714
 	 * @param Payment $payment Payment.
 	 * @return void
+	 * @throws \Exception Throws an exception when the MemberPress subscription cannot be found.
 	 */
 	public function maybe_create_memberpress_transaction( Payment $payment ) {
 		if ( 'memberpress_subscription' !== $payment->get_source() ) {
@@ -271,11 +279,24 @@ class Extension extends AbstractPluginIntegration {
 		 */
 		$memberpress_transaction->set_gross( $payment->get_total_amount()->get_value() );
 
-		$memberpress_transaction->store();
-
-		$memberpress_subscription->store();
+		$memberpress_transaction_id = $memberpress_transaction->store();
 
 		MeprUtils::send_transaction_receipt_notices( $memberpress_transaction );
+
+		/**
+		 * Store the MemberPress subscription in case of gateway changes.
+		 */
+		$memberpress_subscription->store();
+
+		/**
+		 * Update payment source.
+		 * 
+		 * @link https://github.com/wp-pay-extensions/restrict-content-pro/blob/3.0.0/src/Extension.php#L770-L776
+		 */
+		$payment->source    = 'memberpress_transaction';
+		$payment->source_id = $memberpress_transaction_id;
+
+		$payment->save();
 	}
 
 	/**

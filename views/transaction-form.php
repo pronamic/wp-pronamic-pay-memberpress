@@ -29,7 +29,7 @@ if ( ! isset( $memberpress_transaction_id ) ) {
 					array(
 						'key'     => '_pronamic_payment_source',
 						'compare' => '=',
-						'value'   => 'memberpress',
+						'value'   => 'memberpress_transaction',
 					),
 					array(
 						'key'     => '_pronamic_payment_source_id',

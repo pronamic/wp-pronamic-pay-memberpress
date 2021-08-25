@@ -225,11 +225,11 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function record_subscription_payment() {
-		if ( nulll === $this->pronamic_payment ) {
+		if ( null === $this->pronamic_payment ) {
 			return;
 		}
 
-		if ( nulll === $this->memberpress_transaction ) {
+		if ( null === $this->memberpress_transaction ) {
 			return;
 		}
 
@@ -278,11 +278,11 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function record_payment_failure() {
-		if ( nulll === $this->pronamic_payment ) {
+		if ( null === $this->pronamic_payment ) {
 			return;
 		}
 
-		if ( nulll === $this->memberpress_transaction ) {
+		if ( null === $this->memberpress_transaction ) {
 			return;
 		}
 
@@ -318,11 +318,11 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function record_payment() {
-		if ( nulll === $this->pronamic_payment ) {
+		if ( null === $this->pronamic_payment ) {
 			return;
 		}
 
-		if ( nulll === $this->memberpress_transaction ) {
+		if ( null === $this->memberpress_transaction ) {
 			return;
 		}
 
