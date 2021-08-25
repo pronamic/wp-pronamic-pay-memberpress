@@ -65,7 +65,7 @@ class Extension extends AbstractPluginIntegration {
 	 * Setup.
 	 */
 	public function setup() {
-		\add_filter( 'pronamic_subscription_source_description_memberpress_transaction', array( $this, 'subscription_source_description' ), 10, 2 );
+		\add_filter( 'pronamic_subscription_source_description_memberpress_subscription', array( $this, 'subscription_source_description' ), 10, 2 );
 		\add_filter( 'pronamic_payment_source_description_memberpress_transaction', array( $this, 'source_description' ), 10, 2 );
 
 		// Check if dependencies are met and integration is active.
@@ -83,6 +83,7 @@ class Extension extends AbstractPluginIntegration {
 
 		\add_filter( 'pronamic_subscription_source_text_memberpress_subscription', array( $this, 'subscription_source_text' ), 10, 2 );
 		\add_filter( 'pronamic_subscription_source_url_memberpress_subscription', array( $this, 'subscription_source_url' ), 10, 2 );
+
 		\add_filter( 'pronamic_payment_source_text_memberpress_transaction', array( $this, 'source_text' ), 10, 2 );
 		\add_filter( 'pronamic_payment_source_url_memberpress_transaction', array( $this, 'source_url' ), 10, 2 );
 
