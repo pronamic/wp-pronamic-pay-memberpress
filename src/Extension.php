@@ -401,7 +401,7 @@ class Extension extends AbstractPluginIntegration {
 	 * @return array<string, string>
 	 */
 	public function subscription_email_params( $params, MeprSubscription $memberpress_subscription ) {
-		$subscriptions = \get_pronamic_subscriptions_by_source( 'memberpress', $memberpress_subscription->id );
+		$subscriptions = \get_pronamic_subscriptions_by_source( 'memberpress_subscription', $memberpress_subscription->id );
 
 		if ( empty( $subscriptions ) ) {
 			return $params;
@@ -432,7 +432,7 @@ class Extension extends AbstractPluginIntegration {
 	 * @return array<string, string>
 	 */
 	public function transaction_email_params( $params, MeprTransaction $transaction ) {
-		$payments = \get_pronamic_payments_by_source( 'memberpress', $transaction->id );
+		$payments = \get_pronamic_payments_by_source( 'memberpress_transaction', $transaction->id );
 
 		if ( null === $payments ) {
 			return $params;

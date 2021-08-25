@@ -1024,7 +1024,7 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function display_update_account_form( $sub_id, $errors = array(), $message = '' ) {
-		$subscriptions = \get_pronamic_subscriptions_by_source( 'memberpress', (int) $sub_id );
+		$subscriptions = \get_pronamic_subscriptions_by_source( 'memberpress_subscription', (int) $sub_id );
 
 		$message = \__( 'The payment method for this subscription can not be updated manually.', 'pronamic_ideal' );
 
