@@ -207,191 +207,51 @@ class Extension extends AbstractPluginIntegration {
 		}
 
 		/**
-		 * Subscription.
+		 * We don't update MemberPress transactions that already have the
+		 * status 'failed' or 'complete'.
 		 */
-		$subscription = $payment->get_subscription();
-
-		if ( null !== $subscription ) {
-			$subscription_source_id = $subscription->get_source_id();
-
-			$memberpress_subscription = MemberPress::get_subscription_by_id( $subscription_source_id );
-
-			if ( null === $memberpress_subscription ) {
-				/**
-				 * @todo What to-do?
-				 */
-				throw new \Exception( 'Cannot find MemberPress subscription.' );
-			}
-
-			// Same source ID and first transaction ID for recurring payment means we need to add a new transaction.
-			if ( $payment_source_id === $subscription_source_id ) {
-				// First transaction.
-				$first_txn = $memberpress_subscription->first_txn();
-
-				if ( false === $first_txn || ! ( $first_txn instanceof MeprTransaction ) ) {
-					$first_txn             = new MeprTransaction();
-					$first_txn->user_id    = $memberpress_subscription->user_id;
-					$first_txn->product_id = $memberpress_subscription->product_id;
-					$first_txn->coupon_id  = $memberpress_subscription->coupon_id;
-					$first_txn->gateway    = null;
-				}
-
-				// Transaction number.
-				$trans_num = $payment->get_transaction_id();
-
-				if ( empty( $trans_num ) ) {
-					$trans_num = uniqid();
-				}
-
-				// New transaction.
-				$end_date = $payment->get_end_date();
-
-				if ( null === $end_date ) {
-					$periods = $payment->get_periods();
-
-					if ( ! empty( $periods ) ) {
-						$end_date = $periods[0]->get_end_date();
-					}
-				}
-
-				$expires_at = MeprUtils::ts_to_mysql_date( $end_date->getTimestamp(), 'Y-m-d 23:59:59' );
-
-				// Determine gateway (can be different from original, i.e. via mandate update).
-				$old_gateway = $memberpress_subscription->gateway;
-
-				$new_gateway = $old_gateway;
-
-				$mepr_options = MeprOptions::fetch();
-
-				$mepr_gateways = $mepr_options->payment_methods();
-
-				foreach ( $mepr_gateways as $mepr_gateway ) {
-					// Check valid gateway.
-					if ( ! ( $mepr_gateway instanceof \MeprBaseRealGateway ) ) {
-						continue;
-					}
-
-					// Check payment method.
-					$payment_method = \str_replace( 'pronamic_pay_', '', $mepr_gateway->key );
-
-					if ( $payment_method !== $payment->get_method() ) {
-						continue;
-					}
-
-					// Set gateway, as payment method matches with this gateway.
-					$new_gateway = $mepr_gateway->id;
-
-					$memberpress_subscription->gateway = $new_gateway;
-
-					$memberpress_subscription->store();
-
-					// Set expires at to subscription expiration date.
-					$expires_at = $memberpress_subscription->expires_at;
-				}
-
-				$memberpress_transaction                  = new MeprTransaction();
-				$memberpress_transaction->created_at      = $payment->post->post_date_gmt;
-				$memberpress_transaction->user_id         = $first_txn->user_id;
-				$memberpress_transaction->product_id      = $first_txn->product_id;
-				$memberpress_transaction->coupon_id       = $first_txn->coupon_id;
-				$memberpress_transaction->gateway         = $new_gateway;
-				$memberpress_transaction->trans_num       = $trans_num;
-				$memberpress_transaction->txn_type        = MeprTransaction::$payment_str;
-				$memberpress_transaction->status          = MeprTransaction::$pending_str;
-				$memberpress_transaction->expires_at      = $expires_at;
-				$memberpress_transaction->subscription_id = $memberpress_subscription->id;
-
-				$memberpress_transaction->set_gross( $payment->get_total_amount()->get_value() );
-
-				$memberpress_transaction->store();
-
-				// Set source ID.
-				$payment->set_meta( 'source_id', $memberpress_transaction->id );
-
-				$payment->source_id = $memberpress_transaction->id;
-
-				if ( MeprSubscription::$active_str === $memberpress_subscription->status && $old_gateway === $new_gateway ) {
-					/*
-					 * We create a 'confirmed' 'subscription_confirmation'
-					 * transaction for a grace period of 15 days.
-					 *
-					 * Transactions of type "subscription_confirmation" with a
-					 * status of "confirmed" are hidden in the UI, and are used
-					 * as a way to provide free trial periods and the 24 hour
-					 * grace period on a recurring subscription signup.
-					 *
-					 * @link https://docs.memberpress.com/article/219-where-is-data-stored.
-					 */
-					$subscription_confirmation                  = new MeprTransaction();
-					$subscription_confirmation->created_at      = $payment->post->post_date_gmt;
-					$subscription_confirmation->user_id         = $first_txn->user_id;
-					$subscription_confirmation->product_id      = $first_txn->product_id;
-					$subscription_confirmation->coupon_id       = $first_txn->coupon_id;
-					$subscription_confirmation->gateway         = $new_gateway;
-					$subscription_confirmation->trans_num       = $trans_num;
-					$subscription_confirmation->txn_type        = MeprTransaction::$subscription_confirmation_str;
-					$subscription_confirmation->status          = MeprTransaction::$confirmed_str;
-					$subscription_confirmation->subscription_id = $memberpress_subscription->id;
-					$subscription_confirmation->expires_at      = MeprUtils::ts_to_mysql_date( strtotime( $payment->post->post_date_gmt ) + MeprUtils::days( 15 ), 'Y-m-d 23:59:59' );
-
-					$subscription_confirmation->set_subtotal( 0.00 );
-
-					$subscription_confirmation->store();
-				}
-			}
-		}
-
-		$should_update = ! MemberPress::transaction_has_status(
+		if ( MemberPress::transaction_has_status(
 			$memberpress_transaction,
 			array(
 				MeprTransaction::$failed_str,
 				MeprTransaction::$complete_str,
 			)
-		);
-
-		// Allow successful recurring payments to update failed transaction.
-		if ( $payment->get_recurring() && PaymentStatus::SUCCESS === $payment->get_status() && MeprTransaction::$failed_str === $memberpress_transaction->status ) {
-			$should_update = true;
+		) ) {
+			return;
 		}
 
-		if ( $should_update ) {
-			$gateway = new Gateway();
+		/**
+		 * Payment method.
+		 * 
+		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprTransaction.php#L634-L637
+		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprOptions.php#L798-L811
+		 */
+		$memberpress_gateway = $memberpress_transaction->payment_method();
 
-			$gateway->pronamic_payment = $payment;
-			$gateway->mp_txn           = $memberpress_transaction;
+		if ( ! $memberpress_gateway instanceof Gateway ) {
+			return;
+		} 
 
-			switch ( $payment->get_status() ) {
-				case PaymentStatus::FAILURE:
-					$gateway->record_payment_failure();
+		$memberpress_gateway->set_record_data( $payment, $memberpress_transaction );
 
-					// Set subscription 'On Hold' to prevent subsequent
-					// successful subscriptions from awaking subscription.
-					if ( ! $payment->get_recurring() ) {
-						$subscription = $payment->get_subscription();
+		switch ( $payment->get_status() ) {
+			case PaymentStatus::FAILURE:
+			case PaymentStatus::CANCELLED:
+			case PaymentStatus::EXPIRED:
+				$memberpress_gateway->record_payment_failure();
 
-						if ( null !== $subscription ) {
-							$subscription->set_status( SubscriptionStatus::ON_HOLD );
-						}
-					}
+				break;
+			case PaymentStatus::SUCCESS:
+				if ( $payment->get_recurring() ) {
+					$memberpress_gateway->record_subscription_payment();
+				} else {
+					$memberpress_gateway->record_payment();
+				}
 
-					break;
-				case PaymentStatus::CANCELLED:
-				case PaymentStatus::EXPIRED:
-					$gateway->record_payment_failure();
-
-					break;
-				case PaymentStatus::SUCCESS:
-					if ( $payment->get_recurring() ) {
-						$gateway->record_subscription_payment();
-					} else {
-						$gateway->record_payment();
-					}
-
-					break;
-				case PaymentStatus::OPEN:
-				default:
-					break;
-			}
+				break;
+			case PaymentStatus::OPEN:
+			default:
+				break;
 		}
 	}
 

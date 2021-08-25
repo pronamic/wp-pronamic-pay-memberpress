@@ -68,14 +68,14 @@ class Gateway extends MeprBaseRealGateway {
 	 *
 	 * @var MeprTransaction|null
 	 */
-	public $mp_txn;
+	private $memberpress_transaction;
 
 	/**
 	 * Pronamic payment.
 	 *
 	 * @var Payment|null
 	 */
-	public $pronamic_payment;
+	private $pronamic_payment;
 
 	/**
 	 * Constructs and initialize gateway.
@@ -199,13 +199,32 @@ class Gateway extends MeprBaseRealGateway {
 	}
 
 	/**
+	 * Set record data.
+	 * 
+	 * @param Payment         $pronamic_payment        Pronamic payment.
+	 * @param MeprTransaction $memberpress_transaction MemberPress transaction.
+	 */
+	public function set_record_data( $pronamic_payment, $memberpress_transaction ) {
+		$this->pronamic_payment        = $pronamic_payment
+		$this->memberpress_transaction = $memberpress_transaction;
+	}
+
+	/**
 	 * Record subscription payment.
 	 *
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L170-L175
 	 * @return void
 	 */
 	public function record_subscription_payment() {
-		$transaction = $this->mp_txn;
+		if ( nulll === $this->pronamic_payment ) {
+			return;
+		}
+
+		if ( nulll === $this->memberpress_transaction ) {
+			return;
+		}
+
+		$transaction = $this->memberpress_transaction;
 
 		$transaction->status     = MeprTransaction::$complete_str;
 		$transaction->expires_at = MeprUtils::ts_to_mysql_date( $this->pronamic_payment->get_end_date()->getTimestamp(), 'Y-m-d 23:59:59' );
@@ -250,7 +269,15 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function record_payment_failure() {
-		$transaction = $this->mp_txn;
+		if ( nulll === $this->pronamic_payment ) {
+			return;
+		}
+
+		if ( nulll === $this->memberpress_transaction ) {
+			return;
+		}
+
+		$transaction = $this->memberpress_transaction;
 
 		// @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprTransaction.php#L50.
 		$transaction->status = MeprTransaction::$failed_str;
@@ -282,7 +309,15 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function record_payment() {
-		$transaction = $this->mp_txn;
+		if ( nulll === $this->pronamic_payment ) {
+			return;
+		}
+
+		if ( nulll === $this->memberpress_transaction ) {
+			return;
+		}
+
+		$transaction = $this->memberpress_transaction;
 
 		$transaction->status = MeprTransaction::$complete_str;
 
