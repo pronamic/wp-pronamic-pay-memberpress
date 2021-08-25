@@ -238,6 +238,10 @@ class Pronamic {
 
 		$subscription->add_phase( $regular_phase );
 
+		// Source.
+		$subscription->source    = 'memberpress_subscription';
+		$subscription->source_id = $memberpress_subscription->id;
+
 		return $subscription;
 	}
 }
