@@ -72,7 +72,7 @@ class Extension extends AbstractPluginIntegration {
 		\add_filter( 'pronamic_payment_redirect_url_' . self::SLUG, array( $this, 'redirect_url' ), 10, 2 );
 		\add_action( 'pronamic_payment_status_update_' . self::SLUG, array( $this, 'status_update' ), 10, 1 );
 
-		\add_action( 'pronamic_pay_new_payment', array( $this, 'maybe_create_memberpress_transaction' ) );
+		\add_action( 'pronamic_pay_new_payment', array( $this, 'maybe_create_memberpress_transaction' ), 10, 1 );
 
 		\add_filter( 'pronamic_subscription_source_text_' . self::SLUG, array( $this, 'subscription_source_text' ), 10, 2 );
 		\add_filter( 'pronamic_subscription_source_url_' . self::SLUG, array( $this, 'subscription_source_url' ), 10, 2 );
@@ -192,12 +192,48 @@ class Extension extends AbstractPluginIntegration {
 	/**
 	 * Maybe create create MemberPress transaction for the Pronamic payment.
 	 * 
-	 * @todo Implement.
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprSubscription.php
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprStripeGateway.php#L587-L714
 	 * @param Payment $payment Payment.
 	 * @return void
 	 */
 	public function maybe_create_memberpress_transaction( Payment $payment ) {
-		
+		if ( 'memberpress_subscription' !== $payment->get_source() ) {
+			return;
+		}
+
+		$memberpress_subscription_id = $payment->get_source_id();
+
+		$memberpress_subscription = MemberPress::get_subscription_by_id( $memberpress_subscription_id );
+
+		if ( null === $memberpress_subscription ) {
+			throw new \Exception(
+				\sprintf(
+					'Could not find MemberPress subscription with ID: %s.',
+					$memberpress_subscription_id
+				)
+			);
+		}
+
+		/**
+		 * Payment method.
+		 * 
+		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprTransaction.php#L634-L637
+		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprOptions.php#L798-L811
+		 */
+		$memberpress_gateway = $memberpress_subscription->payment_method();
+
+		if ( ! $memberpress_gateway instanceof Gateway ) {
+			return;
+		}
+
+		/**
+		 * At this point we should call `MeprBaseRealGateway->record_subscription_payment`.
+		 * 
+		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprStripeGateway.php#L587-L714
+		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprAuthorizeGateway.php#L205-L255
+		 */
+		// $memberpress_gateway->record_subscription_payment();
 	}
 
 	/**
