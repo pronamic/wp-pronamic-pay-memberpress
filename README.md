@@ -11,6 +11,69 @@
 [![Code Intelligence Status](https://scrutinizer-ci.com/g/wp-pay-extensions/memberpress/badges/code-intelligence.svg?b=develop)](https://scrutinizer-ci.com/code-intelligence)
 [![codecov](https://codecov.io/gh/wp-pay-extensions/memberpress/branch/develop/graph/badge.svg)](https://codecov.io/gh/wp-pay-extensions/memberpress)
 
+## Tests
+
+### Memberships Matrix
+
+#### One-Time - Lifetime
+
+| Field                 | Value        |
+| --------------------- | ------------ |
+| Billing Type          | One-Time     |
+| Access                | Lifetime     |
+
+#### One-Time - Expire
+
+| Field                 | Value        |
+| --------------------- | ------------ |
+| Billing Type          | One-Time     |
+| Access                | Lifetime     |
+
+#### One-Time - Fixed Expire
+
+| Field                 | Value        |
+| --------------------- | ------------ |
+| Billing Type          | One-Time     |
+| Access                | Fixed Expire |
+
+#### Recurring - Monthly
+
+| Field                 | Value        |
+| --------------------- | ------------ |
+| Billing Type          | Recurring    |
+| Interval              | Monthly      |
+
+#### Recurring - Monthly - Trial Period - 10 days - € 50,00
+
+| Field                 | Value        |
+| --------------------- | ------------ |
+| Billing Type          | Recurring    |
+| Interval              | Monthly      |
+| Trial Period          | ☑️           |
+| Trial Duration (Days) | 10           |
+| Trial Amount (€)      | 50,00        |
+
+#### Recurring - Monthly - Trial Period - 10 days - € 0,00
+
+| Field                 | Value        |
+| --------------------- | ------------ |
+| Billing Type          | Recurring    |
+| Interval              | Monthly      |
+| Trial Period          | ☑️           |
+| Trial Duration (Days) | 10           |
+| Trial Amount (€)      | 0,00         |
+
+#### Recurring - Monthly - Trial Period - 10 days - € 50,00 - Allow Only One Trial
+
+| Field                 | Value        |
+| --------------------- | ------------ |
+| Billing Type          | Recurring    |
+| Interval              | Monthly      |
+| Trial Period          | ☑️           |
+| Trial Duration (Days) | 10           |
+| Trial Amount (€)      | 0,00         |
+| Allow Only One Trial  | ☑️           |
+
 ## Links
 
 *	[MemberPress](https://www.memberpress.com/)
