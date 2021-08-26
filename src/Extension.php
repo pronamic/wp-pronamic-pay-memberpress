@@ -395,10 +395,35 @@ class Extension extends AbstractPluginIntegration {
 				 * 
 				 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprPayPalProGateway.php#L350-L354
 				 */
-				$upgrade   = $memberpress_transaction->is_upgrade();
-				$downgrade = $memberpress_transaction->is_downgrade();
+				$is_upgrade   = $memberpress_transaction->is_upgrade();
+				$is_downgrade = $memberpress_transaction->is_downgrade();
 
 				$event_txn = $memberpress_transaction->maybe_cancel_old_sub();
+
+				if ( $is_upgrade ) {
+					/**
+					 * Upgrade subscription.
+					 * 
+					 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L602-L611
+					 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprArtificialGateway.php#L109-L122
+					 */
+					$memberpress_gateway->upgraded_sub( $memberpress_transaction, $event_txn );
+				} elseif ( $is_downgrade ) {
+					/**
+					 * Downgraded subscription.
+					 * 
+					 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L613-L622
+					 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprArtificialGateway.php#L109-L122
+					 */
+					$memberpress_gateway->downgraded_sub( $memberpress_transaction, $event_txn );
+				} else {
+					/**
+					 * New subscription.
+					 * 
+					 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L624-L634
+					 */
+					$memberpress_gateway->new_sub( $memberpress_transaction );
+				}
 
 				$memberpress_transaction->store();
 

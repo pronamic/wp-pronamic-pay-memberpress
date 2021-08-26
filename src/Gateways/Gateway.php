@@ -197,6 +197,7 @@ class Gateway extends MeprBaseRealGateway {
 	 * Record subscription payment.
 	 *
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L170-L175
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprStripeGateway.php#L587-L714
 	 * @return void
 	 */
 	public function record_subscription_payment() {
