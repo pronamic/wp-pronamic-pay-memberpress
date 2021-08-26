@@ -42,6 +42,7 @@
 		"phpunit/phpunit": "^5.7 || ^6.0",
 		"pronamic/wp-coding-standards": "^1.0",
 		"roots/wordpress": "^5.8",
+		"wp-cli/wp-cli": "^2.5",
 		"wp-phpunit/wp-phpunit": "^5.8",
 		"wp-premium/memberpress": "^1.9"
 	},
