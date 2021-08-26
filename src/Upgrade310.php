@@ -28,7 +28,7 @@ class Upgrade310 extends Upgrade {
 	public function __construct() {
 		parent::__construct( '3.1.0' );
 
-		if ( \defined( '\WP_CLI' ) && \WP_CLI ) {
+		if ( \defined( 'WP_CLI' ) && WP_CLI ) {
 			$this->cli_init();
 		}
 	}
