@@ -131,7 +131,13 @@ class Pronamic {
 			 */
 			$payment->subscription_source_id = $memberpress_transaction->subscription_id;
 
-			$payment->add_period( $payment->subscription->new_period() );
+			$period = $payment->subscription->new_period();
+
+			if ( null === $period ) {
+				throw new \Exception( 'Could not create new period for subscription.' );
+			}
+
+			$payment->add_period( $period );
 
 			if ( $memberpress_subscription->in_trial() ) {
 				$payment->set_total_amount(

@@ -800,20 +800,22 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Display update account form.
 	 *
-	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/controllers/MeprAccountCtrl.php#L423
-	 * @param int      $sub_id  Subscription ID.
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/controllers/MeprAccountCtrl.php#L438
+	 * @param string   $sub_id  Subscription ID.
 	 * @param string[] $errors  Array with errors.
 	 * @param string   $message Update message.
 	 * @return void
 	 */
 	public function display_update_account_form( $sub_id, $errors = array(), $message = '' ) {
-		$subscriptions = \get_pronamic_subscriptions_by_source( 'memberpress_subscription', (int) $sub_id );
+		$subscriptions = \get_pronamic_subscriptions_by_source( 'memberpress_subscription', $sub_id );
+
+		$subscriptions = ( null === $subscriptions ) ? array() : $subscriptions;
+
+		$subscription = \reset( $subscriptions );
 
 		$message = \__( 'The payment method for this subscription can not be updated manually.', 'pronamic_ideal' );
 
-		if ( \is_array( $subscriptions ) ) {
-			$subscription = \array_shift( $subscriptions );
-
+		if ( false !== $subscription ) {
 			$message = \sprintf(
 				/* translators: %s: mandate selection URL anchor */
 				\__( 'To update the payment method for this subscription, please visit the %s page.', 'pronamic_ideal' ),
