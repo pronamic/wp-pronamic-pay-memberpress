@@ -12,6 +12,7 @@ namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 
 use Pronamic\WordPress\Pay\Subscriptions\SubscriptionStatus;
 use Pronamic\WordPress\Pay\Upgrades\Upgrade;
+use WP_Post;
 
 /**
  * Upgrade 3.1.0
@@ -112,8 +113,8 @@ class Upgrade310 extends Upgrade {
 	/**
 	 * Get subscription posts to upgrade.
 	 *
-	 * @param array $args Query arguments.
-	 * @return array
+	 * @param array<string, mixed> $args Query arguments.
+	 * @return array<int|WP_Post>
 	 */
 	private function get_subscription_posts( $args = array() ) {
 		$args['post_type']     = 'pronamic_pay_subscr';
@@ -137,7 +138,7 @@ class Upgrade310 extends Upgrade {
 	/**
 	 * Get payment posts to upgrade.
 	 *
-	 * @return array
+	 * @return array<int|WP_Post>
 	 */
 	private function get_payment_posts() {
 		$query = new \WP_Query(
@@ -176,7 +177,8 @@ class Upgrade310 extends Upgrade {
 	/**
 	 * Upgrade subscriptions.
 	 *
-	 * @param array $args Arguments.
+	 * @param array<string, mixed> $args Arguments.
+	 * @return void
 	 */
 	private function upgrade_subscriptions( $args = array() ) {
 		$args = \wp_parse_args(
@@ -242,6 +244,8 @@ class Upgrade310 extends Upgrade {
 
 	/**
 	 * Upgrade payments.
+	 *
+	 * @return void
 	 */
 	private function upgrade_payments() {
 		$payment_posts = $this->get_payment_posts();

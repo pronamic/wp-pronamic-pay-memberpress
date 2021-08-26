@@ -41,7 +41,7 @@ class Extension extends AbstractPluginIntegration {
 	/**
 	 * Construct MemberPress plugin integration.
 	 * 
-	 * @param array $args Arguments.
+	 * @param array<string, mixed> $args Arguments.
 	 */
 	public function __construct( $args = array() ) {
 		$args['name'] = __( 'MemberPress', 'pronamic_ideal' );
@@ -468,7 +468,7 @@ class Extension extends AbstractPluginIntegration {
 	 * @return void
 	 */
 	public function subscription_pre_delete( $subscription_id ) {
-		$subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_source_id', $subscription_id );
+		$subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_source_id', (string) $subscription_id );
 
 		if ( ! $subscription ) {
 			return;
