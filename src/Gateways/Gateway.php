@@ -187,7 +187,7 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Get payment method.
 	 * 
-	 * @var string|null
+	 * @return string|null
 	 */
 	public function get_payment_method() {
 		return $this->payment_method;
@@ -561,39 +561,8 @@ class Gateway extends MeprBaseRealGateway {
 		$payment->config_id = $config_id;
 		$payment->method    = $this->payment_method;
 
-		$error = null;
+		$payment = Plugin::start_payment( $payment );
 
-		try {
-			$payment = Plugin::start_payment( $payment );
-		} catch ( \Exception $e ) {
-			$error = $e;
-		}
-
-		/*
-		 * Update trial transaction.
-		 *
-		 * Notes:
-		 * - MemberPress also uses trial amount for prorated upgrade/downgrade
-		 * - Not updated BEFORE payment start, as transaction total amount is used for subscription amount.
-		 * - Reload transaction to make sure actual status is being used (i.e. on free downgrade).
-		 */
-		$txn = new MeprTransaction( $txn->id );
-
-		$subscription = $txn->subscription();
-
-		if ( $subscription && $subscription->in_trial() ) {
-			$txn->expires_at = MeprUtils::ts_to_mysql_date( $payment->get_end_date()->getTimestamp(), 'Y-m-d 23:59:59' );
-
-			$txn->set_subtotal( $subscription->trial_amount );
-			$txn->store();
-		}
-
-		if ( $error instanceof \Exception ) {
-			// Rethrow error, caught by MemberPress.
-			throw $error;
-		}
-
-		// Redirect.
 		$gateway->redirect( $payment );
 	}
 
