@@ -450,22 +450,11 @@ class Gateway extends MeprBaseRealGateway {
 
 		$memberpress_subscription->store();
 
-		// Check if prior txn is expired yet or not, if so create a temporary txn so the user can access the content immediately.
-		$prior_txn = $memberpress_subscription->latest_txn();
-
-		if ( false === $prior_txn || ! ( $prior_txn instanceof MeprTransaction ) || strtotime( $prior_txn->expires_at ) < time() ) {
-			$txn                  = new MeprTransaction();
-			$txn->subscription_id = $memberpress_subscription->id;
-			$txn->trans_num       = $memberpress_subscription->subscr_id . '-' . uniqid();
-			$txn->status          = MeprTransaction::$confirmed_str;
-			$txn->txn_type        = MeprTransaction::$subscription_confirmation_str;
-			$txn->response        = (string) $memberpress_subscription;
-			$txn->expires_at      = MeprUtils::ts_to_mysql_date( time() + MeprUtils::days( 1 ), 'Y-m-d 23:59:59' );
-
-			$txn->set_subtotal( 0.00 ); // Just a confirmation txn.
-
-			$txn->store();
-		}
+		/**
+		 * If the Pronamic subscription requires a follow-up payment start this.
+		 * 
+		 * @todo
+		 */
 
 		// Send resumed subscription notices.
 		MeprUtils::send_resumed_sub_notices( $memberpress_subscription );
