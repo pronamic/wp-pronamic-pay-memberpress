@@ -139,17 +139,6 @@ class Pronamic {
 			}
 
 			$payment->add_period( $period );
-
-			if ( $memberpress_subscription->in_trial() ) {
-				$payment->set_total_amount(
-					new TaxedMoney(
-						$memberpress_subscription->trial_total,
-						MemberPress::get_currency(),
-						$memberpress_subscription->trial_tax_amount,
-						$memberpress_subscription->tax_rate
-					)
-				);
-			}
 		}
 
 		/*
@@ -243,7 +232,7 @@ class Pronamic {
 			$subscription,
 			$start_date,
 			new SubscriptionInterval( 'P' . $memberpress_product->period . Core_Util::to_period( $memberpress_product->period_type ) ),
-			new Money( $memberpress_transaction->total, MemberPress::get_currency() )
+			new Money( $memberpress_subscription->total, MemberPress::get_currency() )
 		);
 
 		$regular_phase->set_total_periods( $total_periods );
