@@ -266,8 +266,8 @@ class Extension extends AbstractPluginIntegration {
 
 		$memberpress_transaction->user_id         = $memberpress_subscription->user_id;
 		$memberpress_transaction->product_id      = $memberpress_subscription->product_id;
-		$memberpress_transaction->txn_type        = MeprTransaction::$payment_str;
-		$memberpress_transaction->status          = MeprTransaction::$pending_str;
+		$memberpress_transaction->txn_type        = MeprTransaction::$subscription_confirmation_str;
+		$memberpress_transaction->status          = MeprTransaction::$confirmed_str;
 		$memberpress_transaction->coupon_id       = $memberpress_subscription->coupon_id;
 		$memberpress_transaction->trans_num       = $payment->get_transaction_id();
 		$memberpress_transaction->subscription_id = $memberpress_subscription->id;
@@ -402,7 +402,8 @@ class Extension extends AbstractPluginIntegration {
 			case PaymentStatus::EXPIRED:
 				$memberpress_gateway->record_payment_failure();
 
-				$memberpress_transaction->status = MeprTransaction::$failed_str;
+				$memberpress_transaction->txn_type = MeprTransaction::$payment_str;
+				$memberpress_transaction->status   = MeprTransaction::$failed_str;
 		
 				$memberpress_transaction->store();
 
@@ -432,6 +433,7 @@ class Extension extends AbstractPluginIntegration {
 				$memberpress_gateway->record_payment();
 
 				$memberpress_transaction->trans_num = $payment->get_transaction_id();
+				$memberpress_transaction->txn_type  = MeprTransaction::$payment_str;
 				$memberpress_transaction->status    = MeprTransaction::$complete_str;
 
 				$this->process_transition( $memberpress_transaction, $memberpress_gateway );
