@@ -32,20 +32,23 @@ $query = new WP_Query(
 	)
 );
 
-$posts = array_filter( $query->posts, function( $post ) {
-	return $post instanceof WP_Post;
-} );
+$ps = array_filter(
+	$query->posts,
+	function( $post ) {
+		return $post instanceof WP_Post;
+	} 
+);
 
 $items = array();
 
-foreach ( $posts as $p ) {
-	$link = get_edit_post_link( $p );
+foreach ( $ps as $p ) {
+	$url = get_edit_post_link( $p );
 
-	if ( null === $link ) {
+	if ( null === $url ) {
 		continue;
 	}
 
-	$items[ $p->ID ] = $link;
+	$items[ $p->ID ] = $url;
 }
 
 ?>
@@ -59,13 +62,13 @@ foreach ( $posts as $p ) {
 		if ( \count( $items ) > 0 ) {
 			echo '<ul>';
 
-			foreach ( $items as $id => $link ) {
+			foreach ( $items as $key => $url ) {
 				echo '<li>';
 
 				\printf(
 					'<a href="%s">%s</a>',
-					\esc_url( $link ),
-					\esc_html( (string) $id )
+					\esc_url( $url ),
+					\esc_html( (string) $key )
 				);
 
 				echo '</li>';

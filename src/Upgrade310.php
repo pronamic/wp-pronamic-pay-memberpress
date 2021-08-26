@@ -133,9 +133,12 @@ class Upgrade310 extends Upgrade {
 
 		$query = new WP_Query( $args );
 
-		return array_filter( $query->posts, function( $post ) {
-			return $post instanceof WP_Post;
-		} );
+		return array_filter(
+			$query->posts,
+			function( $post ) {
+				return $post instanceof WP_Post;
+			} 
+		);
 	}
 
 	/**
@@ -161,9 +164,12 @@ class Upgrade310 extends Upgrade {
 			)
 		);
 
-		return array_filter( $query->posts, function( $post ) {
-			return $post instanceof WP_Post;
-		} );
+		return array_filter(
+			$query->posts,
+			function( $post ) {
+				return $post instanceof WP_Post;
+			} 
+		);
 	}
 
 	/**

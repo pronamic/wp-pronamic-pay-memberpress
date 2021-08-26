@@ -36,6 +36,7 @@ class Pronamic {
 	 *
 	 * @param MeprTransaction $memberpress_transaction MemberPress transaction object.
 	 * @return Payment
+	 * @throws \Exception Throws an exception as soon as no new subscription period can be created.
 	 */
 	public static function get_payment( MeprTransaction $memberpress_transaction ) {
 		$payment = new Payment();
