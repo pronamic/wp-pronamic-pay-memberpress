@@ -24,6 +24,7 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Core\Util as Core_Util;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Plugin;
+use Pronamic\WordPress\Pay\Extensions\MemberPress\MemberPress;
 use Pronamic\WordPress\Pay\Extensions\MemberPress\Pronamic;
 use Pronamic\WordPress\Pay\Subscriptions\SubscriptionStatus;
 use ReflectionClass;
@@ -357,34 +358,38 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Process suspend subscription.
 	 *
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/controllers/MeprAccountCtrl.php#L339-L360
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L214-L216
-	 * @param int $sub_id Subscription id.
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprStripeGateway.php#L1429-L1459
+	 * @param int $subscription_id Subscription id.
 	 * @return void
 	 */
-	public function process_suspend_subscription( $sub_id ) {
-		if ( ! MeprSubscription::exists( $sub_id ) ) {
+	public function process_suspend_subscription( $subscription_id ) {
+		$memberpress_subscription = MemberPress::get_subscription_by_id( $subscription_id );
+
+		if ( null === $memberpress_subscription ) {
 			return;
 		}
 
-		$sub = new MeprSubscription( $sub_id );
-
-		if ( MeprSubscription::$suspended_str === $sub->status ) {
-			// Subscription is already suspended.
+		/**
+		 * If the MemberPress subscription is already suspended we bail out.
+		 */
+		if ( MeprSubscription::$suspended_str === $memberpress_subscription->status ) {
 			return;
 		}
 
-		$subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_source_id', $sub->id );
+		$pronamic_subscription = \get_pronamic_subscription_by_meta( '_pronamic_subscription_source_id', $memberpress_subscription->id );
 
-		if ( ! $subscription ) {
+		if ( ! $pronamic_subscription ) {
 			return;
 		}
 
-		$sub->status = MeprSubscription::$suspended_str;
+		$memberpress_subscription->status = MeprSubscription::$suspended_str;
 
-		$sub->store();
+		$memberpress_subscription->store();
 
 		// Send suspended subscription notices.
-		MeprUtils::send_suspended_sub_notices( $sub );
+		MeprUtils::send_suspended_sub_notices( $memberpress_subscription );
 
 		$note = sprintf(
 			/* translators: %s: extension name */
@@ -392,13 +397,13 @@ class Gateway extends MeprBaseRealGateway {
 			__( 'MemberPress', 'pronamic_ideal' )
 		);
 
-		$subscription->add_note( $note );
+		$pronamic_subscription->add_note( $note );
 
 		// The status of canceled or completed subscriptions will not be changed automatically.
-		if ( ! in_array( $subscription->get_status(), array( SubscriptionStatus::CANCELLED, SubscriptionStatus::COMPLETED ), true ) ) {
-			$subscription->set_status( SubscriptionStatus::ON_HOLD );
+		if ( ! in_array( $pronamic_subscription->get_status(), array( SubscriptionStatus::CANCELLED, SubscriptionStatus::COMPLETED ), true ) ) {
+			$pronamic_subscription->set_status( SubscriptionStatus::ON_HOLD );
 
-			$subscription->save();
+			$pronamic_subscription->save();
 		}
 	}
 
@@ -415,42 +420,46 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Process resume subscription.
 	 *
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/controllers/MeprAccountCtrl.php#L362-L383
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L223-L225
-	 * @param int $sub_id Subscription id.
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprStripeGateway.php#L1489-L1550
+	 * @param int $subscription_id Subscription id.
 	 * @return void
 	 */
-	public function process_resume_subscription( $sub_id ) {
-		if ( ! MeprSubscription::exists( $sub_id ) ) {
+	public function process_resume_subscription( $subscription_id ) {
+		$memberpress_subscription = MemberPress::get_subscription_by_id( $subscription_id );
+
+		if ( null === $memberpress_subscription ) {
 			return;
 		}
 
-		$sub = new MeprSubscription( $sub_id );
-
-		if ( MeprSubscription::$active_str === $sub->status ) {
-			// Subscription is already active.
+		/**
+		 * If the MemberPress subscription is already active we bail out.
+		 */
+		if ( MeprSubscription::$active_str === $memberpress_subscription->status ) {
 			return;
 		}
 
-		$subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_source_id', $sub->id );
+		$pronamic_subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_source_id', $memberpress_subscription->id );
 
-		if ( ! $subscription ) {
+		if ( ! $pronamic_subscription ) {
 			return;
 		}
 
-		$sub->status = MeprSubscription::$active_str;
+		$memberpress_subscription->status = MeprSubscription::$active_str;
 
-		$sub->store();
+		$memberpress_subscription->store();
 
 		// Check if prior txn is expired yet or not, if so create a temporary txn so the user can access the content immediately.
-		$prior_txn = $sub->latest_txn();
+		$prior_txn = $memberpress_subscription->latest_txn();
 
 		if ( false === $prior_txn || ! ( $prior_txn instanceof MeprTransaction ) || strtotime( $prior_txn->expires_at ) < time() ) {
 			$txn                  = new MeprTransaction();
-			$txn->subscription_id = $sub->id;
-			$txn->trans_num       = $sub->subscr_id . '-' . uniqid();
+			$txn->subscription_id = $memberpress_subscription->id;
+			$txn->trans_num       = $memberpress_subscription->subscr_id . '-' . uniqid();
 			$txn->status          = MeprTransaction::$confirmed_str;
 			$txn->txn_type        = MeprTransaction::$subscription_confirmation_str;
-			$txn->response        = (string) $sub;
+			$txn->response        = (string) $memberpress_subscription;
 			$txn->expires_at      = MeprUtils::ts_to_mysql_date( time() + MeprUtils::days( 1 ), 'Y-m-d 23:59:59' );
 
 			$txn->set_subtotal( 0.00 ); // Just a confirmation txn.
@@ -459,7 +468,7 @@ class Gateway extends MeprBaseRealGateway {
 		}
 
 		// Send resumed subscription notices.
-		MeprUtils::send_resumed_sub_notices( $sub );
+		MeprUtils::send_resumed_sub_notices( $memberpress_subscription );
 
 		// Add note.
 		$note = sprintf(
@@ -468,13 +477,13 @@ class Gateway extends MeprBaseRealGateway {
 			__( 'MemberPress', 'pronamic_ideal' )
 		);
 
-		$subscription->add_note( $note );
+		$pronamic_subscription->add_note( $note );
 
 		// The status of canceled or completed subscriptions will not be changed automatically.
-		if ( ! in_array( $subscription->get_status(), array( SubscriptionStatus::CANCELLED, SubscriptionStatus::COMPLETED ), true ) ) {
-			$subscription->set_status( SubscriptionStatus::ACTIVE );
+		if ( ! in_array( $pronamic_subscription->get_status(), array( SubscriptionStatus::CANCELLED, SubscriptionStatus::COMPLETED ), true ) ) {
+			$pronamic_subscription->set_status( SubscriptionStatus::ACTIVE );
 
-			$subscription->save();
+			$pronamic_subscription->save();
 		}
 	}
 
@@ -493,24 +502,26 @@ class Gateway extends MeprBaseRealGateway {
 	 *
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L232-L236
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprStripeGateway.php#L1687-L1715
-	 * @param int $sub_id Subscription id.
+	 * @param int $subscription_id Subscription id.
 	 * @return void
 	 */
-	public function process_cancel_subscription( $sub_id ) {
-		if ( ! MeprSubscription::exists( $sub_id ) ) {
+	public function process_cancel_subscription( $subscription_id ) {
+		$memberpress_subscription = MemberPress::get_subscription_by_id( $subscription_id );
+
+		if ( null === $memberpress_subscription ) {
 			return;
 		}
 
-		$sub = new MeprSubscription( $sub_id );
-
-		if ( MeprSubscription::$cancelled_str === $sub->status ) {
-			// Subscription is already cancelled.
+		/**
+		 * If the MemberPress subscription is already cancelled we bail out.
+		 */
+		if ( MeprSubscription::$cancelled_str === $memberpress_subscription->status ) {
 			return;
 		}
 
-		$subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_source_id', $sub->id );
+		$pronamic_subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_source_id', $memberpress_subscription->id );
 
-		if ( ! $subscription ) {
+		if ( ! $pronamic_subscription ) {
 			return;
 		}
 
@@ -521,36 +532,36 @@ class Gateway extends MeprBaseRealGateway {
 			__( 'MemberPress', 'pronamic_ideal' )
 		);
 
-		$subscription->add_note( $note );
+		$pronamic_subscription->add_note( $note );
 
 		// The status of canceled or completed subscriptions will not be changed automatically.
-		if ( ! in_array( $subscription->get_status(), array( SubscriptionStatus::CANCELLED, SubscriptionStatus::COMPLETED ), true ) ) {
-			$subscription->set_status( SubscriptionStatus::CANCELLED );
+		if ( ! in_array( $pronamic_subscription->get_status(), array( SubscriptionStatus::CANCELLED, SubscriptionStatus::COMPLETED ), true ) ) {
+			$pronamic_subscription->set_status( SubscriptionStatus::CANCELLED );
 
-			$subscription->next_payment_date          = null;
-			$subscription->next_payment_delivery_date = null;
+			$pronamic_subscription->next_payment_date          = null;
+			$pronamic_subscription->next_payment_delivery_date = null;
 
 			// Delete next payment post meta.
-			$subscription->set_meta( 'next_payment', null );
-			$subscription->set_meta( 'next_payment_delivery_date', null );
+			$pronamic_subscription->set_meta( 'next_payment', null );
+			$pronamic_subscription->set_meta( 'next_payment_delivery_date', null );
 
-			$subscription->save();
+			$pronamic_subscription->save();
 		}
 
 		// Cancel MemberPress subscription.
-		$sub->status = MeprSubscription::$cancelled_str;
+		$memberpress_subscription->status = MeprSubscription::$cancelled_str;
 
-		$sub->store();
+		$memberpress_subscription->store();
 
 		// Expire the grace period (confirmation) if no completed payments have come through.
-		if ( (int) $sub->txn_count <= 0 ) {
-			$sub->expire_txns();
+		if ( (int) $memberpress_subscription->txn_count <= 0 ) {
+			$memberpress_subscription->expire_txns();
 		}
 
-		$sub->limit_reached_actions();
+		$memberpress_subscription->limit_reached_actions();
 
 		// Send cancelled subscription notices.
-		MeprUtils::send_cancelled_sub_notices( $sub );
+		MeprUtils::send_cancelled_sub_notices( $memberpress_subscription );
 	}
 
 	/**
