@@ -307,10 +307,11 @@ class Extension extends AbstractPluginIntegration {
 	/**
 	 * Process transition.
 	 * 
-	 * @param MeprProductInterface $memberpress_item    Item.
-	 * @param Gateway              $memberpress_gateway Gateway.
+	 * @param MeprTransaction|MeprSubscription $memberpress_item    Item.
+	 * @param Gateway                          $memberpress_gateway Gateway.
+	 * @return void
 	 */
-	private function process_transition( MeprProductInterface $memberpress_item, Gateway $memberpress_gateway ) {
+	private function process_transition( $memberpress_item, Gateway $memberpress_gateway ) {
 		/**
 		 * Upgrade/downgrade magic.
 		 * 
