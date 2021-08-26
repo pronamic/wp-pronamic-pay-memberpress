@@ -177,11 +177,28 @@ class Gateway extends MeprBaseRealGateway {
 	 *
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L149-L152
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprStripeGateway.php#L520-L585
-	 * @param MeprTransaction $txn MemberPress transaction object.
+	 * @param MeprTransaction $transaction MemberPress transaction object.
 	 * @return void
 	 */
-	public function process_payment( $txn ) {
+	public function process_payment( $transaction ) {
+		// Gateway.
+		$config_id = $this->get_config_id();
 
+		$gateway = Plugin::get_gateway( $config_id );
+
+		if ( null === $gateway ) {
+			return;
+		}
+
+		// Create Pronamic payment.
+		$payment = Pronamic::get_payment( $transaction );
+
+		$payment->config_id = $config_id;
+		$payment->method    = $this->payment_method;
+
+		$payment = Plugin::start_payment( $payment );
+
+		$gateway->redirect( $payment );
 	}
 
 	/**
@@ -254,7 +271,7 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function process_trial_payment( $transaction ) {
-
+		$this->process_payment( $transaction );
 	}
 
 	/**
@@ -272,11 +289,38 @@ class Gateway extends MeprBaseRealGateway {
 	 * Process create subscription.
 	 *
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L193-L197
-	 * @param MeprTransaction $txn MemberPress transaction object.
+	 * @param MeprTransaction $transaction MemberPress transaction object.
 	 * @return void
 	 */
-	public function process_create_subscription( $txn ) {
+	public function process_create_subscription( $transaction ) {
+		$subscription = $transaction->subscription();
 
+		/**
+		 * In the `process_create_subscription` function, every MemberPress
+		 * transaction will be linked to a MemberPress subscription, but
+		 * just to be sure we check this.
+		 * 
+		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L312
+		 */
+		if ( false !== $subscription ) {
+			/**
+			 * The MemberPress transaction total does not contain the 
+			 * prorated or trial amount.
+			 * 
+			 * We stole this code from the `MeprArtificialGateway` also
+			 * known as the 'Offline Payment' gateway.
+			 * 
+			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprArtificialGateway.php#L217
+			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L306-L311
+			 */
+			if ( $subscription->trial ) {
+				$transaction->set_subtotal( MeprUtils::format_float( $subscription->trial_amount ) );
+
+				$transaction->store();
+			}
+		}
+
+		$this->process_payment( $transaction );
 	}
 
 	/**
@@ -536,37 +580,6 @@ class Gateway extends MeprBaseRealGateway {
 	}
 
 	/**
-	 * Payment redirect.
-	 * 
-	 * Note: this is not a MemberPress method.
-	 *
-	 * @since 1.0.2
-	 * @param MeprTransaction $txn MemberPress transaction object.
-	 * @return void
-	 * @throws \Exception Throws exception on gateway payment start error.
-	 */
-	private function payment_redirect( $txn ) {
-		// Gateway.
-		$config_id = $this->get_config_id();
-
-		$gateway = Plugin::get_gateway( $config_id );
-
-		if ( null === $gateway ) {
-			return;
-		}
-
-		// Create Pronamic payment.
-		$payment = Pronamic::get_payment( $txn );
-
-		$payment->config_id = $config_id;
-		$payment->method    = $this->payment_method;
-
-		$payment = Plugin::start_payment( $payment );
-
-		$gateway->redirect( $payment );
-	}
-
-	/**
 	 * Display payment page.
 	 *
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L249-L253
@@ -576,49 +589,7 @@ class Gateway extends MeprBaseRealGateway {
 	 * @throws \Exception Throws exception on gateway payment start error.
 	 */
 	public function display_payment_page( $txn ) {
-		// Gateway.
-		$config_id = $this->get_config_id();
 
-		$gateway = Plugin::get_gateway( $config_id );
-
-		if ( null === $gateway ) {
-			return;
-		}
-
-		// Redirect payment on empty input HTML.
-		$gateway->set_payment_method( $this->payment_method );
-
-		$html = $gateway->get_input_html();
-
-		if ( empty( $html ) ) {
-			$this->payment_redirect( $txn );
-		}
-	}
-
-	/**
-	 * Process payment form.
-	 *
-	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L239-289
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/controllers/MeprCheckoutCtrl.php#L336
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/gateways/MeprPayPalGateway.php#L1011
-	 *
-	 * @param MeprTransaction $txn MemberPress transaction object.
-	 *
-	 * @return void
-	 * @throws \Exception Throws exception on gateway payment start error.
-	 */
-	public function process_payment_form( $txn ) {
-		// Gateway.
-		$config_id = $this->get_config_id();
-
-		$gateway = Plugin::get_gateway( $config_id );
-
-		if ( null === $gateway ) {
-			return;
-		}
-
-		// Redirect.
-		$this->payment_redirect( $txn );
 	}
 
 	/**
@@ -917,7 +888,7 @@ class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Get config ID.
 	 *
-	 * @return string|int|null
+	 * @return int|null
 	 */
 	protected function get_config_id() {
 		// Get config ID setting.
@@ -933,6 +904,6 @@ class Gateway extends MeprBaseRealGateway {
 			$config_id = null;
 		}
 
-		return $config_id;
+		return (int) $config_id;
 	}
 }
