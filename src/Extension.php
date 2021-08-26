@@ -305,6 +305,49 @@ class Extension extends AbstractPluginIntegration {
 	}
 
 	/**
+	 * Process transition.
+	 * 
+	 * @param MeprProductInterface $memberpress_item    Item.
+	 * @param Gateway              $memberpress_gateway Gateway.
+	 */
+	private function process_transition( MeprProductInterface $memberpress_item, Gateway $memberpress_gateway ) {
+		/**
+		 * Upgrade/downgrade magic.
+		 * 
+		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprPayPalProGateway.php#L350-L354
+		 */
+		$is_upgrade   = $memberpress_item->is_upgrade();
+		$is_downgrade = $memberpress_item->is_downgrade();
+
+		$event_txn = $memberpress_item->maybe_cancel_old_sub();
+
+		if ( $is_upgrade ) {
+			/**
+			 * Upgrade subscription.
+			 * 
+			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L602-L611
+			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprArtificialGateway.php#L109-L122
+			 */
+			$memberpress_gateway->upgraded_sub( $memberpress_item, $event_txn );
+		} elseif ( $is_downgrade ) {
+			/**
+			 * Downgraded subscription.
+			 * 
+			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L613-L622
+			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprArtificialGateway.php#L109-L122
+			 */
+			$memberpress_gateway->downgraded_sub( $memberpress_item, $event_txn );
+		} else {
+			/**
+			 * New subscription.
+			 * 
+			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L624-L634
+			 */
+			$memberpress_gateway->new_sub( $memberpress_item );
+		}
+	}
+
+	/**
 	 * Update lead status of the specified payment.
 	 *
 	 * @param Payment $payment The payment whose status is updated.
@@ -390,40 +433,7 @@ class Extension extends AbstractPluginIntegration {
 				$memberpress_transaction->trans_num = $payment->get_transaction_id();
 				$memberpress_transaction->status    = MeprTransaction::$complete_str;
 
-				/**
-				 * Upgrade/downgrade magic.
-				 * 
-				 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprPayPalProGateway.php#L350-L354
-				 */
-				$is_upgrade   = $memberpress_transaction->is_upgrade();
-				$is_downgrade = $memberpress_transaction->is_downgrade();
-
-				$event_txn = $memberpress_transaction->maybe_cancel_old_sub();
-
-				if ( $is_upgrade ) {
-					/**
-					 * Upgrade subscription.
-					 * 
-					 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L602-L611
-					 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprArtificialGateway.php#L109-L122
-					 */
-					$memberpress_gateway->upgraded_sub( $memberpress_transaction, $event_txn );
-				} elseif ( $is_downgrade ) {
-					/**
-					 * Downgraded subscription.
-					 * 
-					 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L613-L622
-					 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprArtificialGateway.php#L109-L122
-					 */
-					$memberpress_gateway->downgraded_sub( $memberpress_transaction, $event_txn );
-				} else {
-					/**
-					 * New subscription.
-					 * 
-					 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L624-L634
-					 */
-					$memberpress_gateway->new_sub( $memberpress_transaction );
-				}
+				$this->process_transition( $memberpress_transaction, $memberpress_gateway );
 
 				$memberpress_transaction->store();
 
@@ -436,6 +446,8 @@ class Extension extends AbstractPluginIntegration {
 
 				if ( $memberpress_subscription instanceof MeprSubscription ) {
 					$memberpress_subscription->status = MeprSubscription::$active_str;
+
+					$this->process_transition( $memberpress_subscription, $memberpress_gateway );
 				
 					$memberpress_subscription->store();
 				}
