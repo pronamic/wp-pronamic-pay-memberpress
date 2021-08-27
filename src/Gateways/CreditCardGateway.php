@@ -32,8 +32,6 @@ class CreditCardGateway extends Gateway {
 			'create-subscriptions',
 			'cancel-subscriptions',
 			'update-subscriptions',
-			'suspend-subscriptions',
-			'resume-subscriptions',
 			'subscription-trial-payment',
 		);
 	}
