@@ -13,7 +13,7 @@
 
 ## Tests
 
-### Memberships Matrix
+### Memberships
 
 #### One-Time - Lifetime
 
@@ -73,6 +73,69 @@
 | Trial Duration (Days) | 10           |
 | Trial Amount (€)      | 0,00         |
 | Allow Only One Trial  | ☑️           |
+
+### Groups
+
+#### Group - Upgrade Path - One-Time - Recurring
+
+| Field                 | Value        |
+| --------------------- | ------------ |
+| Upgrade Path          | ☑️           |
+| Memberships           | 1. One-Time  |
+|                       | 2. Recurring |
+
+#### Group - Upgrade Path - Recurring - One-Time
+
+| Field                 | Value        |
+| --------------------- | ------------ |
+| Upgrade Path          | ☑️           |
+| Memberships           | 1. Recurring |
+|                       | 2. One-Time  |
+
+### Discounts
+
+#### Discount - 100% - Standard
+
+| Field                 | Value        |
+| --------------------- | ------------ |
+| Discount              | 100%         |
+| Discount Mode         | Standard     |
+
+#### Discount - 0% - First Payment - 100%
+
+| Field                  | Value         |
+| ---------------------- | ------------- |
+| Discount               | 0%.           |
+| Discount Mode          | First Payment |
+| First Payment Discount | 100%          |
+
+### Settings
+
+#### Account » Permissions
+
+☑️ Allow Members to Cancel their own subscriptions
+
+☑️ Allow Members to Pause & Resume their own subscriptions
+
+> This option will only be available if this is enabled and the user purchased their subsciption using PayPal or Stripe.
+
+#### Account » Registration
+
+☑️ Disable the 1 day grace period after signup 
+
+> PayPal, Stripe, and Authorize.net can sometimes take up to 24 hours to process the first payment on a members recurring subscription. By default MemberPress allows a 1 day grace period after a member signs up, so they can access the site immediately rather than wait for their payment to clear.
+>
+> If you would like to make them wait for the payment to clear before they are allowed to access the site, then enable this option.
+
+☑️ Enable Single Page Checkout
+
+> Enabling this will eliminate the second step of the checkout process. Users will be able to enter their personal and payment details during the first step instead.
+
+☑️ Pro-rate subscription prices when a member upgrades
+
+☑️ Enable Single Page Checkout Invoice
+
+> Enabling this will display Invoice table above the payment options.
 
 ## Links
 
