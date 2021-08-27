@@ -250,6 +250,34 @@ class Upgrade310 extends Upgrade {
 
 			\update_post_meta( $subscription_post_id, '_pronamic_subscription_memberpress_update_source', $subscription_source );
 			\update_post_meta( $subscription_post_id, '_pronamic_subscription_memberpress_update_source_id', $subscription_source_id );
+
+			/**
+			 * MemberPress transaction.
+			 */
+			$memberpress_transaction_id = $subscription_source_id;
+
+			$memberpress_transaction = MemberPress::get_transaction_by_id( $memberpress_transaction_id );
+
+			if ( null === $memberpress_transaction ) {
+				continue;
+			}
+
+			/**
+			 * MemberPress subscription.
+			 */
+			$memberpress_subscription = $memberpress_transaction->subscription();
+
+			if ( ! $memberpress_subscription ) {
+				continue;
+			}
+
+			/**
+			 * Ok.
+			 */
+			$subscription->set_source( 'memberpress_subscription' );
+			$subscription->set_source_id( $memberpress_subscription->id );
+
+			$subscription->save();
 		}
 	}
 
@@ -283,6 +311,25 @@ class Upgrade310 extends Upgrade {
 
 			\update_post_meta( $payment_post_id, '_pronamic_payment_memberpress_update_source', $payment_source );
 			\update_post_meta( $payment_post_id, '_pronamic_payment_memberpress_update_source_id', $payment_source_id );
+
+			/**
+			 * MemberPress transaction.
+			 */
+			$memberpress_transaction_id = $payment_source_id;
+
+			$memberpress_transaction = MemberPress::get_transaction_by_id( $memberpress_transaction_id );
+
+			if ( null === $memberpress_transaction ) {
+				continue;
+			}
+
+			/**
+			 * Ok.
+			 */
+			$payment->set_source( 'memberpress_transaction' );
+			$payment->set_source_id( $memberpress_transaction->id );
+
+			$payment->save();
 		}
 	}
 }
