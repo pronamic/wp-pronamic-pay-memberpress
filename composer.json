@@ -47,6 +47,13 @@
 		"wp-premium/memberpress": "^1.9"
 	},
 	"scripts": {
+		"ci": [
+			"@phplint",
+			"@phpcs",
+			"@coverage",
+			"@phpstan"
+		],
+		"coverage": "XDEBUG_MODE=coverage vendor/bin/phpunit --coverage-clover build/logs/clover.xml --coverage-text",
 		"coveralls": "vendor/bin/php-coveralls -v",
 		"phpcbf": "vendor/bin/phpcbf",
 		"phpcs": "XDEBUG_MODE=off vendor/bin/phpcs -s -v",

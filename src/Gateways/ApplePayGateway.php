@@ -16,7 +16,7 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
  * WordPress pay MemberPress Apple Pay gateway
  *
  * @author  Reüel van der Steege
- * @version 2.3.0
+ * @version 3.1.0
  * @since   2.3.0
  */
 class ApplePayGateway extends Gateway {

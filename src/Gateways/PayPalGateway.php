@@ -16,7 +16,7 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
  * WordPress pay MemberPress PayPal gateway
  *
  * @author  Reüel van der Steege
- * @version 2.0.1
+ * @version 3.1.0
  * @since   1.0.5
  */
 class PayPalGateway extends Gateway {

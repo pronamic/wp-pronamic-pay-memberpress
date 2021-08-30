@@ -17,7 +17,7 @@ use Pronamic\WordPress\Pay\Plugin;
  * WordPress pay MemberPress Direct Debit mandate via iDEAL gateway
  *
  * @author  Reüel van der Steege
- * @version 2.0.1
+ * @version 3.1.0
  * @since   2.0.0
  */
 class DirectDebitIDealGateway extends Gateway {

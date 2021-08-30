@@ -7,6 +7,13 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [3.1.0] - Unreleased
+- Completely revised integration.
+- Improved support for free (amount = 0) transactions.
+- Improved support for upgrades and downgrades.
+- Removed suppport for suspend and resume subscriptions.
+- Added Pronamic payment column to the MemberPress transactions table in WordPress admin dashboard.
+
 ## [3.0.3] - 2021-08-19
 - Added Giropay gateway.
 
@@ -147,7 +154,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/3.0.3...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/3.1.0...HEAD
+[3.1.0]: https://github.com/wp-pay-extensions/memberpress/compare/3.0.3...3.1.0
 [3.0.3]: https://github.com/wp-pay-extensions/memberpress/compare/3.0.2...3.0.3
 [3.0.2]: https://github.com/wp-pay-extensions/memberpress/compare/3.0.1...3.0.2
 [3.0.1]: https://github.com/wp-pay-extensions/memberpress/compare/3.0.0...3.0.1

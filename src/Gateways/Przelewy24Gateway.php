@@ -16,7 +16,7 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
  * WordPress pay MemberPress Przelewy24 gateway
  *
  * @author  Reüel van der Steege
- * @version 2.2.0
+ * @version 3.1.0
  * @since   2.2.0
  */
 class Przelewy24Gateway extends Gateway {

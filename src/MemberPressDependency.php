@@ -16,7 +16,7 @@ use Pronamic\WordPress\Pay\Dependencies\Dependency;
  * MemberPress Dependency
  *
  * @author  Reüel van der Steege
- * @version 2.1.1
+ * @version 3.1.0
  * @since   2.1.1
  */
 class MemberPressDependency extends Dependency {

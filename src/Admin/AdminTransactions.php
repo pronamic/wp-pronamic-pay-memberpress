@@ -18,7 +18,7 @@ use WP_Query;
  * Admin transactions
  *
  * @author  Remco Tolsma
- * @version 2.0.4
+ * @version 3.1.0
  * @since   1.0.0
  */
 class AdminTransactions {

@@ -254,18 +254,12 @@ class Upgrade310 extends Upgrade {
 			/**
 			 * MemberPress transaction.
 			 */
-			$memberpress_transaction_id = $subscription_source_id;
-
-			$memberpress_transaction = MemberPress::get_transaction_by_id( $memberpress_transaction_id );
-
-			if ( null === $memberpress_transaction ) {
-				continue;
-			}
+			$memberpress_subscription_id = $subscription_source_id;
 
 			/**
 			 * MemberPress subscription.
 			 */
-			$memberpress_subscription = $memberpress_transaction->subscription();
+			$memberpress_subscription = MemberPress::get_subscription_by_id( $memberpress_subscription_id );
 
 			if ( ! $memberpress_subscription ) {
 				continue;

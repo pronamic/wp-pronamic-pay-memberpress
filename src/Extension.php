@@ -27,7 +27,7 @@ use Pronamic\WordPress\Pay\Subscriptions\SubscriptionStatus;
  * WordPress pay MemberPress extension
  *
  * @author  Remco Tolsma
- * @version 2.2.3
+ * @version 3.1.0
  * @since   1.0.0
  */
 class Extension extends AbstractPluginIntegration {
@@ -124,9 +124,7 @@ class Extension extends AbstractPluginIntegration {
 	 * Hide MemberPress columns for payments and subscriptions.
 	 *
 	 * @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/controllers/MeprAppCtrl.php#L129-146
-	 *
 	 * @param string $post_type Registered post type.
-	 *
 	 * @return void
 	 */
 	public function post_type_columns_hide( $post_type ) {
@@ -207,7 +205,23 @@ class Extension extends AbstractPluginIntegration {
 	 * @throws \Exception Throws an exception when the MemberPress subscription cannot be found.
 	 */
 	public function maybe_create_memberpress_transaction( Payment $payment ) {
-		if ( 'memberpress_subscription' !== $payment->get_source() ) {
+		if ( ! in_array(
+			$payment->get_source(),
+			array(
+				'memberpress_subscription',
+				/**
+				 * Before version `3.1` we used 'memberpress' as source.
+				 * The upgrade 3.1.0 script corrects this, but for backward
+				 * compatibility we also accept 'memberpress'.
+				 * 
+				 * @link https://github.com/wp-pay-extensions/memberpress/blob/3.0.3/src/Pronamic.php#L128
+				 * @link https://github.com/pronamic/wp-pay-core/blob/3.0.1/src/Subscriptions/SubscriptionHelper.php#L98-L102
+				 * @link https://github.com/pronamic/wp-pay-core/blob/3.0.1/src/Subscriptions/SubscriptionsModule.php#L446-L447
+				 */
+				'memberpress',
+			),
+			true
+		) ) {
 			return;
 		}
 
