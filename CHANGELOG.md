@@ -10,7 +10,7 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [3.1.0] - Unreleased
 - Completely revised integration.
 - Improved support for free (amount = 0) transactions.
-- Improved support for upgrades and downgrades.
+- Improved support for subscription upgrades and downgrades.
 - Removed suppport for suspend and resume subscriptions.
 - Added Pronamic payment column to the MemberPress transactions table in WordPress admin dashboard.
 
