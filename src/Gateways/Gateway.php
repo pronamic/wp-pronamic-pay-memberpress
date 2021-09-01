@@ -816,12 +816,23 @@ class Gateway extends MeprBaseRealGateway {
 		$message = \__( 'The payment method for this subscription can not be updated manually.', 'pronamic_ideal' );
 
 		if ( false !== $subscription ) {
+			// Set URL to mandate selection URL.
+			$url = $subscription->get_mandate_selection_url();
+
+			// Maybe set URL to subscription renewal,
+			// to catch up with last failed payment.
+			$renewal_period = $subscription->get_renewal_period();
+
+			if ( SubscriptionStatus::ACTIVE !== $subscription->get_status() && null !== $renewal_period ) {
+				$url = $subscription->get_renewal_url();
+			}
+
 			$message = \sprintf(
 				/* translators: %s: mandate selection URL anchor */
 				\__( 'To update the payment method for this subscription, please visit the %s page.', 'pronamic_ideal' ),
 				\sprintf(
 					'<a href="%1$s" title="%2$s">%3$s</a>',
-					\esc_url( $subscription->get_mandate_selection_url() ),
+					\esc_url( $url ),
 					\esc_attr( \__( 'payment method update', 'pronamic_ideal' ) ),
 					\esc_html( \__( 'payment method update', 'pronamic_ideal' ) )
 				)
