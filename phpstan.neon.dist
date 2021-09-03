@@ -1,9 +1,14 @@
-includes:
-	- vendor-bin/phpstan/vendor/szepeviktor/phpstan-wordpress/extension.neon
 parameters:
 	customRulesetUsed: false
 	level: max
+	scanFiles:
+		- vendor-bin/phpstan/vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
 	bootstrapFiles:
 		- tests/phpstan/bootstrap.php
 	paths:
 		- src/
+		- views/
+	universalObjectCratesClasses:
+		- MeprProduct
+		- MeprSubscription
+		- MeprTransaction

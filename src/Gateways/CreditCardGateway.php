@@ -16,22 +16,15 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
  * WordPress pay MemberPress credit card gateway
  *
  * @author  Remco Tolsma
- * @version 2.0.1
+ * @version 3.1.0
  * @since   1.0.0
  */
 class CreditCardGateway extends Gateway {
 	/**
-	 * Payment method.
-	 *
-	 * @var string
-	 */
-	protected $payment_method = PaymentMethods::CREDIT_CARD;
-
-	/**
 	 * Constructs and initialize credit card gateway.
 	 */
 	public function __construct() {
-		parent::__construct();
+		parent::__construct( 'MeprCreditCardGateway', PaymentMethods::CREDIT_CARD );
 
 		// Capabilities.
 		$this->capabilities = array(
@@ -39,28 +32,7 @@ class CreditCardGateway extends Gateway {
 			'create-subscriptions',
 			'cancel-subscriptions',
 			'update-subscriptions',
-			'suspend-subscriptions',
-			'resume-subscriptions',
 			'subscription-trial-payment',
 		);
-	}
-
-	/**
-	 * Get alias class name of this gateway.
-	 *
-	 * @return string
-	 */
-	public function get_alias() {
-		return 'MeprCreditCardGateway';
-	}
-
-	/**
-	 * Get icon function, please note that this is not a MemberPress function.
-	 *
-	 * @since 2.0.8
-	 * @return string
-	 */
-	protected function get_icon() {
-		return PaymentMethods::get_icon_url( PaymentMethods::CREDIT_CARD );
 	}
 }

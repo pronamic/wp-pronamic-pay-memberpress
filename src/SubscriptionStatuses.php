@@ -17,7 +17,7 @@ use Pronamic\WordPress\Pay\Subscriptions\SubscriptionStatus;
  * Subscription statuses
  *
  * @author  Remco Tolsma
- * @version 2.2.3
+ * @version 3.1.0
  * @since   2.0.1
  */
 class SubscriptionStatuses {

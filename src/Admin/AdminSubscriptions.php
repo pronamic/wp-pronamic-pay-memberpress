@@ -10,28 +10,35 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress\Admin;
 
+use WP_Post;
 use WP_Query;
 
 /**
  * Admin subscriptions
  *
  * @author  Remco Tolsma
- * @version 2.0.11
+ * @version 3.1.0
  * @since   1.0.0
  */
 class AdminSubscriptions {
 	/**
 	 * Subscriptions map.
 	 *
-	 * @var array|null
+	 * @var array<string, WP_Post>|null
 	 */
 	private $subscriptions_map;
 
 	/**
 	 * Setup.
+	 * 
+	 * @return void
 	 */
 	public function setup() {
-		// @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/controllers/MeprSubscriptionsCtrl.php#L19-L26
+		/**
+		 * Filter for subscriptions columns.
+		 * 
+		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/controllers/MeprSubscriptionsCtrl.php#L20-L27
+		 */
 		$hook = 'memberpress_page_memberpress-subscriptions';
 
 		add_filter( 'manage_' . $hook . '_columns', array( $this, 'manage_subscriptions_columns' ), 15 );
@@ -44,7 +51,8 @@ class AdminSubscriptions {
 	/**
 	 * Manage subscriptions columns.
 	 *
-	 * @param array $columns Columns.
+	 * @param array<string, string> $columns Columns.
+	 * @return array<string, string>
 	 */
 	public function manage_subscriptions_columns( $columns ) {
 		$columns['pronamic_subscription'] = __( 'Pronamic Subscription', 'pronamic_ideal' );
@@ -56,7 +64,7 @@ class AdminSubscriptions {
 	 * Get subscriptions map.
 	 *
 	 * @param object $table Table.
-	 * @return array
+	 * @return array<string, WP_Post>|null
 	 */
 	private function get_subscriptions_map( $table ) {
 		if ( is_array( $this->subscriptions_map ) ) {
@@ -66,13 +74,13 @@ class AdminSubscriptions {
 		$this->subscriptions_map = array();
 
 		if ( ! isset( $table->items ) ) {
-			return;
+			return null;
 		}
 
 		$memberpress_subscriptions = $table->items;
 
 		if ( ! is_array( $memberpress_subscriptions ) || empty( $memberpress_subscriptions ) ) {
-			return;
+			return null;
 		}
 
 		$memberpress_subscription_ids = wp_list_pluck( $memberpress_subscriptions, 'id' );
@@ -86,7 +94,7 @@ class AdminSubscriptions {
 					array(
 						'key'     => '_pronamic_subscription_source',
 						'compare' => '=',
-						'value'   => 'memberpress',
+						'value'   => 'memberpress_subscription',
 					),
 					array(
 						'key'     => '_pronamic_subscription_source_id',
@@ -97,16 +105,16 @@ class AdminSubscriptions {
 			)
 		);
 
-		if ( $query->have_posts() ) {
-			while ( $query->have_posts() ) {
-				$query->the_post();
+		$subscription_posts = $query->get_posts();
 
-				$memberpress_subscription_id = get_post_meta( get_the_ID(), '_pronamic_subscription_source_id', true );
-
-				$this->subscriptions_map[ $memberpress_subscription_id ] = get_post();
+		foreach ( $subscription_posts as $subscription_post ) {
+			if ( ! $subscription_post instanceof WP_Post ) {
+				continue;
 			}
 
-			wp_reset_postdata();
+			$memberpress_subscription_id = (string) \get_post_meta( $subscription_post->ID, '_pronamic_subscription_source_id', true );
+
+			$this->subscriptions_map[ $memberpress_subscription_id ] = $subscription_post;
 		}
 
 		return $this->subscriptions_map;
@@ -124,13 +132,22 @@ class AdminSubscriptions {
 	 * @param object $rec         Record.
 	 * @param object $table       Table.
 	 * @param string $attributes  Attributes.
+	 * @return void
 	 */
 	public function admin_subscriptions_cell( $column_name, $rec, $table, $attributes ) {
 		if ( 'pronamic_subscription' !== $column_name ) {
 			return;
 		}
 
+		if ( ! \property_exists( $rec, 'id' ) ) {
+			return;
+		}
+
 		$map = $this->get_subscriptions_map( $table );
+
+		if ( null === $map ) {
+			return;
+		}
 
 		printf(
 			'<td %s>',
@@ -143,10 +160,10 @@ class AdminSubscriptions {
 		if ( isset( $map[ $memberpress_subscription_id ] ) ) {
 			$pronamic_subscription_post = $map[ $memberpress_subscription_id ];
 
-			printf(
+			\printf(
 				'<a href="%s">%s</a>',
-				esc_attr( get_edit_post_link( $pronamic_subscription_post ) ),
-				esc_html( $pronamic_subscription_post->ID )
+				\esc_attr( (string) \get_edit_post_link( $pronamic_subscription_post ) ),
+				\esc_html( (string) $pronamic_subscription_post->ID )
 			);
 		} else {
 			echo '—';
@@ -162,9 +179,9 @@ class AdminSubscriptions {
 	 * @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/views/admin/subscriptions/edit.php
 	 * @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/views/admin/subscriptions/form.php
 	 *
-	 * @param string $view View.
-	 * @param string $slug Slug.
-	 * @param array  $vars Variables.
+	 * @param string  $view View.
+	 * @param string  $slug Slug.
+	 * @param mixed[] $vars Variables.
 	 * @return string
 	 */
 	public function extend_subscription_form( $view, $slug, $vars ) {

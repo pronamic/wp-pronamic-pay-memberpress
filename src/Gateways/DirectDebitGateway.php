@@ -16,33 +16,14 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
  * WordPress pay MemberPress direct debit gateway
  *
  * @author  Remco Tolsma
- * @version 2.0.1
+ * @version 3.1.0
  * @since   1.0.0
  */
 class DirectDebitGateway extends Gateway {
 	/**
-	 * Payment method.
-	 *
-	 * @var string
+	 * Constructs and initialize direct debit gateway.
 	 */
-	protected $payment_method = PaymentMethods::DIRECT_DEBIT;
-
-	/**
-	 * Get alias class name of this gateway.
-	 *
-	 * @return string
-	 */
-	public function get_alias() {
-		return 'MeprDirectDebitGateway';
-	}
-
-	/**
-	 * Get icon function, please note that this is not a MemberPress function.
-	 *
-	 * @since 2.0.8
-	 * @return string
-	 */
-	protected function get_icon() {
-		return PaymentMethods::get_icon_url( PaymentMethods::DIRECT_DEBIT );
+	public function __construct() {
+		parent::__construct( 'MeprDirectDebitGateway', PaymentMethods::DIRECT_DEBIT );
 	}
 }

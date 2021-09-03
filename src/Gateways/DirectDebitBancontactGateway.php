@@ -17,22 +17,15 @@ use Pronamic\WordPress\Pay\Plugin;
  * WordPress pay MemberPress Direct Debit mandate via Bancontact gateway
  *
  * @author  Reüel van der Steege
- * @version 2.0.1
+ * @version 3.1.0
  * @since   1.0.6
  */
 class DirectDebitBancontactGateway extends Gateway {
 	/**
-	 * Payment method.
-	 *
-	 * @var string
-	 */
-	protected $payment_method = PaymentMethods::DIRECT_DEBIT_BANCONTACT;
-
-	/**
 	 * Constructs and initialize credit card gateway.
 	 */
 	public function __construct() {
-		parent::__construct();
+		parent::__construct( 'MeprDirectDebitBancontactGateway', PaymentMethods::DIRECT_DEBIT_BANCONTACT );
 
 		// Capabilities.
 		$this->capabilities = array(
@@ -40,19 +33,8 @@ class DirectDebitBancontactGateway extends Gateway {
 			'create-subscriptions',
 			'cancel-subscriptions',
 			'update-subscriptions',
-			'suspend-subscriptions',
-			'resume-subscriptions',
 			'subscription-trial-payment',
 		);
-	}
-
-	/**
-	 * Get alias class name of this gateway.
-	 *
-	 * @return string
-	 */
-	public function get_alias() {
-		return 'MeprDirectDebitBancontactGateway';
 	}
 
 	/**

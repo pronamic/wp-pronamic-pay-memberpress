@@ -17,22 +17,15 @@ use Pronamic\WordPress\Pay\Plugin;
  * WordPress pay MemberPress Direct Debit mandate via Sofort gateway
  *
  * @author  Reüel van der Steege
- * @version 2.0.1
+ * @version 3.1.0
  * @since   1.0.6
  */
 class DirectDebitSofortGateway extends Gateway {
 	/**
-	 * Payment method.
-	 *
-	 * @var string
-	 */
-	protected $payment_method = PaymentMethods::DIRECT_DEBIT_SOFORT;
-
-	/**
 	 * Constructs and initialize credit card gateway.
 	 */
 	public function __construct() {
-		parent::__construct();
+		parent::__construct( 'MeprDirectDebitSofortGateway', PaymentMethods::DIRECT_DEBIT_SOFORT );
 
 		// Capabilities.
 		$this->capabilities = array(
@@ -40,19 +33,8 @@ class DirectDebitSofortGateway extends Gateway {
 			'create-subscriptions',
 			'cancel-subscriptions',
 			'update-subscriptions',
-			'suspend-subscriptions',
-			'resume-subscriptions',
 			'subscription-trial-payment',
 		);
-	}
-
-	/**
-	 * Get alias class name of this gateway.
-	 *
-	 * @return string
-	 */
-	public function get_alias() {
-		return 'MeprDirectDebitSofortGateway';
 	}
 
 	/**

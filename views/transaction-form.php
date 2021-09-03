@@ -8,6 +8,49 @@
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
 
+if ( ! isset( $memberpress_transaction_id ) ) {
+	return;
+}
+
+$query = new WP_Query(
+	array(
+		'post_type'   => 'pronamic_payment',
+		'post_status' => 'any',
+		'nopaging'    => true,
+		'meta_query'  => array(
+			array(
+				'key'     => '_pronamic_payment_source',
+				'compare' => '=',
+				'value'   => 'memberpress_transaction',
+			),
+			array(
+				'key'     => '_pronamic_payment_source_id',
+				'compare' => '=',
+				'value'   => $memberpress_transaction_id,
+			),
+		),
+	)
+);
+
+$ps = array_filter(
+	$query->posts,
+	function( $post ) {
+		return $post instanceof WP_Post;
+	} 
+);
+
+$items = array();
+
+foreach ( $ps as $p ) {
+	$url = get_edit_post_link( $p );
+
+	if ( null === $url ) {
+		continue;
+	}
+
+	$items[ $p->ID ] = $url;
+}
+
 ?>
 <tr valign="top">
 	<th scope="row">
@@ -16,46 +59,22 @@
 	<td>
 		<?php
 
-		$query = new WP_Query(
-			array(
-				'post_type'   => 'pronamic_payment',
-				'post_status' => 'any',
-				'nopaging'    => true,
-				'meta_query'  => array(
-					array(
-						'key'     => '_pronamic_payment_source',
-						'compare' => '=',
-						'value'   => 'memberpress',
-					),
-					array(
-						'key'     => '_pronamic_payment_source_id',
-						'compare' => '=',
-						'value'   => $memberpress_transaction_id,
-					),
-				),
-			)
-		);
-
-		if ( $query->have_posts() ) {
+		if ( \count( $items ) > 0 ) {
 			echo '<ul>';
 
-			while ( $query->have_posts() ) {
-				$query->the_post();
-
+			foreach ( $items as $key => $url ) {
 				echo '<li>';
 
-				printf(
+				\printf(
 					'<a href="%s">%s</a>',
-					esc_attr( get_edit_post_link( get_post() ) ),
-					esc_html( get_the_ID() )
+					\esc_url( $url ),
+					\esc_html( (string) $key )
 				);
 
 				echo '</li>';
 			}
 
 			echo '</ul>';
-
-			wp_reset_postdata();
 		}
 
 		?>

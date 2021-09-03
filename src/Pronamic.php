@@ -27,7 +27,7 @@ use Pronamic\WordPress\Pay\Subscriptions\SubscriptionPhase;
  * Pronamic
  *
  * @author  Remco Tolsma
- * @version 3.0.1
+ * @version 3.1.0
  * @since   2.0.5
  */
 class Pronamic {
@@ -35,8 +35,8 @@ class Pronamic {
 	 * Get Pronamic payment from MemberPress transaction.
 	 *
 	 * @param MeprTransaction $memberpress_transaction MemberPress transaction object.
-	 *
 	 * @return Payment
+	 * @throws \Exception Throws an exception as soon as no new subscription period can be created.
 	 */
 	public static function get_payment( MeprTransaction $memberpress_transaction ) {
 		$payment = new Payment();
@@ -61,7 +61,7 @@ class Pronamic {
 		$payment->title       = $title;
 		$payment->description = $memberpress_product->post_title;
 		$payment->user_id     = $memberpress_user->ID;
-		$payment->source      = 'memberpress';
+		$payment->source      = 'memberpress_transaction';
 		$payment->source_id   = $memberpress_transaction->id;
 		$payment->issuer      = null;
 
@@ -100,8 +100,8 @@ class Pronamic {
 		$payment->set_billing_address( $address );
 		$payment->set_shipping_address( $address );
 
-		/*
-		 * Totals.
+		/**
+		 * Total.
 		 */
 		$payment->set_total_amount(
 			new TaxedMoney(
@@ -112,33 +112,33 @@ class Pronamic {
 			)
 		);
 
-		/*
+		/**
 		 * Vat number.
+		 *
 		 * @link https://github.com/wp-premium/memberpress-business/search?utf8=%E2%9C%93&q=mepr_vat_number&type=
 		 * @todo
 		 */
 
-		/*
+		/**
 		 * Subscription.
-		 * @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/models/MeprTransaction.php#L603-L618
 		 */
 		$payment->subscription = self::get_subscription( $memberpress_transaction );
 
 		if ( $payment->subscription ) {
+			/**
+			 * MemberPress transaction subscription ID.
+			 * 
+			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprTransaction.php#L27
+			 */
 			$payment->subscription_source_id = $memberpress_transaction->subscription_id;
 
-			$payment->add_period( $payment->subscription->new_period() );
+			$period = $payment->subscription->new_period();
 
-			if ( $memberpress_subscription->in_trial() ) {
-				$payment->set_total_amount(
-					new TaxedMoney(
-						$memberpress_subscription->trial_total,
-						MemberPress::get_currency(),
-						$memberpress_subscription->trial_tax_amount,
-						$memberpress_subscription->tax_rate
-					)
-				);
+			if ( null === $period ) {
+				throw new \Exception( 'Could not create new period for subscription.' );
 			}
+
+			$payment->add_period( $period );
 		}
 
 		/*
@@ -153,7 +153,12 @@ class Pronamic {
 		$line->set_quantity( 1 );
 		$line->set_unit_price( $payment->get_total_amount() );
 		$line->set_total_amount( $payment->get_total_amount() );
-		$line->set_product_url( get_permalink( $memberpress_product->ID ) );
+
+		$product_url = \get_permalink( $memberpress_product->ID );
+
+		if ( false !== $product_url ) {     
+			$line->set_product_url( $product_url );
+		}
 
 		/*
 		 * Return.
@@ -165,7 +170,6 @@ class Pronamic {
 	 * Get Pronamic subscription from MemberPress transaction.
 	 *
 	 * @param MeprTransaction $memberpress_transaction MemberPress transaction object.
-	 *
 	 * @return Subscription|null
 	 */
 	public static function get_subscription( MeprTransaction $memberpress_transaction ) {
@@ -207,7 +211,11 @@ class Pronamic {
 
 			$subscription->add_phase( $trial_phase );
 
-			$start_date = $trial_phase->get_end_date();
+			$trail_end_date = $trial_phase->get_end_date();
+
+			if ( null !== $trail_end_date ) {
+				$start_date = $trail_end_date;
+			}
 		}
 
 		// Total periods.
@@ -224,12 +232,16 @@ class Pronamic {
 			$subscription,
 			$start_date,
 			new SubscriptionInterval( 'P' . $memberpress_product->period . Core_Util::to_period( $memberpress_product->period_type ) ),
-			new Money( $memberpress_transaction->total, MemberPress::get_currency() )
+			new Money( $memberpress_subscription->total, MemberPress::get_currency() )
 		);
 
 		$regular_phase->set_total_periods( $total_periods );
 
 		$subscription->add_phase( $regular_phase );
+
+		// Source.
+		$subscription->source    = 'memberpress_subscription';
+		$subscription->source_id = $memberpress_subscription->id;
 
 		return $subscription;
 	}

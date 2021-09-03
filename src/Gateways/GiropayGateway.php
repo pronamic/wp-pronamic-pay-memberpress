@@ -16,33 +16,14 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
  * WordPress pay MemberPress Giropay gateway
  *
  * @author  Remco Tolsma
- * @version 3.0.3
+ * @version 3.1.0
  * @since   3.0.3
  */
 class GiropayGateway extends Gateway {
 	/**
-	 * Payment method.
-	 *
-	 * @var string
+	 * Constructs and initialize Giropay gateway.
 	 */
-	protected $payment_method = PaymentMethods::GIROPAY;
-
-	/**
-	 * Get alias class name of this gateway.
-	 *
-	 * @return string
-	 */
-	public function get_alias() {
-		return 'MeprGiropayGateway';
-	}
-
-	/**
-	 * Get icon function, please note that this is not a MemberPress function.
-	 *
-	 * @since 1.0.2
-	 * @return string
-	 */
-	protected function get_icon() {
-		return PaymentMethods::get_icon_url( PaymentMethods::GIROPAY );
+	public function __construct() {
+		parent::__construct( 'MeprGiropayGateway', PaymentMethods::GIROPAY );
 	}
 }
