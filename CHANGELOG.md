@@ -7,12 +7,13 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
-## [3.1.0] - Unreleased
+## [3.1.0] - 2021-09-03
 - Completely revised integration.
 - Improved support for free (amount = 0) transactions.
 - Improved support for subscription upgrades and downgrades.
-- Temporarily removed suppport for suspend and resume subscriptions due to unintended behavior.
+- Account page 'Update' allows users to manually pay for last period if payment failed.
 - Added Pronamic payment column to the MemberPress transactions table in WordPress admin dashboard.
+- Temporarily removed support for suspend and resume subscriptions due to unintended behavior.
 
 ## [3.0.3] - 2021-08-19
 - Added Giropay gateway.
