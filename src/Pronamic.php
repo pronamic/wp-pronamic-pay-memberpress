@@ -63,7 +63,6 @@ class Pronamic {
 		$payment->user_id     = $memberpress_user->ID;
 		$payment->source      = 'memberpress_transaction';
 		$payment->source_id   = $memberpress_transaction->id;
-		$payment->issuer      = null;
 
 		// Contact.
 		$contact_name = new ContactName();
