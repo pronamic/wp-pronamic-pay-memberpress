@@ -59,10 +59,11 @@ class Pronamic {
 
 		$payment->order_id    = $memberpress_transaction->id;
 		$payment->title       = $title;
-		$payment->description = $memberpress_product->post_title;
 		$payment->user_id     = $memberpress_user->ID;
 		$payment->source      = 'memberpress_transaction';
 		$payment->source_id   = $memberpress_transaction->id;
+
+		$payment->set_description( $memberpress_product->post_title );
 
 		// Contact.
 		$contact_name = new ContactName();
