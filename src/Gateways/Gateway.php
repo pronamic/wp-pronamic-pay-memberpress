@@ -195,7 +195,8 @@ class Gateway extends MeprBaseRealGateway {
 		$payment = Pronamic::get_payment( $transaction );
 
 		$payment->config_id = $config_id;
-		$payment->method    = $this->payment_method;
+
+		$payment->set_payment_method( $this->payment_method );
 
 		$payment = Plugin::start_payment( $payment );
 

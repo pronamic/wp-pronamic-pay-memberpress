@@ -251,7 +251,7 @@ class Extension extends AbstractPluginIntegration {
 				continue;
 			}
 
-			if ( $memberpress_gateway->get_payment_method() === $payment->get_method() ) {
+			if ( $memberpress_gateway->get_payment_method() === $payment->get_payment_method() ) {
 				$memberpress_subscription->gateway = $memberpress_gateway->id;
 			}
 		}
