@@ -122,15 +122,16 @@ class Pronamic {
 		/**
 		 * Subscription.
 		 */
-		$payment->subscription = self::get_subscription( $memberpress_transaction );
+		$subscription = self::get_subscription( $memberpress_transaction );
 
-		if ( $payment->subscription ) {
-			$period = $payment->subscription->new_period();
+		if ( $subscription ) {
+			$period = $subscription->new_period();
 
 			if ( null === $period ) {
 				throw new \Exception( 'Could not create new period for subscription.' );
 			}
 
+			$payment->add_subscription( $subscription );
 			$payment->add_period( $period );
 		}
 
