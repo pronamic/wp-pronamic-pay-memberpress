@@ -125,13 +125,6 @@ class Pronamic {
 		$payment->subscription = self::get_subscription( $memberpress_transaction );
 
 		if ( $payment->subscription ) {
-			/**
-			 * MemberPress transaction subscription ID.
-			 * 
-			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprTransaction.php#L27
-			 */
-			$payment->subscription_source_id = $memberpress_transaction->subscription_id;
-
 			$period = $payment->subscription->new_period();
 
 			if ( null === $period ) {
