@@ -130,7 +130,6 @@ class Pronamic {
 				throw new \Exception( 'Could not create new period for subscription.' );
 			}
 
-			$payment->add_subscription( $subscription );
 			$payment->add_period( $period );
 		}
 
