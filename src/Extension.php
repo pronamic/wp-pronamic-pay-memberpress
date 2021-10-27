@@ -559,11 +559,8 @@ class Extension extends AbstractPluginIntegration {
 	 * @return array<string, string>
 	 */
 	public function transaction_email_params( $params, MeprTransaction $transaction ) {
+		// Get payment.
 		$payments = \get_pronamic_payments_by_source( 'memberpress_transaction', $transaction->id );
-
-		if ( null === $payments ) {
-			return $params;
-		}
 
 		$payment = \reset( $payments );
 
@@ -571,25 +568,16 @@ class Extension extends AbstractPluginIntegration {
 			return $params;
 		}
 
-		// Get subscription.
-		$periods = $payment->get_periods();
+		// Add parameters from subscription.
+		$subscriptions = $payment->get_subscriptions();
 
-		if ( null === $periods ) {
-			return $params;
+		foreach ( $subscriptions as $subscription ) {
+			$memberpress_subscription = new MeprSubscription( $subscription->get_source_id() );
+
+			return $this->subscription_email_params( $params, $memberpress_subscription );
 		}
 
-		$period = \reset( $periods );
-
-		if ( false === $period ) {
-			return $params;
-		}
-
-		$subscription = $period->get_phase()->get_subscription();
-
-		// Add parameters.
-		$memberpress_subscription = new MeprSubscription( $subscription->get_source_id() );
-
-		return $this->subscription_email_params( $params, $memberpress_subscription );
+		return $params;
 	}
 
 	/**
