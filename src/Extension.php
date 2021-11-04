@@ -287,10 +287,18 @@ class Extension extends AbstractPluginIntegration {
 		$memberpress_transaction->subscription_id = $memberpress_subscription->id;
 		$memberpress_transaction->gateway         = $memberpress_gateway->id;
 
-		$end_date = $payment->get_end_date();
+		$periods = $payment->get_periods();
 
-		if ( null !== $end_date ) {
-			$memberpress_transaction->expires_at = MeprUtils::ts_to_mysql_date( $end_date->getTimestamp(), 'Y-m-d 23:59:59' );
+		if ( null !== $periods ) {
+			$end_date = null;
+
+			foreach ( $periods as $period ) {
+				$end_date = \max( $end_date, $period->get_end_date() );
+			}
+
+			if ( null !== $end_date ) {
+				$memberpress_transaction->expires_at = MeprUtils::ts_to_mysql_date( $end_date->getTimestamp(), 'Y-m-d 23:59:59' );
+			}
 		}
 
 		/**
