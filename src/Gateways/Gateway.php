@@ -528,13 +528,6 @@ class Gateway extends MeprBaseRealGateway {
 		if ( ! in_array( $pronamic_subscription->get_status(), array( SubscriptionStatus::CANCELLED, SubscriptionStatus::COMPLETED ), true ) ) {
 			$pronamic_subscription->set_status( SubscriptionStatus::CANCELLED );
 
-			$pronamic_subscription->next_payment_date          = null;
-			$pronamic_subscription->next_payment_delivery_date = null;
-
-			// Delete next payment post meta.
-			$pronamic_subscription->set_meta( 'next_payment', null );
-			$pronamic_subscription->set_meta( 'next_payment_delivery_date', null );
-
 			$pronamic_subscription->save();
 		}
 
