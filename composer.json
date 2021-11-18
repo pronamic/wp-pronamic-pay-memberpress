@@ -44,7 +44,8 @@
 		"roots/wordpress": "^5.8",
 		"wp-cli/wp-cli": "^2.5",
 		"wp-phpunit/wp-phpunit": "^5.8",
-		"wp-premium/memberpress": "^1.9"
+		"wp-premium/memberpress": "^1.9",
+		"yoast/phpunit-polyfills": "^1.0"
 	},
 	"scripts": {
 		"ci": [
