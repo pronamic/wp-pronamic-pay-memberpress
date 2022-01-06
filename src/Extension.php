@@ -94,6 +94,8 @@ class Extension extends AbstractPluginIntegration {
 		// MemberPress subscription email parameters.
 		\add_filter( 'mepr_subscription_email_params', array( $this, 'subscription_email_params' ), 10, 2 );
 		\add_filter( 'mepr_transaction_email_params', array( $this, 'transaction_email_params' ), 10, 2 );
+		\add_filter( 'mepr_subscription_email_vars', array( $this, 'email_variables' ), 10 );
+		\add_filter( 'mepr_transaction_email_vars', array( $this, 'email_variables' ), 10 );
 
 		// Hide MemberPress columns for payments and subscriptions.
 		\add_action( 'registered_post_type', array( $this, 'post_type_columns_hide' ), 15, 1 );
@@ -526,6 +528,24 @@ class Extension extends AbstractPluginIntegration {
 
 			$subscription->save();
 		}
+	}
+
+	/**
+	 * Filter email variables.
+	 *
+	 * @param string[] $variables Email variables.
+	 * @return string[]
+	 */
+	public function email_variables( $variables ) {
+		return \array_merge(
+			$variables,
+			array(
+				'pronamic_subscription_id',
+				'pronamic_subscription_cancel_url',
+				'pronamic_subscription_renewal_url',
+				'pronamic_subscription_renewal_date',
+			)
+		);
 	}
 
 	/**
