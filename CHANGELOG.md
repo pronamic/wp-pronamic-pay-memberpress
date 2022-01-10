@@ -7,6 +7,10 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.0.0] - 2022-01-10
+### Changed
+- Updated to https://github.com/pronamic/wp-pay-core/releases/tag/4.0.0.
+
 ## [3.1.0] - 2021-09-03
 - Completely revised integration.
 - Improved support for free (amount = 0) transactions.
@@ -155,7 +159,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/3.1.0...HEAD
+[unreleased]: https://github.com/wp-pay-extensions/memberpress/compare/4.0.0...HEAD
+[4.0.0]: https://github.com/wp-pay-extensions/memberpress/compare/3.1.0...4.0.0
 [3.1.0]: https://github.com/wp-pay-extensions/memberpress/compare/3.0.3...3.1.0
 [3.0.3]: https://github.com/wp-pay-extensions/memberpress/compare/3.0.2...3.0.3
 [3.0.2]: https://github.com/wp-pay-extensions/memberpress/compare/3.0.1...3.0.2
