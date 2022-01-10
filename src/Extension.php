@@ -3,7 +3,7 @@
  * Extension
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2021 Pronamic
+ * @copyright 2005-2022 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
@@ -94,6 +94,8 @@ class Extension extends AbstractPluginIntegration {
 		// MemberPress subscription email parameters.
 		\add_filter( 'mepr_subscription_email_params', array( $this, 'subscription_email_params' ), 10, 2 );
 		\add_filter( 'mepr_transaction_email_params', array( $this, 'transaction_email_params' ), 10, 2 );
+		\add_filter( 'mepr_subscription_email_vars', array( $this, 'email_variables' ), 10 );
+		\add_filter( 'mepr_transaction_email_vars', array( $this, 'email_variables' ), 10 );
 
 		// Hide MemberPress columns for payments and subscriptions.
 		\add_action( 'registered_post_type', array( $this, 'post_type_columns_hide' ), 15, 1 );
@@ -251,7 +253,7 @@ class Extension extends AbstractPluginIntegration {
 				continue;
 			}
 
-			if ( $memberpress_gateway->get_payment_method() === $payment->get_method() ) {
+			if ( $memberpress_gateway->get_payment_method() === $payment->get_payment_method() ) {
 				$memberpress_subscription->gateway = $memberpress_gateway->id;
 			}
 		}
@@ -287,10 +289,18 @@ class Extension extends AbstractPluginIntegration {
 		$memberpress_transaction->subscription_id = $memberpress_subscription->id;
 		$memberpress_transaction->gateway         = $memberpress_gateway->id;
 
-		$end_date = $payment->get_end_date();
+		$periods = $payment->get_periods();
 
-		if ( null !== $end_date ) {
-			$memberpress_transaction->expires_at = MeprUtils::ts_to_mysql_date( $end_date->getTimestamp(), 'Y-m-d 23:59:59' );
+		if ( null !== $periods ) {
+			$end_date = null;
+
+			foreach ( $periods as $period ) {
+				$end_date = \max( $end_date, $period->get_end_date() );
+			}
+
+			if ( null !== $end_date ) {
+				$memberpress_transaction->expires_at = MeprUtils::ts_to_mysql_date( $end_date->getTimestamp(), 'Y-m-d 23:59:59' );
+			}
 		}
 
 		/**
@@ -521,6 +531,24 @@ class Extension extends AbstractPluginIntegration {
 	}
 
 	/**
+	 * Filter email variables.
+	 *
+	 * @param string[] $variables Email variables.
+	 * @return string[]
+	 */
+	public function email_variables( $variables ) {
+		return \array_merge(
+			$variables,
+			array(
+				'pronamic_subscription_id',
+				'pronamic_subscription_cancel_url',
+				'pronamic_subscription_renewal_url',
+				'pronamic_subscription_renewal_date',
+			)
+		);
+	}
+
+	/**
 	 * Subscription email parameters.
 	 *
 	 * @param array<string, string> $params                   Email parameters.
@@ -559,11 +587,8 @@ class Extension extends AbstractPluginIntegration {
 	 * @return array<string, string>
 	 */
 	public function transaction_email_params( $params, MeprTransaction $transaction ) {
+		// Get payment.
 		$payments = \get_pronamic_payments_by_source( 'memberpress_transaction', $transaction->id );
-
-		if ( null === $payments ) {
-			return $params;
-		}
 
 		$payment = \reset( $payments );
 
@@ -571,25 +596,16 @@ class Extension extends AbstractPluginIntegration {
 			return $params;
 		}
 
-		// Get subscription.
-		$periods = $payment->get_periods();
+		// Add parameters from subscription.
+		$subscriptions = $payment->get_subscriptions();
 
-		if ( null === $periods ) {
-			return $params;
+		foreach ( $subscriptions as $subscription ) {
+			$memberpress_subscription = new MeprSubscription( $subscription->get_source_id() );
+
+			return $this->subscription_email_params( $params, $memberpress_subscription );
 		}
 
-		$period = \reset( $periods );
-
-		if ( false === $period ) {
-			return $params;
-		}
-
-		$subscription = $period->get_phase()->get_subscription();
-
-		// Add parameters.
-		$memberpress_subscription = new MeprSubscription( $subscription->get_source_id() );
-
-		return $this->subscription_email_params( $params, $memberpress_subscription );
+		return $params;
 	}
 
 	/**

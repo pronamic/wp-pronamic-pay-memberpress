@@ -3,7 +3,7 @@
  * Pronamic
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2021 Pronamic
+ * @copyright 2005-2022 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
@@ -59,11 +59,10 @@ class Pronamic {
 
 		$payment->order_id    = $memberpress_transaction->id;
 		$payment->title       = $title;
-		$payment->description = $memberpress_product->post_title;
-		$payment->user_id     = $memberpress_user->ID;
 		$payment->source      = 'memberpress_transaction';
 		$payment->source_id   = $memberpress_transaction->id;
-		$payment->issuer      = null;
+
+		$payment->set_description( $memberpress_product->post_title );
 
 		// Contact.
 		$contact_name = new ContactName();
@@ -122,17 +121,10 @@ class Pronamic {
 		/**
 		 * Subscription.
 		 */
-		$payment->subscription = self::get_subscription( $memberpress_transaction );
+		$subscription = self::get_subscription( $memberpress_transaction );
 
-		if ( $payment->subscription ) {
-			/**
-			 * MemberPress transaction subscription ID.
-			 * 
-			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprTransaction.php#L27
-			 */
-			$payment->subscription_source_id = $memberpress_transaction->subscription_id;
-
-			$period = $payment->subscription->new_period();
+		if ( $subscription ) {
+			$period = $subscription->new_period();
 
 			if ( null === $period ) {
 				throw new \Exception( 'Could not create new period for subscription.' );

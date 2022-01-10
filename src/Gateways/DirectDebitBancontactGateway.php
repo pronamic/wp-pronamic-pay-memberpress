@@ -3,7 +3,7 @@
  * Direct Debit mandate via Bancontact gateway
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2021 Pronamic
+ * @copyright 2005-2022 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
@@ -35,15 +35,5 @@ class DirectDebitBancontactGateway extends Gateway {
 			'update-subscriptions',
 			'subscription-trial-payment',
 		);
-	}
-
-	/**
-	 * Get icon function, please note that this is not a MemberPress function.
-	 *
-	 * @since 2.0.8
-	 * @return string
-	 */
-	protected function get_icon() {
-		return plugins_url( 'images/direct-debit-bancontact/icon-32x32.png', Plugin::$file );
 	}
 }

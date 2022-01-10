@@ -3,7 +3,7 @@
  * Gateway
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2021 Pronamic
+ * @copyright 2005-2022 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
@@ -195,7 +195,8 @@ class Gateway extends MeprBaseRealGateway {
 		$payment = Pronamic::get_payment( $transaction );
 
 		$payment->config_id = $config_id;
-		$payment->method    = $this->payment_method;
+
+		$payment->set_payment_method( $this->payment_method );
 
 		$payment = Plugin::start_payment( $payment );
 
@@ -526,13 +527,6 @@ class Gateway extends MeprBaseRealGateway {
 		// The status of canceled or completed subscriptions will not be changed automatically.
 		if ( ! in_array( $pronamic_subscription->get_status(), array( SubscriptionStatus::CANCELLED, SubscriptionStatus::COMPLETED ), true ) ) {
 			$pronamic_subscription->set_status( SubscriptionStatus::CANCELLED );
-
-			$pronamic_subscription->next_payment_date          = null;
-			$pronamic_subscription->next_payment_delivery_date = null;
-
-			// Delete next payment post meta.
-			$pronamic_subscription->set_meta( 'next_payment', null );
-			$pronamic_subscription->set_meta( 'next_payment_delivery_date', null );
 
 			$pronamic_subscription->save();
 		}
