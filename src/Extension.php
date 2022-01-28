@@ -398,7 +398,6 @@ class Extension extends AbstractPluginIntegration {
 		if ( MemberPress::transaction_has_status(
 			$memberpress_transaction,
 			array(
-				MeprTransaction::$failed_str,
 				MeprTransaction::$complete_str,
 			)
 		) ) {
