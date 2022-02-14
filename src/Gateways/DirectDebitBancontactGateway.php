@@ -26,14 +26,5 @@ class DirectDebitBancontactGateway extends Gateway {
 	 */
 	public function __construct() {
 		parent::__construct( 'MeprDirectDebitBancontactGateway', PaymentMethods::DIRECT_DEBIT_BANCONTACT );
-
-		// Capabilities.
-		$this->capabilities = array(
-			'process-payments',
-			'create-subscriptions',
-			'cancel-subscriptions',
-			'update-subscriptions',
-			'subscription-trial-payment',
-		);
 	}
 }

@@ -25,14 +25,5 @@ class CreditCardGateway extends Gateway {
 	 */
 	public function __construct() {
 		parent::__construct( 'MeprCreditCardGateway', PaymentMethods::CREDIT_CARD );
-
-		// Capabilities.
-		$this->capabilities = array(
-			'process-payments',
-			'create-subscriptions',
-			'cancel-subscriptions',
-			'update-subscriptions',
-			'subscription-trial-payment',
-		);
 	}
 }

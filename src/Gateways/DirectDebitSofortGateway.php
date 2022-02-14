@@ -26,14 +26,5 @@ class DirectDebitSofortGateway extends Gateway {
 	 */
 	public function __construct() {
 		parent::__construct( 'MeprDirectDebitSofortGateway', PaymentMethods::DIRECT_DEBIT_SOFORT );
-
-		// Capabilities.
-		$this->capabilities = array(
-			'process-payments',
-			'create-subscriptions',
-			'cancel-subscriptions',
-			'update-subscriptions',
-			'subscription-trial-payment',
-		);
 	}
 }
