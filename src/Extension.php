@@ -198,7 +198,7 @@ class Extension extends AbstractPluginIntegration {
 	}
 
 	/**
-	 * Maybe create create MemberPress transaction for the Pronamic payment.
+	 * Maybe create MemberPress transaction for the Pronamic payment.
 	 * 
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprSubscription.php
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprStripeGateway.php#L587-L714
