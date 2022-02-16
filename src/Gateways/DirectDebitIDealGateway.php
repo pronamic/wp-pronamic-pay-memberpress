@@ -26,14 +26,5 @@ class DirectDebitIDealGateway extends Gateway {
 	 */
 	public function __construct() {
 		parent::__construct( 'MeprDirectDebitIDealGateway', PaymentMethods::DIRECT_DEBIT_IDEAL );
-
-		// Capabilities.
-		$this->capabilities = array(
-			'process-payments',
-			'create-subscriptions',
-			'cancel-subscriptions',
-			'update-subscriptions',
-			'subscription-trial-payment',
-		);
 	}
 }

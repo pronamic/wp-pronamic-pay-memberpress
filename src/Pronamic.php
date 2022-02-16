@@ -57,10 +57,10 @@ class Pronamic {
 			)
 		);
 
-		$payment->order_id    = $memberpress_transaction->id;
-		$payment->title       = $title;
-		$payment->source      = 'memberpress_transaction';
-		$payment->source_id   = $memberpress_transaction->id;
+		$payment->order_id  = $memberpress_transaction->id;
+		$payment->title     = $title;
+		$payment->source    = 'memberpress_transaction';
+		$payment->source_id = $memberpress_transaction->id;
 
 		$payment->set_description( $memberpress_product->post_title );
 

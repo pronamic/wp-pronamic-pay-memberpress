@@ -198,7 +198,7 @@ class Extension extends AbstractPluginIntegration {
 	}
 
 	/**
-	 * Maybe create create MemberPress transaction for the Pronamic payment.
+	 * Maybe create MemberPress transaction for the Pronamic payment.
 	 * 
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprSubscription.php
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprStripeGateway.php#L587-L714
@@ -283,7 +283,7 @@ class Extension extends AbstractPluginIntegration {
 		$memberpress_transaction->user_id         = $memberpress_subscription->user_id;
 		$memberpress_transaction->product_id      = $memberpress_subscription->product_id;
 		$memberpress_transaction->txn_type        = MeprTransaction::$subscription_confirmation_str;
-		$memberpress_transaction->status          = MeprTransaction::$confirmed_str;
+		$memberpress_transaction->status          = ( 'recurring' === $payment->get_meta( 'mollie_sequence_type' ) ? MeprTransaction::$confirmed_str : MeprTransaction::$pending_str );
 		$memberpress_transaction->coupon_id       = $memberpress_subscription->coupon_id;
 		$memberpress_transaction->trans_num       = $payment->get_transaction_id();
 		$memberpress_transaction->subscription_id = $memberpress_subscription->id;

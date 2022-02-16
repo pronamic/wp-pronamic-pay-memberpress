@@ -93,7 +93,32 @@ class Gateway extends MeprBaseRealGateway {
 
 		// Set the capabilities of this gateway.
 		// @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L36-37.
-		$this->capabilities = array();
+		$capabilities = array();
+
+		// Capabilities.
+		$gateway = Plugin::get_gateway( $this->get_config_id() );
+
+		if (
+			null !== $gateway
+				&&
+			$gateway->supports( 'recurring' )
+				&&
+			(
+				PaymentMethods::is_recurring_method( $this->payment_method )
+					||
+				\in_array( $this->payment_method, PaymentMethods::get_recurring_methods(), true )
+			)
+		) {
+			$capabilities = array(
+				'process-payments',
+				'create-subscriptions',
+				'cancel-subscriptions',
+				'update-subscriptions',
+				'subscription-trial-payment',
+			);
+		}
+
+		$this->capabilities = $capabilities;
 
 		// Setup the notification actions for this gateway.
 		$this->notifiers = array();

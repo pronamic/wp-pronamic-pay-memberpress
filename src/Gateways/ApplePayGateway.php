@@ -25,14 +25,5 @@ class ApplePayGateway extends Gateway {
 	 */
 	public function __construct() {
 		parent::__construct( 'MeprApplePayGateway', PaymentMethods::APPLE_PAY );
-
-		// Capabilities.
-		$this->capabilities = array(
-			'process-payments',
-			'create-subscriptions',
-			'cancel-subscriptions',
-			'update-subscriptions',
-			'subscription-trial-payment',
-		);
 	}
 }
