@@ -81,6 +81,7 @@ class Extension extends AbstractPluginIntegration {
 
 		\add_action( 'pronamic_pay_new_payment', array( $this, 'maybe_create_memberpress_transaction' ), 10, 1 );
 
+		\add_action( 'pronamic_subscription_status_update_memberpress_subscription', array( $this, 'subscription_status_update' ), 10, 1 );
 		\add_filter( 'pronamic_subscription_source_text_memberpress_subscription', array( $this, 'subscription_source_text' ), 10, 2 );
 		\add_filter( 'pronamic_subscription_source_url_memberpress_subscription', array( $this, 'subscription_source_url' ), 10, 2 );
 
@@ -497,6 +498,30 @@ class Extension extends AbstractPluginIntegration {
 			default:
 				break;
 		}
+	}
+
+	/**
+	 * Perform limit reached actions on subscription completion.
+	 *
+	 * @param Subscription $pronamic_subscription Subscription.
+	 * @return void
+	 */
+	public function subscription_status_update( Subscription $pronamic_subscription ) {
+		// Check status.
+		if ( SubscriptionStatus::COMPLETED != $pronamic_subscription->get_status() ) {
+			return;
+		}
+
+		// Get MemberPress subscription.
+		$memberpress_subscription_id = $pronamic_subscription->get_source_id();
+
+		$memberpress_subscription = MemberPress::get_subscription_by_id( $memberpress_subscription_id );
+
+		if ( null === $memberpress_subscription ) {
+			return;
+		}
+
+		$memberpress_subscription->limit_reached_actions();
 	}
 
 	/**

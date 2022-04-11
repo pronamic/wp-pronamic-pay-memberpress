@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.1.0] - 2022-04-11
+- Call limit reached actions on subscription completion (fixes #2).
+
 ## [4.0.1] - 2022-02-16
 - Fixed MemberPress gateway capabilities based on gateway support.
 - Fixed confirming subscription confirmation transaction only for recurring payments.
@@ -163,7 +166,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.0.1...HEAD
+[unreleased]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.1.0...HEAD
+[4.1.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.0.1...4.1.0
 [4.0.1]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/wp-pay-extensions/memberpress/compare/3.1.0...4.0.0
 [3.1.0]: https://github.com/wp-pay-extensions/memberpress/compare/3.0.3...3.1.0
