@@ -90,7 +90,7 @@ class Extension extends AbstractPluginIntegration {
 
 		\add_action( 'mepr_subscription_pre_delete', array( $this, 'subscription_pre_delete' ), 10, 1 );
 
-		\add_action( 'mepr_subscription_transition_status', array( $this, 'memberpress_subscription_transition_status' ), 10, 3 );
+		\add_action( 'mepr_subscription_saved', [ $this, 'memberpress_subscription_saved' ], 10, 1 );
 
 		// MemberPress subscription email parameters.
 		\add_filter( 'mepr_subscription_email_params', array( $this, 'subscription_email_params' ), 10, 2 );
@@ -370,6 +370,26 @@ class Extension extends AbstractPluginIntegration {
 			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L624-L634
 			 */
 			$memberpress_gateway->new_sub( $memberpress_item );
+		}
+	}
+
+	/**
+	 * MemberPress subscription saved.
+	 *
+	 * @param MeprSubscription $memberpress_subscription MemberPress subscription.
+	 * @return void
+	 */
+	public function memberpress_subscription_saved( MeprSubscription $memberpress_subscription ) {
+		$subscriptions = \get_pronamic_subscriptions_by_source( 'memberpress_subscription', $memberpress_subscription->id );
+
+		if ( empty( $subscriptions ) ) {
+			return;
+		}
+
+		foreach ( $subscriptions as $subscription ) {
+			Pronamic::update_subscription_phases( $subscription, $memberpress_subscription );
+
+			$subscription->save();
 		}
 	}
 
