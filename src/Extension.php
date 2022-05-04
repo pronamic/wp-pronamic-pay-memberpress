@@ -27,7 +27,7 @@ use Pronamic\WordPress\Pay\Subscriptions\SubscriptionStatus;
  * WordPress pay MemberPress extension
  *
  * @author  Remco Tolsma
- * @version 3.1.0
+ * @version 4.2.0
  * @since   1.0.0
  */
 class Extension extends AbstractPluginIntegration {
@@ -376,6 +376,7 @@ class Extension extends AbstractPluginIntegration {
 	/**
 	 * MemberPress subscription saved.
 	 *
+	 * @since 4.2.0
 	 * @param MeprSubscription $memberpress_subscription MemberPress subscription.
 	 * @return void
 	 */

@@ -28,7 +28,7 @@ use Pronamic\WordPress\Pay\Subscriptions\SubscriptionPhase;
  * Pronamic
  *
  * @author  Remco Tolsma
- * @version 3.1.0
+ * @version 4.2.0
  * @since   2.0.5
  */
 class Pronamic {
