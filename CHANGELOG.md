@@ -7,6 +7,12 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.2.0] - 2022-05-04
+### Changed
+- Update subscription phases on MemberPress subscription updates.
+- Added subscription status and next payment date to MemberPress subscription form.
+- Added payment status to MemberPress transaction form.
+
 ## [4.1.0] - 2022-04-11
 - Call limit reached actions on subscription completion (fixes #2).
 
@@ -166,7 +172,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.1.0...HEAD
+[unreleased]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.2.0...HEAD
+[4.2.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.1.0...4.2.0
 [4.1.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.0.1...4.1.0
 [4.0.1]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.0.0...4.0.1
 [4.0.0]: https://github.com/wp-pay-extensions/memberpress/compare/3.1.0...4.0.0

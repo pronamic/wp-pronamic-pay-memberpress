@@ -41,11 +41,11 @@ class AdminSubscriptions {
 		 */
 		$hook = 'memberpress_page_memberpress-subscriptions';
 
-		add_filter( 'manage_' . $hook . '_columns', array( $this, 'manage_subscriptions_columns' ), 15 );
+		add_filter( 'manage_' . $hook . '_columns', [ $this, 'manage_subscriptions_columns' ], 15 );
 
-		add_action( 'mepr-admin-subscriptions-cell', array( $this, 'admin_subscriptions_cell' ), 10, 4 );
+		add_action( 'mepr-admin-subscriptions-cell', [ $this, 'admin_subscriptions_cell' ], 10, 4 );
 
-		add_filter( 'mepr_view_get_string', array( $this, 'extend_subscription_form' ), 10, 3 );
+		add_filter( 'mepr_view_get_string', [ $this, 'extend_subscription_form' ], 10, 3 );
 	}
 
 	/**
@@ -71,7 +71,7 @@ class AdminSubscriptions {
 			return $this->subscriptions_map;
 		}
 
-		$this->subscriptions_map = array();
+		$this->subscriptions_map = [];
 
 		if ( ! isset( $table->items ) ) {
 			return null;
@@ -86,23 +86,23 @@ class AdminSubscriptions {
 		$memberpress_subscription_ids = wp_list_pluck( $memberpress_subscriptions, 'id' );
 
 		$query = new WP_Query(
-			array(
+			[
 				'post_type'   => 'pronamic_pay_subscr',
 				'post_status' => 'any',
 				'nopaging'    => true,
-				'meta_query'  => array(
-					array(
+				'meta_query'  => [
+					[
 						'key'     => '_pronamic_subscription_source',
 						'compare' => '=',
 						'value'   => 'memberpress_subscription',
-					),
-					array(
+					],
+					[
 						'key'     => '_pronamic_subscription_source_id',
 						'compare' => 'IN',
 						'value'   => $memberpress_subscription_ids,
-					),
-				),
-			)
+					],
+				],
+			]
 		);
 
 		$subscription_posts = $query->get_posts();

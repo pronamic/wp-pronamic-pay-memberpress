@@ -10,13 +10,14 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 
+use MeprSubscription;
 use MeprTransaction;
 use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Money\TaxedMoney;
 use Pronamic\WordPress\Pay\AddressHelper;
-use Pronamic\WordPress\Pay\Customer;
 use Pronamic\WordPress\Pay\ContactName;
 use Pronamic\WordPress\Pay\Core\Util as Core_Util;
+use Pronamic\WordPress\Pay\Customer;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Payments\PaymentLines;
 use Pronamic\WordPress\Pay\Subscriptions\Subscription;
@@ -27,7 +28,7 @@ use Pronamic\WordPress\Pay\Subscriptions\SubscriptionPhase;
  * Pronamic
  *
  * @author  Remco Tolsma
- * @version 3.1.0
+ * @version 4.2.0
  * @since   2.0.5
  */
 class Pronamic {
@@ -82,14 +83,14 @@ class Pronamic {
 		 * @link https://github.com/wp-premium/memberpress-business/blob/1.3.36/app/models/MeprUser.php#L1191-L1216
 		 */
 		$address = AddressHelper::from_array(
-			array(
+			[
 				'line_1'       => $memberpress_user->address( 'one', false ),
 				'line_2'       => $memberpress_user->address( 'two', false ),
 				'postal_code'  => $memberpress_user->address( 'zip', false ),
 				'city'         => $memberpress_user->address( 'city', false ),
 				'region'       => $memberpress_user->address( 'state', false ),
 				'country_code' => $memberpress_user->address( 'country', false ),
-			)
+			]
 		);
 
 		if ( null !== $address ) {
@@ -182,16 +183,46 @@ class Pronamic {
 		 */
 		$subscription = new Subscription();
 
-		$start_date = new \DateTimeImmutable();
+		self::update_subscription_phases( $subscription, $memberpress_subscription );
+
+		// Source.
+		$subscription->source    = 'memberpress_subscription';
+		$subscription->source_id = $memberpress_subscription->id;
+
+		return $subscription;
+	}
+
+	/**
+	 * Update subscription phases from MemberPress subscription.
+	 *
+	 * @param Subscription     $subscription             Subscription.
+	 * @param MeprSubscription $memberpress_subscription MemberPress subscription.
+	 * @return void
+	 * @throws \Exception Throws exception on invalid MemberPress subscription start date.
+	 */
+	public static function update_subscription_phases( Subscription $subscription, MeprSubscription $memberpress_subscription ) {
+		$start_date = new \DateTimeImmutable( $memberpress_subscription->created_at );
+
+		$memberpress_product = $memberpress_subscription->product();
+
+		$subscription->set_phases( [] );
 
 		// Trial phase.
-		if ( $memberpress_subscription->in_trial() ) {
+		if ( $memberpress_subscription->trial && ! empty( $memberpress_subscription->trial_days ) ) {
+			/*
+			 * We calculate the trial total as the `trial_total` property of a MemberPress subscription can be
+			 * incorrectly empty on manual subscription updates even though a trial amount has been set in the subscription.
+			 */
+			$trial_amount     = new Money( $memberpress_subscription->trial_amount );
+			$trial_tax_amount = new Money( $memberpress_subscription->trial_tax_amount );
+			$trial_total      = $trial_amount->add( $trial_tax_amount );
+
 			$trial_phase = new SubscriptionPhase(
 				$subscription,
 				$start_date,
 				new SubscriptionInterval( 'P' . $memberpress_subscription->trial_days . 'D' ),
 				new TaxedMoney(
-					$memberpress_subscription->trial_total,
+					$trial_total->get_value(),
 					MemberPress::get_currency(),
 					$memberpress_subscription->trial_tax_amount,
 					$memberpress_subscription->tax_rate
@@ -230,11 +261,5 @@ class Pronamic {
 		$regular_phase->set_total_periods( $total_periods );
 
 		$subscription->add_phase( $regular_phase );
-
-		// Source.
-		$subscription->source    = 'memberpress_subscription';
-		$subscription->source_id = $memberpress_subscription->id;
-
-		return $subscription;
 	}
 }

@@ -13,23 +13,23 @@ if ( ! isset( $memberpress_transaction_id ) ) {
 }
 
 $query = new WP_Query(
-	array(
+	[
 		'post_type'   => 'pronamic_payment',
-		'post_status' => 'any',
+		'post_status' => [ 'any', 'trash' ],
 		'nopaging'    => true,
-		'meta_query'  => array(
-			array(
+		'meta_query'  => [
+			[
 				'key'     => '_pronamic_payment_source',
 				'compare' => '=',
 				'value'   => 'memberpress_transaction',
-			),
-			array(
+			],
+			[
 				'key'     => '_pronamic_payment_source_id',
 				'compare' => '=',
 				'value'   => $memberpress_transaction_id,
-			),
-		),
-	)
+			],
+		],
+	]
 );
 
 $ps = array_filter(
@@ -39,7 +39,7 @@ $ps = array_filter(
 	} 
 );
 
-$items = array();
+$items = [];
 
 foreach ( $ps as $p ) {
 	$url = get_edit_post_link( $p );
@@ -62,13 +62,25 @@ foreach ( $ps as $p ) {
 		if ( \count( $items ) > 0 ) {
 			echo '<ul>';
 
-			foreach ( $items as $key => $url ) {
+			foreach ( $items as $payment_id => $url ) {
 				echo '<li>';
 
+				// Status.
+				$post_status = get_post_status( $payment_id );
+
+				if ( 'trash' === $post_status ) {
+					$post_status = get_post_meta( $payment_id, '_wp_trash_meta_status', true );
+				}
+
+				$status_object = get_post_status_object( $post_status );
+
+				$status_label = isset( $status_object, $status_object->label ) ? $status_object->label : __( 'Unknown status', 'pronamic_ideal' );
+
 				\printf(
-					'<a href="%s">%s</a>',
+					'<a href="%s">%s</a> — %s',
 					\esc_url( $url ),
-					\esc_html( (string) $key )
+					\esc_html( (string) $payment_id ),
+					\esc_html( $status_label )
 				);
 
 				echo '</li>';

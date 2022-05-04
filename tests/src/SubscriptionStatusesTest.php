@@ -41,12 +41,12 @@ class SubscriptionStatusesTest extends \PHPUnit_Framework_TestCase {
 	 * @return array
 	 */
 	public function status_matrix_provider() {
-		return array(
-			array( MeprSubscription::$pending_str, SubscriptionStatus::OPEN ),
-			array( MeprSubscription::$active_str, SubscriptionStatus::ACTIVE ),
-			array( MeprSubscription::$suspended_str, null ),
-			array( MeprSubscription::$cancelled_str, SubscriptionStatus::CANCELLED ),
-			array( 'not existing status', null ),
-		);
+		return [
+			[ MeprSubscription::$pending_str, SubscriptionStatus::OPEN ],
+			[ MeprSubscription::$active_str, SubscriptionStatus::ACTIVE ],
+			[ MeprSubscription::$suspended_str, null ],
+			[ MeprSubscription::$cancelled_str, SubscriptionStatus::CANCELLED ],
+			[ 'not existing status', null ],
+		];
 	}
 }
