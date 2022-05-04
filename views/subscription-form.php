@@ -13,23 +13,23 @@ if ( ! isset( $memberpress_subscription_id ) ) {
 }
 
 $query = new WP_Query(
-	array(
+	[
 		'post_type'   => 'pronamic_pay_subscr',
 		'post_status' => [ 'any', 'trash' ],
 		'nopaging'    => true,
-		'meta_query'  => array(
-			array(
+		'meta_query'  => [
+			[
 				'key'     => '_pronamic_subscription_source',
 				'compare' => '=',
 				'value'   => 'memberpress_subscription',
-			),
-			array(
+			],
+			[
 				'key'     => '_pronamic_subscription_source_id',
 				'compare' => '=',
 				'value'   => $memberpress_subscription_id,
-			),
-		),
-	)
+			],
+		],
+	]
 );
 
 $ps = array_filter(
@@ -39,7 +39,7 @@ $ps = array_filter(
 	} 
 );
 
-$items = array();
+$items = [];
 
 foreach ( $ps as $p ) {
 	$url = get_edit_post_link( $p );

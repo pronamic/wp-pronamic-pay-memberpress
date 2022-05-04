@@ -93,7 +93,7 @@ class Gateway extends MeprBaseRealGateway {
 
 		// Set the capabilities of this gateway.
 		// @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L36-37.
-		$capabilities = array();
+		$capabilities = [];
 
 		// Capabilities.
 		$gateway = Plugin::get_gateway( $this->get_config_id() );
@@ -109,19 +109,19 @@ class Gateway extends MeprBaseRealGateway {
 				\in_array( $this->payment_method, PaymentMethods::get_recurring_methods(), true )
 			)
 		) {
-			$capabilities = array(
+			$capabilities = [
 				'process-payments',
 				'create-subscriptions',
 				'cancel-subscriptions',
 				'update-subscriptions',
 				'subscription-trial-payment',
-			);
+			];
 		}
 
 		$this->capabilities = $capabilities;
 
 		// Setup the notification actions for this gateway.
-		$this->notifiers = array();
+		$this->notifiers = [];
 
 		// Support single-page checkout.
 		$this->has_spc_form = true;
@@ -168,11 +168,11 @@ class Gateway extends MeprBaseRealGateway {
 	 */
 	protected function set_defaults() {
 		if ( ! isset( $this->settings ) ) {
-			$this->settings = array();
+			$this->settings = [];
 		}
 
 		$this->settings = (object) array_merge(
-			array(
+			[
 				'gateway'   => $this->class_alias,
 				'id'        => $this->generate_id(),
 				'label'     => '',
@@ -185,7 +185,7 @@ class Gateway extends MeprBaseRealGateway {
 				'email'     => '',
 				'sandbox'   => false,
 				'debug'     => false,
-			),
+			],
 			(array) $this->settings
 		);
 
@@ -426,7 +426,7 @@ class Gateway extends MeprBaseRealGateway {
 		$pronamic_subscription->add_note( $note );
 
 		// The status of canceled or completed subscriptions will not be changed automatically.
-		if ( ! in_array( $pronamic_subscription->get_status(), array( SubscriptionStatus::CANCELLED, SubscriptionStatus::COMPLETED ), true ) ) {
+		if ( ! in_array( $pronamic_subscription->get_status(), [ SubscriptionStatus::CANCELLED, SubscriptionStatus::COMPLETED ], true ) ) {
 			$pronamic_subscription->set_status( SubscriptionStatus::ON_HOLD );
 
 			$pronamic_subscription->save();
@@ -495,7 +495,7 @@ class Gateway extends MeprBaseRealGateway {
 		$pronamic_subscription->add_note( $note );
 
 		// The status of canceled or completed subscriptions will not be changed automatically.
-		if ( ! in_array( $pronamic_subscription->get_status(), array( SubscriptionStatus::CANCELLED, SubscriptionStatus::COMPLETED ), true ) ) {
+		if ( ! in_array( $pronamic_subscription->get_status(), [ SubscriptionStatus::CANCELLED, SubscriptionStatus::COMPLETED ], true ) ) {
 			$pronamic_subscription->set_status( SubscriptionStatus::ACTIVE );
 
 			$pronamic_subscription->save();
@@ -550,7 +550,7 @@ class Gateway extends MeprBaseRealGateway {
 		$pronamic_subscription->add_note( $note );
 
 		// The status of canceled or completed subscriptions will not be changed automatically.
-		if ( ! in_array( $pronamic_subscription->get_status(), array( SubscriptionStatus::CANCELLED, SubscriptionStatus::COMPLETED ), true ) ) {
+		if ( ! in_array( $pronamic_subscription->get_status(), [ SubscriptionStatus::CANCELLED, SubscriptionStatus::COMPLETED ], true ) ) {
 			$pronamic_subscription->set_status( SubscriptionStatus::CANCELLED );
 
 			$pronamic_subscription->save();
@@ -825,10 +825,10 @@ class Gateway extends MeprBaseRealGateway {
 	 * @param string   $message Update message.
 	 * @return void
 	 */
-	public function display_update_account_form( $sub_id, $errors = array(), $message = '' ) {
+	public function display_update_account_form( $sub_id, $errors = [], $message = '' ) {
 		$subscriptions = \get_pronamic_subscriptions_by_source( 'memberpress_subscription', $sub_id );
 
-		$subscriptions = ( null === $subscriptions ) ? array() : $subscriptions;
+		$subscriptions = ( null === $subscriptions ) ? [] : $subscriptions;
 
 		$subscription = \reset( $subscriptions );
 
@@ -879,7 +879,7 @@ class Gateway extends MeprBaseRealGateway {
 	 * @param string[] $errors Array with errors.
 	 * @return string[]
 	 */
-	public function validate_update_account_form( $errors = array() ) {
+	public function validate_update_account_form( $errors = [] ) {
 		return $errors;
 	}
 

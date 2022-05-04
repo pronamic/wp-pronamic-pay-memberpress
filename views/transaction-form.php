@@ -13,23 +13,23 @@ if ( ! isset( $memberpress_transaction_id ) ) {
 }
 
 $query = new WP_Query(
-	array(
+	[
 		'post_type'   => 'pronamic_payment',
 		'post_status' => [ 'any', 'trash' ],
 		'nopaging'    => true,
-		'meta_query'  => array(
-			array(
+		'meta_query'  => [
+			[
 				'key'     => '_pronamic_payment_source',
 				'compare' => '=',
 				'value'   => 'memberpress_transaction',
-			),
-			array(
+			],
+			[
 				'key'     => '_pronamic_payment_source_id',
 				'compare' => '=',
 				'value'   => $memberpress_transaction_id,
-			),
-		),
-	)
+			],
+		],
+	]
 );
 
 $ps = array_filter(
@@ -39,7 +39,7 @@ $ps = array_filter(
 	} 
 );
 
-$items = array();
+$items = [];
 
 foreach ( $ps as $p ) {
 	$url = get_edit_post_link( $p );

@@ -43,7 +43,7 @@ class Extension extends AbstractPluginIntegration {
 	 * 
 	 * @param array<string, mixed> $args Arguments.
 	 */
-	public function __construct( $args = array() ) {
+	public function __construct( $args = [] ) {
 		$args['name'] = __( 'MemberPress', 'pronamic_ideal' );
 
 		parent::__construct( $args );
@@ -65,8 +65,8 @@ class Extension extends AbstractPluginIntegration {
 	 * Setup.
 	 */
 	public function setup() {
-		\add_filter( 'pronamic_subscription_source_description_memberpress_subscription', array( $this, 'subscription_source_description' ), 10, 2 );
-		\add_filter( 'pronamic_payment_source_description_memberpress_transaction', array( $this, 'source_description' ), 10, 2 );
+		\add_filter( 'pronamic_subscription_source_description_memberpress_subscription', [ $this, 'subscription_source_description' ], 10, 2 );
+		\add_filter( 'pronamic_payment_source_description_memberpress_transaction', [ $this, 'source_description' ], 10, 2 );
 
 		// Check if dependencies are met and integration is active.
 		if ( ! $this->is_active() ) {
@@ -74,32 +74,32 @@ class Extension extends AbstractPluginIntegration {
 		}
 
 		// @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprGatewayFactory.php#L48-50
-		\add_filter( 'mepr-gateway-paths', array( $this, 'gateway_paths' ) );
+		\add_filter( 'mepr-gateway-paths', [ $this, 'gateway_paths' ] );
 
-		\add_filter( 'pronamic_payment_redirect_url_memberpress_transaction', array( $this, 'redirect_url' ), 10, 2 );
-		\add_action( 'pronamic_payment_status_update_memberpress_transaction', array( $this, 'status_update' ), 10, 1 );
+		\add_filter( 'pronamic_payment_redirect_url_memberpress_transaction', [ $this, 'redirect_url' ], 10, 2 );
+		\add_action( 'pronamic_payment_status_update_memberpress_transaction', [ $this, 'status_update' ], 10, 1 );
 
-		\add_action( 'pronamic_pay_new_payment', array( $this, 'maybe_create_memberpress_transaction' ), 10, 1 );
+		\add_action( 'pronamic_pay_new_payment', [ $this, 'maybe_create_memberpress_transaction' ], 10, 1 );
 
-		\add_action( 'pronamic_subscription_status_update_memberpress_subscription', array( $this, 'subscription_status_update' ), 10, 1 );
-		\add_filter( 'pronamic_subscription_source_text_memberpress_subscription', array( $this, 'subscription_source_text' ), 10, 2 );
-		\add_filter( 'pronamic_subscription_source_url_memberpress_subscription', array( $this, 'subscription_source_url' ), 10, 2 );
+		\add_action( 'pronamic_subscription_status_update_memberpress_subscription', [ $this, 'subscription_status_update' ], 10, 1 );
+		\add_filter( 'pronamic_subscription_source_text_memberpress_subscription', [ $this, 'subscription_source_text' ], 10, 2 );
+		\add_filter( 'pronamic_subscription_source_url_memberpress_subscription', [ $this, 'subscription_source_url' ], 10, 2 );
 
-		\add_filter( 'pronamic_payment_source_text_memberpress_transaction', array( $this, 'source_text' ), 10, 2 );
-		\add_filter( 'pronamic_payment_source_url_memberpress_transaction', array( $this, 'source_url' ), 10, 2 );
+		\add_filter( 'pronamic_payment_source_text_memberpress_transaction', [ $this, 'source_text' ], 10, 2 );
+		\add_filter( 'pronamic_payment_source_url_memberpress_transaction', [ $this, 'source_url' ], 10, 2 );
 
-		\add_action( 'mepr_subscription_pre_delete', array( $this, 'subscription_pre_delete' ), 10, 1 );
+		\add_action( 'mepr_subscription_pre_delete', [ $this, 'subscription_pre_delete' ], 10, 1 );
 
 		\add_action( 'mepr_subscription_saved', [ $this, 'memberpress_subscription_saved' ], 10, 1 );
 
 		// MemberPress subscription email parameters.
-		\add_filter( 'mepr_subscription_email_params', array( $this, 'subscription_email_params' ), 10, 2 );
-		\add_filter( 'mepr_transaction_email_params', array( $this, 'transaction_email_params' ), 10, 2 );
-		\add_filter( 'mepr_subscription_email_vars', array( $this, 'email_variables' ), 10 );
-		\add_filter( 'mepr_transaction_email_vars', array( $this, 'email_variables' ), 10 );
+		\add_filter( 'mepr_subscription_email_params', [ $this, 'subscription_email_params' ], 10, 2 );
+		\add_filter( 'mepr_transaction_email_params', [ $this, 'transaction_email_params' ], 10, 2 );
+		\add_filter( 'mepr_subscription_email_vars', [ $this, 'email_variables' ], 10 );
+		\add_filter( 'mepr_transaction_email_vars', [ $this, 'email_variables' ], 10 );
 
 		// Hide MemberPress columns for payments and subscriptions.
-		\add_action( 'registered_post_type', array( $this, 'post_type_columns_hide' ), 15, 1 );
+		\add_action( 'registered_post_type', [ $this, 'post_type_columns_hide' ], 15, 1 );
 
 		if ( \is_admin() ) {
 			$admin_subscriptions = new Admin\AdminSubscriptions();
@@ -131,7 +131,7 @@ class Extension extends AbstractPluginIntegration {
 	 * @return void
 	 */
 	public function post_type_columns_hide( $post_type ) {
-		if ( ! in_array( $post_type, array( 'pronamic_payment', 'pronamic_pay_subscr' ), true ) ) {
+		if ( ! in_array( $post_type, [ 'pronamic_payment', 'pronamic_pay_subscr' ], true ) ) {
 			return;
 		}
 
@@ -162,14 +162,14 @@ class Extension extends AbstractPluginIntegration {
 				$product = $transaction->product();
 
 				$url = add_query_arg(
-					array(
+					[
 						'action'   => 'payment_form',
 						'txn'      => $transaction->trans_num,
-						'errors'   => array(
+						'errors'   => [
 							__( 'Payment failed. Please try again.', 'pronamic_ideal' ),
-						),
+						],
 						'_wpnonce' => wp_create_nonce( 'mepr_payment_form' ),
-					),
+					],
 					$product->url()
 				);
 
@@ -181,11 +181,11 @@ class Extension extends AbstractPluginIntegration {
 				$product         = new MeprProduct( $transaction->product_id );
 				$sanitized_title = sanitize_title( $product->post_title );
 
-				$args = array(
+				$args = [
 					'membership_id' => $product->ID,
 					'membership'    => $sanitized_title,
 					'trans_num'     => $transaction->trans_num,
-				);
+				];
 
 				$url = $mepr_options->thankyou_page_url( http_build_query( $args ) );
 
@@ -210,7 +210,7 @@ class Extension extends AbstractPluginIntegration {
 	public function maybe_create_memberpress_transaction( Payment $payment ) {
 		if ( ! in_array(
 			$payment->get_source(),
-			array(
+			[
 				'memberpress_subscription',
 				/**
 				 * Before version `3.1` we used 'memberpress' as source.
@@ -222,7 +222,7 @@ class Extension extends AbstractPluginIntegration {
 				 * @link https://github.com/pronamic/wp-pay-core/blob/3.0.1/src/Subscriptions/SubscriptionsModule.php#L446-L447
 				 */
 				'memberpress',
-			),
+			],
 			true
 		) ) {
 			return;
@@ -418,9 +418,9 @@ class Extension extends AbstractPluginIntegration {
 		 */
 		if ( MemberPress::transaction_has_status(
 			$memberpress_transaction,
-			array(
+			[
 				MeprTransaction::$complete_str,
-			)
+			]
 		) ) {
 			return;
 		}
@@ -567,7 +567,7 @@ class Extension extends AbstractPluginIntegration {
 		$subscription->add_note( $note );
 
 		// The status of canceled or completed subscriptions will not be changed automatically.
-		if ( ! in_array( $subscription->get_status(), array( SubscriptionStatus::CANCELLED, SubscriptionStatus::COMPLETED ), true ) ) {
+		if ( ! in_array( $subscription->get_status(), [ SubscriptionStatus::CANCELLED, SubscriptionStatus::COMPLETED ], true ) ) {
 			$subscription->set_status( SubscriptionStatus::CANCELLED );
 
 			$subscription->save();
@@ -583,12 +583,12 @@ class Extension extends AbstractPluginIntegration {
 	public function email_variables( $variables ) {
 		return \array_merge(
 			$variables,
-			array(
+			[
 				'pronamic_subscription_id',
 				'pronamic_subscription_cancel_url',
 				'pronamic_subscription_renewal_url',
 				'pronamic_subscription_renewal_date',
-			)
+			]
 		);
 	}
 
@@ -613,12 +613,12 @@ class Extension extends AbstractPluginIntegration {
 
 		return \array_merge(
 			$params,
-			array(
+			[
 				'pronamic_subscription_id'           => (string) $subscription->get_id(),
 				'pronamic_subscription_cancel_url'   => $subscription->get_cancel_url(),
 				'pronamic_subscription_renewal_url'  => $subscription->get_renewal_url(),
 				'pronamic_subscription_renewal_date' => null === $next_payment_date ? '' : \date_i18n( \get_option( 'date_format' ), $next_payment_date->getTimestamp() ),
-			)
+			]
 		);
 	}
 
@@ -666,11 +666,11 @@ class Extension extends AbstractPluginIntegration {
 		$text .= sprintf(
 			'<a href="%s">%s</a>',
 			add_query_arg(
-				array(
+				[
 					'page'   => 'memberpress-trans',
 					'action' => 'edit',
 					'id'     => $payment->source_id,
-				),
+				],
 				admin_url( 'admin.php' )
 			),
 			/* translators: %s: payment source id */
@@ -694,10 +694,10 @@ class Extension extends AbstractPluginIntegration {
 		$text .= sprintf(
 			'<a href="%s">%s</a>',
 			add_query_arg(
-				array(
+				[
 					'page'         => 'memberpress-subscriptions',
 					'subscription' => $subscription->source_id,
-				),
+				],
 				admin_url( 'admin.php' )
 			),
 			/* translators: %s: payment source id */
@@ -741,11 +741,11 @@ class Extension extends AbstractPluginIntegration {
 	 */
 	public function source_url( $url, Payment $payment ) {
 		$url = add_query_arg(
-			array(
+			[
 				'page'   => 'memberpress-trans',
 				'action' => 'edit',
 				'id'     => $payment->source_id,
-			),
+			],
 			admin_url( 'admin.php' )
 		);
 
@@ -762,10 +762,10 @@ class Extension extends AbstractPluginIntegration {
 	 */
 	public function subscription_source_url( $url, Subscription $subscription ) {
 		$url = add_query_arg(
-			array(
+			[
 				'page'         => 'memberpress-subscriptions',
 				'subscription' => $subscription->source_id,
-			),
+			],
 			admin_url( 'admin.php' )
 		);
 
