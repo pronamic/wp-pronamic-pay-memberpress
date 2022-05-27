@@ -80,6 +80,7 @@ class Extension extends AbstractPluginIntegration {
 		\add_action( 'pronamic_payment_status_update_memberpress_transaction', [ $this, 'status_update' ], 10, 1 );
 
 		\add_action( 'pronamic_pay_new_payment', [ $this, 'maybe_create_memberpress_transaction' ], 10, 1 );
+		\add_action( 'pronamic_pay_update_payment', [ $this, 'maybe_record_memberpress_transaction_refund' ], 10, 1 );
 
 		\add_action( 'pronamic_subscription_status_update_memberpress_subscription', [ $this, 'subscription_status_update' ], 10, 1 );
 		\add_filter( 'pronamic_subscription_source_text_memberpress_subscription', [ $this, 'subscription_source_text' ], 10, 2 );
@@ -327,6 +328,57 @@ class Extension extends AbstractPluginIntegration {
 		$payment->source_id = $memberpress_transaction->id;
 
 		$payment->save();
+	}
+
+	/**
+	 * Maybe record refund for MemberPress transaction.
+	 *
+	 * @param Payment $payment Payment.
+	 * @return void
+	 */
+	public function maybe_record_memberpress_transaction_refund( Payment $payment ) {
+		if ( 'memberpress_transaction' !== $payment->get_source() ) {
+			return;
+		}
+
+		$constant = null;
+
+		// Refunded.
+		$amount_refunded = $payment->get_refunded_amount();
+
+		if ( null !== $amount_refunded ) {
+			$constant = 'PRONAMIC_PAY_MEMBERPRESS_REFUNDED_TRANSACTION_ID';
+		}
+
+		// Charged back.
+		$amount_charged_back = $payment->get_charged_back_amount();
+
+		if ( null !== $amount_charged_back ) {
+			$constant = 'PRONAMIC_PAY_MEMBERPRESS_CHARGED_BACK_TRANSACTION_ID';
+		}
+
+		if ( null === $constant ) {
+			return;
+		}
+
+		$memberpress_transaction_id = $payment->get_source_id();
+
+		if ( ! \defined( $constant ) ) {
+			define( $constant, $memberpress_transaction_id );
+		}
+
+		// Record refund.
+		$memberpress_transaction = MemberPress::get_transaction_by_id( $memberpress_transaction_id );
+
+		if ( null === $memberpress_transaction ) {
+			return;
+		}
+
+		$memberpress_gateway = $memberpress_transaction->payment_method();
+
+		if ( false !== $memberpress_gateway ) {
+			$memberpress_gateway->record_refund();
+		}
 	}
 
 	/**

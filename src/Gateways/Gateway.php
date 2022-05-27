@@ -11,7 +11,7 @@
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways;
 
 use MeprBaseRealGateway;
-use MeprEmailFactory;
+use MeprGatewayException;
 use MeprOptions;
 use MeprProduct;
 use MeprSubscription;
@@ -21,13 +21,10 @@ use MeprUser;
 use MeprUtils;
 use MeprView;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
-use Pronamic\WordPress\Pay\Core\Util as Core_Util;
-use Pronamic\WordPress\Pay\Payments\Payment;
-use Pronamic\WordPress\Pay\Plugin;
 use Pronamic\WordPress\Pay\Extensions\MemberPress\MemberPress;
 use Pronamic\WordPress\Pay\Extensions\MemberPress\Pronamic;
+use Pronamic\WordPress\Pay\Plugin;
 use Pronamic\WordPress\Pay\Subscriptions\SubscriptionStatus;
-use ReflectionClass;
 
 /**
  * WordPress pay MemberPress gateway
@@ -98,24 +95,32 @@ class Gateway extends MeprBaseRealGateway {
 		// Capabilities.
 		$gateway = Plugin::get_gateway( $this->get_config_id() );
 
-		if (
-			null !== $gateway
-				&&
-			$gateway->supports( 'recurring' )
-				&&
-			(
-				PaymentMethods::is_recurring_method( $this->payment_method )
-					||
-				\in_array( $this->payment_method, PaymentMethods::get_recurring_methods(), true )
-			)
-		) {
-			$capabilities = [
-				'process-payments',
-				'create-subscriptions',
-				'cancel-subscriptions',
-				'update-subscriptions',
-				'subscription-trial-payment',
-			];
+		if ( null !== $gateway ) {
+			$capabilities = [ 'process-payments' ];
+
+			if (
+				$gateway->supports( 'recurring' )
+					&&
+				(
+					PaymentMethods::is_recurring_method( $this->payment_method )
+						||
+					\in_array( $this->payment_method, PaymentMethods::get_recurring_methods(), true )
+				)
+			) {
+				$capabilities = \array_merge(
+					$capabilities,
+					[
+						'create-subscriptions',
+						'cancel-subscriptions',
+						'update-subscriptions',
+						'subscription-trial-payment',
+					]
+				);
+			}
+
+			if ( $gateway->supports( 'refunds' ) ) {
+				$capabilities[] = 'process-refunds';
+			}
 		}
 
 		$this->capabilities = $capabilities;
@@ -275,9 +280,33 @@ class Gateway extends MeprBaseRealGateway {
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L161-L163
 	 * @param MeprTransaction $txn MemberPress transaction object.
 	 * @return void
+	 * @throws MeprGatewayException Throws MemberPress gateway exception when unable to process refund.
 	 */
 	public function process_refund( MeprTransaction $txn ) {
+		$payments = \get_pronamic_payments_by_source( 'memberpress_transaction', $txn->id );
 
+		$payment = reset( $payments );
+
+		if ( false === $payment ) {
+			throw new MeprGatewayException( __( 'Unable to process refund because payment does not exist.', 'pronamic_ideal' ) );
+		}
+
+		// Gateway.
+		$gateway = $payment->get_gateway();
+
+		if ( null === $gateway ) {
+			throw new MeprGatewayException( __( 'Unable to process refund because gateway does not exist.', 'pronamic_ideal' ) );
+		}
+
+		try {
+			$refund_reference = Plugin::create_refund( $payment->get_transaction_id(), $gateway, $payment->get_total_amount() );
+		} catch ( \Exception $exception ) {
+			throw new MeprGatewayException( $exception->getMessage() );
+		}
+
+		define( 'PRONAMIC_PAY_MEMBERPRESS_REFUNDED_TRANSACTION_ID', $txn->id );
+
+		$this->record_refund();
 	}
 
 	/**
@@ -287,7 +316,32 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function record_refund() {
+		$memberpress_transaction_id = null;
 
+		if ( defined( 'PRONAMIC_PAY_MEMBERPRESS_REFUNDED_TRANSACTION_ID' ) ) {
+			$memberpress_transaction_id = PRONAMIC_PAY_MEMBERPRESS_REFUNDED_TRANSACTION_ID;
+		}
+
+		if ( defined( 'PRONAMIC_PAY_MEMBERPRESS_CHARGED_BACK_TRANSACTION_ID' ) ) {
+			$memberpress_transaction_id = PRONAMIC_PAY_MEMBERPRESS_CHARGED_BACK_TRANSACTION_ID;
+		}
+
+		$memberpress_transaction = MemberPress::get_transaction_by_id( $memberpress_transaction_id );
+
+		if ( null !== $memberpress_transaction ) {
+			if ( MeprTransaction::$refunded_str === $memberpress_transaction->status ) {
+				return;
+			}
+
+			$memberpress_transaction->status = MeprTransaction::$refunded_str;
+
+			$memberpress_transaction->store();
+
+			// Send transaction notices if refunded (not for chargeback).
+			if ( defined( 'PRONAMIC_PAY_MEMBERPRESS_REFUNDED_TRANSACTION_ID' ) ) {
+				MeprUtils::send_refunded_txn_notices( $memberpress_transaction );
+			}
+		}
 	}
 
 	/**
