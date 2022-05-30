@@ -11,7 +11,7 @@
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways;
 
 use MeprBaseRealGateway;
-use MeprEmailFactory;
+use MeprGatewayException;
 use MeprOptions;
 use MeprProduct;
 use MeprSubscription;
@@ -21,13 +21,10 @@ use MeprUser;
 use MeprUtils;
 use MeprView;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
-use Pronamic\WordPress\Pay\Core\Util as Core_Util;
-use Pronamic\WordPress\Pay\Payments\Payment;
-use Pronamic\WordPress\Pay\Plugin;
 use Pronamic\WordPress\Pay\Extensions\MemberPress\MemberPress;
 use Pronamic\WordPress\Pay\Extensions\MemberPress\Pronamic;
+use Pronamic\WordPress\Pay\Plugin;
 use Pronamic\WordPress\Pay\Subscriptions\SubscriptionStatus;
-use ReflectionClass;
 
 /**
  * WordPress pay MemberPress gateway
@@ -98,24 +95,32 @@ class Gateway extends MeprBaseRealGateway {
 		// Capabilities.
 		$gateway = Plugin::get_gateway( $this->get_config_id() );
 
-		if (
-			null !== $gateway
-				&&
-			$gateway->supports( 'recurring' )
-				&&
-			(
-				PaymentMethods::is_recurring_method( $this->payment_method )
-					||
-				\in_array( $this->payment_method, PaymentMethods::get_recurring_methods(), true )
-			)
-		) {
-			$capabilities = [
-				'process-payments',
-				'create-subscriptions',
-				'cancel-subscriptions',
-				'update-subscriptions',
-				'subscription-trial-payment',
-			];
+		if ( null !== $gateway ) {
+			$capabilities = [ 'process-payments' ];
+
+			if (
+				$gateway->supports( 'recurring' )
+					&&
+				(
+					PaymentMethods::is_recurring_method( $this->payment_method )
+						||
+					\in_array( $this->payment_method, PaymentMethods::get_recurring_methods(), true )
+				)
+			) {
+				$capabilities = \array_merge(
+					$capabilities,
+					[
+						'create-subscriptions',
+						'cancel-subscriptions',
+						'update-subscriptions',
+						'subscription-trial-payment',
+					]
+				);
+			}
+
+			if ( $gateway->supports( 'refunds' ) ) {
+				$capabilities[] = 'process-refunds';
+			}
 		}
 
 		$this->capabilities = $capabilities;
@@ -273,11 +278,39 @@ class Gateway extends MeprBaseRealGateway {
 	 * Process refund.
 	 *
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L161-L163
-	 * @param MeprTransaction $txn MemberPress transaction object.
+	 * @param MeprTransaction $transaction MemberPress transaction object.
 	 * @return void
+	 * @throws MeprGatewayException Throws MemberPress gateway exception when unable to process refund.
 	 */
-	public function process_refund( MeprTransaction $txn ) {
+	public function process_refund( MeprTransaction $transaction ) {
+		$payments = \get_pronamic_payments_by_source( 'memberpress_transaction', $transaction->id );
 
+		$payment = reset( $payments );
+
+		if ( false === $payment ) {
+			throw new MeprGatewayException( __( 'Unable to process refund because payment does not exist.', 'pronamic_ideal' ) );
+		}
+
+		// Gateway.
+		$gateway = $payment->get_gateway();
+
+		if ( null === $gateway ) {
+			throw new MeprGatewayException( __( 'Unable to process refund because gateway does not exist.', 'pronamic_ideal' ) );
+		}
+
+		try {
+			$refund_reference = Plugin::create_refund( $payment->get_transaction_id(), $gateway, $payment->get_total_amount() );
+
+			$transaction->status = MeprTransaction::$refunded_str;
+
+			$transaction->store();
+
+			MeprUtils::send_refunded_txn_notices( $transaction );
+		} catch ( \Exception $exception ) {
+			throw new MeprGatewayException( $exception->getMessage() );
+		}
+
+		$this->record_refund();
 	}
 
 	/**

@@ -7,6 +7,10 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.3.0] - 2022-05-30
+### Added
+- Added support for refunds and chargebacks (resolves [pronamic/wp-pronamic-pay#165](https://github.com/pronamic/wp-pronamic-pay/issues/165)).
+
 ## [4.2.0] - 2022-05-04
 ### Changed
 - Update subscription phases on MemberPress subscription updates.
@@ -172,7 +176,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.2.0...HEAD
+[unreleased]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.3.0...HEAD
+[4.3.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.2.0...4.3.0
 [4.2.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.1.0...4.2.0
 [4.1.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.0.1...4.1.0
 [4.0.1]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.0.0...4.0.1
