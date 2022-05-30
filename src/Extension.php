@@ -341,43 +341,33 @@ class Extension extends AbstractPluginIntegration {
 			return;
 		}
 
-		$constant = null;
-
-		// Refunded.
+		// Check if payment has been refunded or charged back.
 		$amount_refunded = $payment->get_refunded_amount();
 
-		if ( null !== $amount_refunded ) {
-			$constant = 'PRONAMIC_PAY_MEMBERPRESS_REFUNDED_TRANSACTION_ID';
-		}
-
-		// Charged back.
 		$amount_charged_back = $payment->get_charged_back_amount();
 
-		if ( null !== $amount_charged_back ) {
-			$constant = 'PRONAMIC_PAY_MEMBERPRESS_CHARGED_BACK_TRANSACTION_ID';
-		}
-
-		if ( null === $constant ) {
+		if ( null === $amount_refunded && null === $amount_charged_back ) {
 			return;
 		}
 
-		$memberpress_transaction_id = $payment->get_source_id();
-
-		if ( ! \defined( $constant ) ) {
-			define( $constant, $memberpress_transaction_id );
-		}
-
-		// Record refund.
-		$memberpress_transaction = MemberPress::get_transaction_by_id( $memberpress_transaction_id );
+		// Update transaction status to 'Refunded'.
+		$memberpress_transaction = MemberPress::get_transaction_by_id( $payment->get_source_id() );
 
 		if ( null === $memberpress_transaction ) {
 			return;
 		}
 
-		$memberpress_gateway = $memberpress_transaction->payment_method();
+		if ( MeprTransaction::$refunded_str === $memberpress_transaction->status ) {
+			return;
+		}
 
-		if ( false !== $memberpress_gateway ) {
-			$memberpress_gateway->record_refund();
+		$memberpress_transaction->status = MeprTransaction::$refunded_str;
+
+		$memberpress_transaction->store();
+
+		// Send 'Transaction Refunded' notice for refund (not for chargeback).
+		if ( null !== $amount_refunded ) {
+			MeprUtils::send_refunded_txn_notices( $memberpress_transaction );
 		}
 	}
 
