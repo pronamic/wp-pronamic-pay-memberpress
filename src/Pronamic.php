@@ -90,6 +90,7 @@ class Pronamic {
 				'city'         => $memberpress_user->address( 'city', false ),
 				'region'       => $memberpress_user->address( 'state', false ),
 				'country_code' => $memberpress_user->address( 'country', false ),
+				'email'        => $memberpress_user->user_email,
 			]
 		);
 
