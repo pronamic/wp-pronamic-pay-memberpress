@@ -176,7 +176,6 @@ class Extension extends AbstractPluginIntegration {
 
 				break;
 			case PaymentStatus::AUTHORIZED:
-			case PaymentStatus::RESERVED:
 			case PaymentStatus::SUCCESS:
 				// @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/models/MeprOptions.php#L768-782
 				$mepr_options = MeprOptions::fetch();
