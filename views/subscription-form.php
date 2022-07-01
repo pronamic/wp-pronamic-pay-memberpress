@@ -77,18 +77,20 @@ foreach ( $ps as $p ) {
 				$status_label = isset( $status_object, $status_object->label ) ? $status_object->label : __( 'Unknown status', 'pronamic_ideal' );
 
 				// Next payment date.
-				$subscription = get_pronamic_subscription( $subscription_id );
-
 				$next_payment = __( 'No payment scheduled', 'pronamic_ideal' );
 
-				$next_payment_date = $subscription->get_next_payment_date();
+				$subscription = get_pronamic_subscription( $subscription_id );
 
-				if ( null !== $next_payment_date ) {
-					$next_payment = sprintf(
+				if ( null !== $subscription ) {
+					$next_payment_date = $subscription->get_next_payment_date();
+
+					if ( null !== $next_payment_date ) {
+						$next_payment = sprintf(
 						/* translators: %s: formatted next payment date */
-						__( 'Next payment at %s', 'pronamic_ideal' ),
-						$next_payment_date->format_i18n( __( 'D j M Y', 'pronamic_ideal' ) )
-					);
+							__( 'Next payment at %s', 'pronamic_ideal' ),
+							$next_payment_date->format_i18n( __( 'D j M Y', 'pronamic_ideal' ) )
+						);
+					}
 				}
 
 				\printf(

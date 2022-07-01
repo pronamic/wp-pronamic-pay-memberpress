@@ -93,13 +93,15 @@ class Gateway extends MeprBaseRealGateway {
 		$capabilities = [];
 
 		// Capabilities.
-		$gateway = Plugin::get_gateway( $this->get_config_id() );
+		$gateway = Plugin::get_gateway( (int) $this->get_config_id() );
 
 		if ( null !== $gateway ) {
 			$capabilities = [ 'process-payments' ];
 
 			if (
 				$gateway->supports( 'recurring' )
+					&&
+				null !== $this->payment_method
 					&&
 				(
 					PaymentMethods::is_recurring_method( $this->payment_method )
@@ -215,7 +217,7 @@ class Gateway extends MeprBaseRealGateway {
 		// Gateway.
 		$config_id = $this->get_config_id();
 
-		$gateway = Plugin::get_gateway( $config_id );
+		$gateway = Plugin::get_gateway( (int) $config_id );
 
 		if ( null === $gateway ) {
 			return;
@@ -298,8 +300,14 @@ class Gateway extends MeprBaseRealGateway {
 			throw new MeprGatewayException( __( 'Unable to process refund because gateway does not exist.', 'pronamic_ideal' ) );
 		}
 
+		$transaction_id = $payment->get_transaction_id();
+
+		if ( null === $transaction_id ) {
+			throw new MeprGatewayException( __( 'Unable to process refund without gateway transaction ID.', 'pronamic_ideal' ) );
+		}
+
 		try {
-			$refund_reference = Plugin::create_refund( $payment->get_transaction_id(), $gateway, $payment->get_total_amount() );
+			$refund_reference = Plugin::create_refund( $transaction_id, $gateway, $payment->get_total_amount() );
 
 			$transaction->status = MeprTransaction::$refunded_str;
 
@@ -671,7 +679,7 @@ class Gateway extends MeprBaseRealGateway {
 		// Gateway.
 		$config_id = $this->get_config_id();
 
-		$gateway = Plugin::get_gateway( $config_id );
+		$gateway = Plugin::get_gateway( (int) $config_id );
 
 		if ( null === $gateway ) {
 
@@ -751,7 +759,7 @@ class Gateway extends MeprBaseRealGateway {
 		// Gateway.
 		$config_id = $this->get_config_id();
 
-		$gateway = Plugin::get_gateway( $config_id );
+		$gateway = Plugin::get_gateway( (int) $config_id );
 
 		if ( null === $gateway ) {
 			return '';
@@ -860,8 +868,6 @@ class Gateway extends MeprBaseRealGateway {
 	 */
 	public function display_update_account_form( $sub_id, $errors = [], $message = '' ) {
 		$subscriptions = \get_pronamic_subscriptions_by_source( 'memberpress_subscription', $sub_id );
-
-		$subscriptions = ( null === $subscriptions ) ? [] : $subscriptions;
 
 		$subscription = \reset( $subscriptions );
 

@@ -10,5 +10,6 @@ parameters:
 		- views/
 	universalObjectCratesClasses:
 		- MeprProduct
+		- MeprOptions
 		- MeprSubscription
 		- MeprTransaction
