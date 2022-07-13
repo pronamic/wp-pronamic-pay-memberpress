@@ -719,8 +719,6 @@ class Gateway extends MeprBaseRealGateway {
 
 				<?php
 
-				$gateway->set_payment_method( $this->payment_method );
-
 				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
 				echo $gateway->get_input_html();
 
