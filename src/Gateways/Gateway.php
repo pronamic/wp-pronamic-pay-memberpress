@@ -98,17 +98,9 @@ class Gateway extends MeprBaseRealGateway {
 		if ( null !== $gateway ) {
 			$capabilities = [ 'process-payments' ];
 
-			if (
-				$gateway->supports( 'recurring' )
-					&&
-				null !== $this->payment_method
-					&&
-				(
-					PaymentMethods::is_recurring_method( $this->payment_method )
-						||
-					\in_array( $this->payment_method, PaymentMethods::get_recurring_methods(), true )
-				)
-			) {
+			$payment_method = $gateway->get_payment_method( (string) $this->payment_method );
+
+			if ( null !== $payment_method && $payment_method->supports( 'recurring' ) ) {
 				$capabilities = \array_merge(
 					$capabilities,
 					[
