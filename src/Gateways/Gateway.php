@@ -756,8 +756,6 @@ class Gateway extends MeprBaseRealGateway {
 		}
 
 		// Input HTML.
-		$gateway->set_payment_method( $this->payment_method );
-
 		$html = $gateway->get_input_html();
 
 		if ( empty( $html ) ) {
