@@ -755,14 +755,25 @@ class Gateway extends MeprBaseRealGateway {
 			return '';
 		}
 
-		// Input HTML.
-		$html = $gateway->get_input_html();
+		$payment_method = $gateway->get_payment_method( $this->payment_method );
 
-		if ( empty( $html ) ) {
+		if ( null === $payment_method ) {
 			return '';
 		}
 
-		return $html;
+		$fields = $payment_method->get_fields();
+
+		if ( empty( $fields ) ) {
+			return '';
+		}
+
+		$output = '';
+
+		foreach ( $fields as $field ) {
+			$output .= $field->render();
+		}
+
+		return $output;
 	}
 
 	/**
