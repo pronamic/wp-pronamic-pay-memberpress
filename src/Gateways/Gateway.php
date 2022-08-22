@@ -720,7 +720,7 @@ class Gateway extends MeprBaseRealGateway {
 				<?php
 
 				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				echo $gateway->get_input_html();
+				echo $this->spc_payment_fields();
 
 				?>
 
