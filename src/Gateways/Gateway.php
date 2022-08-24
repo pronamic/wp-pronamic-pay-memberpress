@@ -98,17 +98,9 @@ class Gateway extends MeprBaseRealGateway {
 		if ( null !== $gateway ) {
 			$capabilities = [ 'process-payments' ];
 
-			if (
-				$gateway->supports( 'recurring' )
-					&&
-				null !== $this->payment_method
-					&&
-				(
-					PaymentMethods::is_recurring_method( $this->payment_method )
-						||
-					\in_array( $this->payment_method, PaymentMethods::get_recurring_methods(), true )
-				)
-			) {
+			$payment_method = $gateway->get_payment_method( (string) $this->payment_method );
+
+			if ( null !== $payment_method && $payment_method->supports( 'recurring' ) ) {
 				$capabilities = \array_merge(
 					$capabilities,
 					[
@@ -727,10 +719,8 @@ class Gateway extends MeprBaseRealGateway {
 
 				<?php
 
-				$gateway->set_payment_method( $this->payment_method );
-
 				// phpcs:ignore WordPress.Security.EscapeOutput.OutputNotEscaped
-				echo $gateway->get_input_html();
+				echo $this->spc_payment_fields();
 
 				?>
 
@@ -765,16 +755,25 @@ class Gateway extends MeprBaseRealGateway {
 			return '';
 		}
 
-		// Input HTML.
-		$gateway->set_payment_method( $this->payment_method );
+		$payment_method = $gateway->get_payment_method( $this->payment_method );
 
-		$html = $gateway->get_input_html();
-
-		if ( empty( $html ) ) {
+		if ( null === $payment_method ) {
 			return '';
 		}
 
-		return $html;
+		$fields = $payment_method->get_fields();
+
+		if ( empty( $fields ) ) {
+			return '';
+		}
+
+		$output = '';
+
+		foreach ( $fields as $field ) {
+			$output .= $field->render();
+		}
+
+		return $output;
 	}
 
 	/**
