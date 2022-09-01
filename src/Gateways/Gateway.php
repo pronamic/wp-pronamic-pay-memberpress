@@ -770,7 +770,19 @@ class Gateway extends MeprBaseRealGateway {
 		$output = '';
 
 		foreach ( $fields as $field ) {
-			$output .= $field->render();
+			try {
+				$output .= $field->render();
+			} catch ( \Exception $e ) {
+				if ( \current_user_can( 'manage_options' ) ) {
+					$output .= sprintf(
+						'%s<ul><li>%s</li></ul>',
+						\esc_html( __( 'For admins only: an error occurred while retrieving fields for the selected payment method. Please check payment method settings.', 'pronamic_ideal' ) ),
+						\esc_html( $e->getMessage() ),
+					);
+				}
+
+				continue;
+			}
 		}
 
 		return $output;
