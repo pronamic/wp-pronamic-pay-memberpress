@@ -771,7 +771,16 @@ class Gateway extends MeprBaseRealGateway {
 
 		foreach ( $fields as $field ) {
 			try {
-				$output .= $field->render();
+				$output .= sprintf(
+					'<div class="mp-form-row">
+						<div class="mp-form-label">
+							<label>%s</label>
+						</div>
+						%s
+					</div>',
+					\esc_html( $field->get_label() ),
+					$field->render()
+				);
 			} catch ( \Exception $e ) {
 				if ( \current_user_can( 'manage_options' ) ) {
 					$output .= sprintf(
