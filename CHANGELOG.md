@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.5.0] - 2022-09-26
+- Updated for new payment methods and fields registration.
+
 ## [4.4.0] - 2022-07-01
 ### Added
 - Added support for Klarna Pay Now, Klarna Pay Later and Klarna Pay Over Time ([pronamic/wp-pronamic-pay#190](https://github.com/pronamic/wp-pronamic-pay/issues/190)).
@@ -180,7 +183,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.4.0...HEAD
+[unreleased]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.5.0...HEAD
+[4.5.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.4.0...4.5.0
 [4.4.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.3.0...4.4.0
 [4.3.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.2.0...4.3.0
 [4.2.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.1.0...4.2.0
