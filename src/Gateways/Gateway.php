@@ -215,6 +215,15 @@ class Gateway extends MeprBaseRealGateway {
 			return;
 		}
 
+		/**
+		 * Recurring product at gateways without recurring support.
+		 * 
+		 * @link https://github.com/pronamic/wp-pronamic-pay-memberpress/issues/6
+		 */
+		if ( ! $transaction->is_one_time_payment() && ! $gateway->supports( 'recurring' ) ) {
+			throw new \Exception( \__( 'This gateway only supports one time payments.', 'pronamic_ideal' ) );
+		}
+
 		// Create Pronamic payment.
 		$payment = Pronamic::get_payment( $transaction );
 
