@@ -7,6 +7,9 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.6.0] - 2022-11-07
+- Prevent recurring payment at gateways without recurring support. [#7](https://github.com/pronamic/wp-pronamic-pay-memberpress/pull/7)
+
 ## [4.5.1] - 2022-09-27
 - Update to `wp-pay/core` version `^4.4`.
 
@@ -186,7 +189,8 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.5.1...HEAD
+[unreleased]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.6.0...HEAD
+[4.6.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.5.1...4.6.0
 [4.5.1]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.5.0...4.5.1
 [4.5.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.4.0...4.5.0
 [4.4.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.3.0...4.4.0
@@ -194,40 +198,40 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 [4.2.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.1.0...4.2.0
 [4.1.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.0.1...4.1.0
 [4.0.1]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.0.0...4.0.1
-[4.0.0]: https://github.com/wp-pay-extensions/memberpress/compare/3.1.0...4.0.0
-[3.1.0]: https://github.com/wp-pay-extensions/memberpress/compare/3.0.3...3.1.0
-[3.0.3]: https://github.com/wp-pay-extensions/memberpress/compare/3.0.2...3.0.3
-[3.0.2]: https://github.com/wp-pay-extensions/memberpress/compare/3.0.1...3.0.2
-[3.0.1]: https://github.com/wp-pay-extensions/memberpress/compare/3.0.0...3.0.1
-[3.0.0]: https://github.com/wp-pay-extensions/memberpress/compare/2.3.3...3.0.0
-[2.3.3]: https://github.com/wp-pay-extensions/memberpress/compare/2.3.2...2.3.3
-[2.3.2]: https://github.com/wp-pay-extensions/memberpress/compare/2.3.1...2.3.2
-[2.3.1]: https://github.com/wp-pay-extensions/memberpress/compare/2.3.0...2.3.1
-[2.3.0]: https://github.com/wp-pay-extensions/memberpress/compare/2.2.3...2.3.0
-[2.2.3]: https://github.com/wp-pay-extensions/memberpress/compare/2.2.2...2.2.3
-[2.2.2]: https://github.com/wp-pay-extensions/memberpress/compare/2.2.1...2.2.2
-[2.2.1]: https://github.com/wp-pay-extensions/memberpress/compare/2.2.0...2.2.1
-[2.2.0]: https://github.com/wp-pay-extensions/memberpress/compare/2.1.3...2.2.0
-[2.1.3]: https://github.com/wp-pay-extensions/memberpress/compare/2.1.2...2.1.3
-[2.1.2]: https://github.com/wp-pay-extensions/memberpress/compare/2.1.1...2.1.2
-[2.1.1]: https://github.com/wp-pay-extensions/memberpress/compare/2.1.0...2.1.1
-[2.1.0]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.13...2.1.0
-[2.0.13]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.12...2.0.13
-[2.0.12]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.11...2.0.12
-[2.0.11]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.10...2.0.11
-[2.0.10]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.9...2.0.10
-[2.0.9]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.8...2.0.9
-[2.0.8]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.7...2.0.8
-[2.0.7]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.6...2.0.7
-[2.0.6]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.5...2.0.6
-[2.0.5]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.4...2.0.5
-[2.0.4]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.3...2.0.4
-[2.0.3]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.2...2.0.3
-[2.0.2]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.1...2.0.2
-[2.0.1]: https://github.com/wp-pay-extensions/memberpress/compare/2.0.0...2.0.1
-[2.0.0]: https://github.com/wp-pay-extensions/memberpress/compare/1.0.5...2.0.0
-[1.0.5]: https://github.com/wp-pay-extensions/memberpress/compare/1.0.4...1.0.5
-[1.0.4]: https://github.com/wp-pay-extensions/memberpress/compare/1.0.3...1.0.4
-[1.0.3]: https://github.com/wp-pay-extensions/memberpress/compare/1.0.2...1.0.3
-[1.0.2]: https://github.com/wp-pay-extensions/memberpress/compare/1.0.1...1.0.2
-[1.0.1]: https://github.com/wp-pay-extensions/memberpress/compare/1.0.0...1.0.1
+[4.0.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/3.1.0...4.0.0
+[3.1.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/3.0.3...3.1.0
+[3.0.3]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/3.0.2...3.0.3
+[3.0.2]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/3.0.1...3.0.2
+[3.0.1]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/3.0.0...3.0.1
+[3.0.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.3.3...3.0.0
+[2.3.3]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.3.2...2.3.3
+[2.3.2]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.3.1...2.3.2
+[2.3.1]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.3.0...2.3.1
+[2.3.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.2.3...2.3.0
+[2.2.3]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.2.2...2.2.3
+[2.2.2]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.2.1...2.2.2
+[2.2.1]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.2.0...2.2.1
+[2.2.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.1.3...2.2.0
+[2.1.3]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.1.2...2.1.3
+[2.1.2]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.1.1...2.1.2
+[2.1.1]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.1.0...2.1.1
+[2.1.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.0.13...2.1.0
+[2.0.13]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.0.12...2.0.13
+[2.0.12]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.0.11...2.0.12
+[2.0.11]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.0.10...2.0.11
+[2.0.10]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.0.9...2.0.10
+[2.0.9]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.0.8...2.0.9
+[2.0.8]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.0.7...2.0.8
+[2.0.7]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.0.6...2.0.7
+[2.0.6]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.0.5...2.0.6
+[2.0.5]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.0.4...2.0.5
+[2.0.4]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.0.3...2.0.4
+[2.0.3]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.0.2...2.0.3
+[2.0.2]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.0.1...2.0.2
+[2.0.1]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/2.0.0...2.0.1
+[2.0.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/1.0.5...2.0.0
+[1.0.5]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/1.0.4...1.0.5
+[1.0.4]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/1.0.3...1.0.4
+[1.0.3]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/1.0.2...1.0.3
+[1.0.2]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/1.0.1...1.0.2
+[1.0.1]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/1.0.0...1.0.1
