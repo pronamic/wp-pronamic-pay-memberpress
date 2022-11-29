@@ -744,7 +744,7 @@ class Extension extends AbstractPluginIntegration {
 				],
 				admin_url( 'admin.php' )
 			),
-			/* translators: %s: payment source id */
+			/* translators: %s: subscription source */
 			sprintf( __( 'Subscription %s', 'pronamic_ideal' ), $subscription->source_id )
 		);
 
