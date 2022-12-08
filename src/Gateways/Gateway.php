@@ -204,6 +204,7 @@ class Gateway extends MeprBaseRealGateway {
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprStripeGateway.php#L520-L585
 	 * @param MeprTransaction $transaction MemberPress transaction object.
 	 * @return void
+	 * @throws \Exception Throws exception if gateway only supports one time payments.
 	 */
 	public function process_payment( $transaction ) {
 		// Gateway.
