@@ -25,7 +25,7 @@ class MemberPress {
 	/**
 	 * MemberPress has no unambiguous way to request a transaction via an ID,
 	 * so we have implemented a method for this.
-	 * 
+	 *
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprStripeGateway.php#L928-L933
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprTransaction.php#L156-L161
 	 * @param int|string|null $id ID.
@@ -51,7 +51,7 @@ class MemberPress {
 
 	/**
 	 * Get MemberPress subscription by ID.
-	 * 
+	 *
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprStripeGateway.php#L1468
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprSubscription.php#L211-L241
 	 * @param int|string|null $id ID.

@@ -150,7 +150,7 @@ class Pronamic {
 
 		$product_url = \get_permalink( $memberpress_product->ID );
 
-		if ( false !== $product_url ) {     
+		if ( false !== $product_url ) {
 			$line->set_product_url( $product_url );
 		}
 

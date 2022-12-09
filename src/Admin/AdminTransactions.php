@@ -38,13 +38,13 @@ class AdminTransactions {
 
 	/**
 	 * Setup.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function setup() {
 		/**
 		 * Filter for transactions columns.
-		 * 
+		 *
 		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/controllers/MeprTransactionsCtrl.php#L18-L22
 		 */
 		$hook = 'memberpress_page_memberpress-trans';
@@ -53,14 +53,14 @@ class AdminTransactions {
 
 		/**
 		 * MemberPress admin transactions cell.
-		 * 
+		 *
 		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/views/admin/transactions/row.php#L196-L198
 		 */
 		\add_action( 'mepr-admin-transactions-cell', [ $this, 'admin_transactions_cell' ], 10, 3 );
 
 		/**
 		 * Load payments maps.
-		 * 
+		 *
 		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprView.php#L23-L66
 		 */
 		\add_filter( 'mepr_view_paths_get_string', [ $this, 'maybe_load_payments_map' ], 10, 3 );
@@ -127,7 +127,7 @@ class AdminTransactions {
 
 	/**
 	 * Maybe load payments map.
-	 * 
+	 *
 	 * @param string[] $paths Paths.
 	 * @param string   $slug  Slug.
 	 * @param mixed[]  $vars  Variables.
@@ -174,7 +174,7 @@ class AdminTransactions {
 			$query->posts,
 			function( $post ) {
 				return $post instanceof WP_Post;
-			} 
+			}
 		);
 
 		foreach ( $payment_posts as $payment_post ) {
@@ -221,7 +221,7 @@ class AdminTransactions {
 
 		ob_start();
 
-		include dirname( __FILE__ ) . '/../../views/transaction-form.php';
+		include __DIR__ . '/../../views/transaction-form.php';
 
 		$view .= ob_get_clean();
 

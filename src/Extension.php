@@ -40,7 +40,7 @@ class Extension extends AbstractPluginIntegration {
 
 	/**
 	 * Construct MemberPress plugin integration.
-	 * 
+	 *
 	 * @param array<string, mixed> $args Arguments.
 	 */
 	public function __construct( $args = [] ) {
@@ -119,7 +119,7 @@ class Extension extends AbstractPluginIntegration {
 	 * @return string[]
 	 */
 	public function gateway_paths( $paths ) {
-		$paths[] = dirname( __FILE__ ) . '/../gateways/';
+		$paths[] = __DIR__ . '/../gateways/';
 
 		return $paths;
 	}
@@ -202,7 +202,7 @@ class Extension extends AbstractPluginIntegration {
 
 	/**
 	 * Maybe create MemberPress transaction for the Pronamic payment.
-	 * 
+	 *
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprSubscription.php
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprStripeGateway.php#L587-L714
 	 * @param Payment $payment Payment.
@@ -218,7 +218,7 @@ class Extension extends AbstractPluginIntegration {
 				 * Before version `3.1` we used 'memberpress' as source.
 				 * The upgrade 3.1.0 script corrects this, but for backward
 				 * compatibility we also accept 'memberpress'.
-				 * 
+				 *
 				 * @link https://github.com/wp-pay-extensions/memberpress/blob/3.0.3/src/Pronamic.php#L128
 				 * @link https://github.com/pronamic/wp-pay-core/blob/3.0.1/src/Subscriptions/SubscriptionHelper.php#L98-L102
 				 * @link https://github.com/pronamic/wp-pay-core/blob/3.0.1/src/Subscriptions/SubscriptionsModule.php#L446-L447
@@ -246,7 +246,7 @@ class Extension extends AbstractPluginIntegration {
 		/**
 		 * If the payment method is changed we have to update the MemberPress
 		 * subscription.
-		 * 
+		 *
 		 * @link https://github.com/wp-pay-extensions/memberpress/commit/3631bcb24f376fb637c1317e15f540cb1f9136f4#diff-6f62438f6bf291e85f644dbdbb14b2a71a9a7ed205b01ce44290ed85abe2aa07L259-L290
 		 */
 		$memberpress_gateways = MeprOptions::fetch()->payment_methods();
@@ -263,7 +263,7 @@ class Extension extends AbstractPluginIntegration {
 
 		/**
 		 * Payment method.
-		 * 
+		 *
 		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprTransaction.php#L634-L637
 		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprOptions.php#L798-L811
 		 */
@@ -275,7 +275,7 @@ class Extension extends AbstractPluginIntegration {
 
 		/**
 		 * At this point we should call `MeprBaseRealGateway->record_subscription_payment`.
-		 * 
+		 *
 		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprStripeGateway.php#L587-L714
 		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprAuthorizeGateway.php#L205-L255
 		 */
@@ -308,7 +308,7 @@ class Extension extends AbstractPluginIntegration {
 
 		/**
 		 * Gross.
-		 * 
+		 *
 		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprTransaction.php#L1013-L1021
 		 */
 		$memberpress_transaction->set_gross( $payment->get_total_amount()->get_value() );
@@ -322,7 +322,7 @@ class Extension extends AbstractPluginIntegration {
 
 		/**
 		 * Update payment source.
-		 * 
+		 *
 		 * @link https://github.com/wp-pay-extensions/restrict-content-pro/blob/3.0.0/src/Extension.php#L770-L776
 		 */
 		$payment->source    = 'memberpress_transaction';
@@ -374,7 +374,7 @@ class Extension extends AbstractPluginIntegration {
 
 	/**
 	 * Process transition.
-	 * 
+	 *
 	 * @param MeprTransaction|MeprSubscription $memberpress_item    Item.
 	 * @param Gateway                          $memberpress_gateway Gateway.
 	 * @return void
@@ -382,7 +382,7 @@ class Extension extends AbstractPluginIntegration {
 	private function process_transition( $memberpress_item, Gateway $memberpress_gateway ) {
 		/**
 		 * Upgrade/downgrade magic.
-		 * 
+		 *
 		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprPayPalProGateway.php#L350-L354
 		 */
 		$is_upgrade   = $memberpress_item->is_upgrade();
@@ -393,7 +393,7 @@ class Extension extends AbstractPluginIntegration {
 		if ( $is_upgrade ) {
 			/**
 			 * Upgrade subscription.
-			 * 
+			 *
 			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L602-L611
 			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprArtificialGateway.php#L109-L122
 			 */
@@ -401,7 +401,7 @@ class Extension extends AbstractPluginIntegration {
 		} elseif ( $is_downgrade ) {
 			/**
 			 * Downgraded subscription.
-			 * 
+			 *
 			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L613-L622
 			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprArtificialGateway.php#L109-L122
 			 */
@@ -409,7 +409,7 @@ class Extension extends AbstractPluginIntegration {
 		} else {
 			/**
 			 * New subscription.
-			 * 
+			 *
 			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L624-L634
 			 */
 			$memberpress_gateway->new_sub( $memberpress_item );
@@ -471,7 +471,7 @@ class Extension extends AbstractPluginIntegration {
 
 		/**
 		 * Payment method.
-		 * 
+		 *
 		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprTransaction.php#L634-L637
 		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprOptions.php#L798-L811
 		 */
@@ -492,25 +492,25 @@ class Extension extends AbstractPluginIntegration {
 
 				$memberpress_transaction->txn_type = MeprTransaction::$payment_str;
 				$memberpress_transaction->status   = MeprTransaction::$failed_str;
-		
+
 				$memberpress_transaction->store();
 
 				/**
 				 * MemberPress subscription.
-				 * 
+				 *
 				 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprTransaction.php#L605-L620
 				 */
 				$memberpress_subscription = $memberpress_transaction->subscription();
 
 				if ( $memberpress_subscription instanceof MeprSubscription ) {
 					$memberpress_subscription->expire_txns();
-				
+
 					$memberpress_subscription->store();
 				}
 
 				/**
 				 * Send failed transaction notices.
-				 * 
+				 *
 				 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprUtils.php#L1515-L1528
 				 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprAuthorizeGateway.php#L299
 				 */
@@ -530,7 +530,7 @@ class Extension extends AbstractPluginIntegration {
 
 				/**
 				 * MemberPress subscription.
-				 * 
+				 *
 				 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprTransaction.php#L605-L620
 				 */
 				$memberpress_subscription = $memberpress_transaction->subscription();
@@ -539,20 +539,20 @@ class Extension extends AbstractPluginIntegration {
 					$memberpress_subscription->status = MeprSubscription::$active_str;
 
 					$this->process_transition( $memberpress_subscription, $memberpress_gateway );
-				
+
 					$memberpress_subscription->store();
 				}
 
 				/**
 				 * Send signup notices.
-				 * 
+				 *
 				 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprUtils.php#L1361-L1390
 				 */
 				MeprUtils::send_signup_notices( $memberpress_transaction );
 
 				/**
 				 * Send transaction receipt notices.
-				 * 
+				 *
 				 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprUtils.php#L1396-L1418
 				 */
 				MeprUtils::send_transaction_receipt_notices( $memberpress_transaction );

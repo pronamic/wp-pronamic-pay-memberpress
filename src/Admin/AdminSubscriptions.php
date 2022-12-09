@@ -30,13 +30,13 @@ class AdminSubscriptions {
 
 	/**
 	 * Setup.
-	 * 
+	 *
 	 * @return void
 	 */
 	public function setup() {
 		/**
 		 * Filter for subscriptions columns.
-		 * 
+		 *
 		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/controllers/MeprSubscriptionsCtrl.php#L20-L27
 		 */
 		$hook = 'memberpress_page_memberpress-subscriptions';
@@ -211,7 +211,7 @@ class AdminSubscriptions {
 
 		ob_start();
 
-		include dirname( __FILE__ ) . '/../../views/subscription-form.php';
+		include __DIR__ . '/../../views/subscription-form.php';
 
 		$view .= ob_get_clean();
 

@@ -137,7 +137,7 @@ class Upgrade310 extends Upgrade {
 			$query->posts,
 			function( $post ) {
 				return $post instanceof WP_Post;
-			} 
+			}
 		);
 	}
 
@@ -168,7 +168,7 @@ class Upgrade310 extends Upgrade {
 			$query->posts,
 			function( $post ) {
 				return $post instanceof WP_Post;
-			} 
+			}
 		);
 	}
 

@@ -36,7 +36,7 @@ $ps = array_filter(
 	$query->posts,
 	function( $post ) {
 		return $post instanceof WP_Post;
-	} 
+	}
 );
 
 $items = [];

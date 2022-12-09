@@ -50,10 +50,10 @@ class Gateway extends MeprBaseRealGateway {
 
 	/**
 	 * Key.
-	 * 
+	 *
 	 * The key property is not defined in the MemberPress library,
 	 * but it is a MemberPress property.
-	 * 
+	 *
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprStripeGateway.php#L12
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/helpers/MeprOptionsHelper.php#L192
@@ -63,7 +63,7 @@ class Gateway extends MeprBaseRealGateway {
 
 	/**
 	 * Constructs and initialize gateway.
-	 * 
+	 *
 	 * @param string      $class_alias    Class alias.
 	 * @param string|null $payment_method Payment method.
 	 */
@@ -218,7 +218,7 @@ class Gateway extends MeprBaseRealGateway {
 
 		/**
 		 * Recurring product at gateways without recurring support.
-		 * 
+		 *
 		 * @link https://github.com/pronamic/wp-pronamic-pay-memberpress/issues/6
 		 */
 		if ( ! $transaction->is_one_time_payment() && ! $gateway->supports( 'recurring' ) ) {
@@ -239,7 +239,7 @@ class Gateway extends MeprBaseRealGateway {
 
 	/**
 	 * Get payment method.
-	 * 
+	 *
 	 * @return string|null
 	 */
 	public function get_payment_method() {
@@ -254,7 +254,6 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function record_subscription_payment() {
-
 	}
 
 	/**
@@ -265,7 +264,6 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function record_payment_failure() {
-
 	}
 
 	/**
@@ -275,7 +273,6 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function record_payment() {
-
 	}
 
 	/**
@@ -330,7 +327,6 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function record_refund() {
-
 	}
 
 	/**
@@ -352,7 +348,6 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function record_trial_payment( $transaction ) {
-
 	}
 
 	/**
@@ -369,17 +364,17 @@ class Gateway extends MeprBaseRealGateway {
 		 * In the `process_create_subscription` function, every MemberPress
 		 * transaction will be linked to a MemberPress subscription, but
 		 * just to be sure we check this.
-		 * 
+		 *
 		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L312
 		 */
 		if ( false !== $subscription ) {
 			/**
-			 * The MemberPress transaction total does not contain the 
+			 * The MemberPress transaction total does not contain the
 			 * prorated or trial amount.
-			 * 
+			 *
 			 * We stole this code from the `MeprArtificialGateway` also
 			 * known as the 'Offline Payment' gateway.
-			 * 
+			 *
 			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprArtificialGateway.php#L217
 			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L306-L311
 			 */
@@ -400,7 +395,6 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function record_create_subscription() {
-
 	}
 
 	/**
@@ -411,7 +405,6 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function process_update_subscription( $sub_id ) {
-
 	}
 
 	/**
@@ -421,7 +414,6 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function record_update_subscription() {
-
 	}
 
 	/**
@@ -483,7 +475,6 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function record_suspend_subscription() {
-
 	}
 
 	/**
@@ -521,7 +512,7 @@ class Gateway extends MeprBaseRealGateway {
 
 		/**
 		 * If the Pronamic subscription requires a follow-up payment start this.
-		 * 
+		 *
 		 * @todo
 		 */
 
@@ -552,7 +543,6 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function record_resume_subscription() {
-
 	}
 
 	/**
@@ -623,7 +613,6 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function record_cancel_subscription() {
-
 	}
 
 	/**
@@ -638,7 +627,6 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function process_signup_form( $txn ) {
-
 	}
 
 	/**
@@ -651,7 +639,6 @@ class Gateway extends MeprBaseRealGateway {
 	 * @throws \Exception Throws exception on gateway payment start error.
 	 */
 	public function display_payment_page( $txn ) {
-
 	}
 
 	/**
@@ -661,7 +648,6 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function enqueue_payment_form_scripts() {
-
 	}
 
 	/**
@@ -884,7 +870,6 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function enqueue_user_account_scripts() {
-
 	}
 
 	/**
@@ -961,7 +946,6 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	public function process_update_account_form( $sub_id ) {
-
 	}
 
 	/**
