@@ -7,6 +7,21 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.7.0] - 2022-12-23
+
+### Commits
+
+- Added "Requires Plugins" header. ([3a0c924](https://github.com/pronamic/wp-pronamic-pay-memberpress/commit/3a0c9241b862008bb28c52d5381d30565ffc3a44))
+
+### Composer
+
+- Changed `php` from `>=5.6.20` to `>=8.0`.
+- Changed `wp-pay/core` from `^4.5` to `v4.6.0`.
+	Release notes: https://github.com/pronamic/wp-pay-core/releases/tag/v4.6.0
+Full set of changes: [`4.6.0...4.7.0`][4.7.0]
+
+[4.7.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.6.0...v4.7.0
+
 ## [4.6.0] - 2022-11-07
 - Prevent recurring payment at gateways without recurring support. [#7](https://github.com/pronamic/wp-pronamic-pay-memberpress/pull/7)
 
