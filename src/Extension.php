@@ -557,6 +557,15 @@ class Extension extends AbstractPluginIntegration {
 				 */
 				MeprUtils::send_transaction_receipt_notices( $memberpress_transaction );
 
+				/**
+				 * Payment fulfilled.
+				 * 
+				 * @ignore Private action for now.
+				 * @param Payment $payment Payment.
+				 * @link https://github.com/pronamic/wp-pronamic-pay-mollie/issues/18#issuecomment-1373362874
+				 */
+				\do_action( 'pronamic_pay_payment_fulfilled', $payment );
+
 				break;
 			case PaymentStatus::OPEN:
 			default:
