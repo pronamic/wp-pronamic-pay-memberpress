@@ -7,6 +7,17 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.7.1] - 2023-01-18
+
+### Commits
+
+- Trigger `pronamic_pay_payment_fulfilled` action if payment is completed. ([0449e17](https://github.com/pronamic/wp-pronamic-pay-memberpress/commit/0449e172e2952d5682b18ff40edfddbd4eb1bd5e))
+- Happy 2023. ([515c4df](https://github.com/pronamic/wp-pronamic-pay-memberpress/commit/515c4df9d602b1d1deff17966f149d79cb76a70f))
+
+Full set of changes: [`4.7.0...4.7.1`][4.7.1]
+
+[4.7.1]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.7.0...v4.7.1
+
 ## [4.7.0] - 2022-12-23
 
 ### Commits
