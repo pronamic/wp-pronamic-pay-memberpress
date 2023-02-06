@@ -29,6 +29,8 @@ class Upgrade310 extends Upgrade {
 	public function __construct() {
 		parent::__construct( '3.1.0' );
 
+		\add_action( 'pronamic_pay_memberpress_upgrade_2_1_6', [ $this, 'upgrade' ], 10, 1 );
+
 		if ( \defined( 'WP_CLI' ) && WP_CLI ) {
 			$this->cli_init();
 		}
@@ -40,6 +42,15 @@ class Upgrade310 extends Upgrade {
 	 * @return void
 	 */
 	public function execute() {
+		\as_enqueue_async_action( 'pronamic_pay_memberpress_upgrade_2_1_6', [], 'pronamic-pay' );
+	}
+
+	/**
+	 * Upgrade.
+	 *
+	 * @return void
+	 */
+	public function upgrade() {
 		$this->upgrade_subscriptions();
 		$this->upgrade_payments();
 	}
@@ -54,9 +65,10 @@ class Upgrade310 extends Upgrade {
 		\WP_CLI::add_command(
 			'pronamic-pay memberpress upgrade-310 execute',
 			function( $args, $assoc_args ) {
+				var_dump(is_admin());exit;
 				\WP_CLI::log( 'Upgrade 3.1.0' );
 
-				$this->execute();
+				$this->upgrade();
 			},
 			[
 				'shortdesc' => 'Execute MemberPress upgrade 3.1.0.',
