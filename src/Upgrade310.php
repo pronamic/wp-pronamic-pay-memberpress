@@ -65,7 +65,6 @@ class Upgrade310 extends Upgrade {
 		\WP_CLI::add_command(
 			'pronamic-pay memberpress upgrade-310 execute',
 			function( $args, $assoc_args ) {
-				var_dump(is_admin());exit;
 				\WP_CLI::log( 'Upgrade 3.1.0' );
 
 				$this->upgrade();
