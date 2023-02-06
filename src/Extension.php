@@ -44,7 +44,14 @@ class Extension extends AbstractPluginIntegration {
 	 * @param array<string, mixed> $args Arguments.
 	 */
 	public function __construct( $args = [] ) {
-		$args['name'] = __( 'MemberPress', 'pronamic_ideal' );
+		$args = wp_parse_args(
+			$args,
+			[
+				'name'                => \__( 'MemberPress', 'pronamic_ideal' ),
+				'slug'                => 'memberpress',
+				'version_option_name' => 'pronamic_pay_memberpress_version',
+			]
+		);
 
 		parent::__construct( $args );
 
