@@ -7,6 +7,14 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.7.3] - 2023-02-07
+### Changed
+
+- Upgrade `3.1.0` now runs asynchronously.
+Full set of changes: [`4.7.2...4.7.3`][4.7.3]
+
+[4.7.3]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.7.2...v4.7.3
+
 ## [4.7.2] - 2023-01-31
 ### Composer
 
