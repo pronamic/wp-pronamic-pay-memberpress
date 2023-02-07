@@ -29,7 +29,7 @@ class Upgrade310 extends Upgrade {
 	public function __construct() {
 		parent::__construct( '3.1.0' );
 
-		\add_action( 'pronamic_pay_memberpress_upgrade_2_1_6', [ $this, 'upgrade' ], 10, 1 );
+		\add_action( 'pronamic_pay_memberpress_upgrade_3_1_0', [ $this, 'upgrade' ], 10, 1 );
 
 		if ( \defined( 'WP_CLI' ) && WP_CLI ) {
 			$this->cli_init();
@@ -42,7 +42,7 @@ class Upgrade310 extends Upgrade {
 	 * @return void
 	 */
 	public function execute() {
-		\as_enqueue_async_action( 'pronamic_pay_memberpress_upgrade_2_1_6', [], 'pronamic-pay' );
+		\as_enqueue_async_action( 'pronamic_pay_memberpress_upgrade_3_1_0', [], 'pronamic-pay' );
 	}
 
 	/**
