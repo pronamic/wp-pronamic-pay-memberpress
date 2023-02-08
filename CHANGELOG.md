@@ -7,6 +7,15 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.7.4] - 2023-02-08
+### Commits
+
+- Don't send signup notices for recurring payments. ([8a574ea](https://github.com/pronamic/wp-pronamic-pay-memberpress/commit/8a574ea5a4342a5f660c5f2ead1271ae558fa9c5))
+
+Full set of changes: [`4.7.3...4.7.4`][4.7.4]
+
+[4.7.4]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.7.3...v4.7.4
+
 ## [4.7.3] - 2023-02-07
 ### Changed
 
