@@ -555,7 +555,9 @@ class Extension extends AbstractPluginIntegration {
 				 *
 				 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprUtils.php#L1361-L1390
 				 */
-				MeprUtils::send_signup_notices( $memberpress_transaction );
+				if ( 'recurring' !== $payment->get_meta( 'mollie_sequence_type' ) ) {
+					MeprUtils::send_signup_notices( $memberpress_transaction );
+				}
 
 				/**
 				 * Send transaction receipt notices.
