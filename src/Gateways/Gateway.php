@@ -369,17 +369,19 @@ class Gateway extends MeprBaseRealGateway {
 		 */
 		if ( false !== $subscription ) {
 			/**
-			 * The MemberPress transaction total does not contain the
-			 * prorated or trial amount.
+			 * The MemberPress transaction does not contain the
+			 * prorated or trial amount and trial expiry date.
 			 *
 			 * We stole this code from the `MeprArtificialGateway` also
 			 * known as the 'Offline Payment' gateway.
 			 *
-			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprArtificialGateway.php#L217
+			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprArtificialGateway.php#L217-L219
 			 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprBaseGateway.php#L306-L311
 			 */
 			if ( $subscription->trial ) {
 				$transaction->set_subtotal( MeprUtils::format_float( $subscription->trial_amount ) );
+
+				$transaction->expires_at = MeprUtils::ts_to_mysql_date( \time() + MeprUtils::days( $subscription->trial_days ), 'Y-m-d 23:59:59' );
 
 				$transaction->store();
 			}
