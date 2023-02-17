@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.7.5] - 2023-02-17
+
+### Commits
+
+- Fixed setting expiry date for trial period transaction. ([a56a0b9](https://github.com/pronamic/wp-pronamic-pay-memberpress/commit/a56a0b90a710f6cc4e4fbf520803135c4d7dee7b))
+
+Full set of changes: [`4.7.4...4.7.5`][4.7.5]
+
+[4.7.5]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.7.4...v4.7.5
+
 ## [4.7.4] - 2023-02-08
 ### Commits
 
