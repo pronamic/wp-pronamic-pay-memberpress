@@ -24,6 +24,7 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Extensions\MemberPress\MemberPress;
 use Pronamic\WordPress\Pay\Extensions\MemberPress\Pronamic;
 use Pronamic\WordPress\Pay\Plugin;
+use Pronamic\WordPress\Pay\Refunds\Refund;
 use Pronamic\WordPress\Pay\Subscriptions\SubscriptionStatus;
 
 /**
@@ -292,21 +293,10 @@ class Gateway extends MeprBaseRealGateway {
 			throw new MeprGatewayException( __( 'Unable to process refund because payment does not exist.', 'pronamic_ideal' ) );
 		}
 
-		// Gateway.
-		$gateway = $payment->get_gateway();
-
-		if ( null === $gateway ) {
-			throw new MeprGatewayException( __( 'Unable to process refund because gateway does not exist.', 'pronamic_ideal' ) );
-		}
-
-		$transaction_id = $payment->get_transaction_id();
-
-		if ( null === $transaction_id ) {
-			throw new MeprGatewayException( __( 'Unable to process refund without gateway transaction ID.', 'pronamic_ideal' ) );
-		}
-
 		try {
-			$refund_reference = Plugin::create_refund( $transaction_id, $gateway, $payment->get_total_amount() );
+			$refund = new Refund( $payment, $payment->get_total_amount() );
+
+			Plugin::create_refund( $refund );
 
 			$transaction->status = MeprTransaction::$refunded_str;
 
