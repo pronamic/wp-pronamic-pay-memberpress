@@ -4,6 +4,7 @@
 	"keywords": ["wordpress", "wp", "pay", "memberpress", "extension", "pronamic"],
 	"homepage": "http://www.wp-pay.org/extensions/memberpress/",
 	"license": "GPL-3.0-or-later",
+	"type": "wordpress-plugin",
 	"authors": [
 		{
 			"name": "Pronamic",
