@@ -7,6 +7,22 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.7.6] - 2023-03-29
+
+### Commits
+
+- Set Composer type to WordPress plugin. ([e963ad6](https://github.com/pronamic/wp-pronamic-pay-memberpress/commit/e963ad6107c7f6405b01e15bdb714132ccf5ab4a))
+- Use new refunds API. ([a5422a3](https://github.com/pronamic/wp-pronamic-pay-memberpress/commit/a5422a3ca956a84b53d8762a3605ddc032ea51a1))
+- Updated .gitattributes ([4486c56](https://github.com/pronamic/wp-pronamic-pay-memberpress/commit/4486c565d29ece75c555441a2cda3f52600fea73))
+
+### Composer
+
+- Changed `wp-pay/core` from `^4.6` to `v4.9.0`.
+	Release notes: https://github.com/pronamic/wp-pay-core/releases/tag/v4.9.0
+Full set of changes: [`4.7.5...4.7.6`][4.7.6]
+
+[4.7.6]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.7.5...v4.7.6
+
 ## [4.7.5] - 2023-02-17
 
 ### Commits
