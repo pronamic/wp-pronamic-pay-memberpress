@@ -743,7 +743,7 @@ class Gateway extends MeprBaseRealGateway {
 			return '';
 		}
 
-		$payment_method = $gateway->get_payment_method( $this->payment_method );
+		$payment_method = $gateway->get_payment_method( (string) $this->payment_method );
 
 		if ( null === $payment_method ) {
 			return '';
