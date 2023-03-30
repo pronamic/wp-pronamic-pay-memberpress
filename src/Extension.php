@@ -354,7 +354,7 @@ class Extension extends AbstractPluginIntegration {
 
 		$amount_charged_back = $payment->get_charged_back_amount();
 
-		if ( null === $amount_refunded && null === $amount_charged_back ) {
+		if ( $amount_refunded->get_value() <= 0 && null === $amount_charged_back ) {
 			return;
 		}
 
@@ -374,7 +374,7 @@ class Extension extends AbstractPluginIntegration {
 		$memberpress_transaction->store();
 
 		// Send 'Transaction Refunded' notice for refund (not for chargeback).
-		if ( null !== $amount_refunded ) {
+		if ( $amount_refunded->get_value() > 0 ) {
 			MeprUtils::send_refunded_txn_notices( $memberpress_transaction );
 		}
 	}
