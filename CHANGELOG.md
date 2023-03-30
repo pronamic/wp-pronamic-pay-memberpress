@@ -7,6 +7,19 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.7.7] - 2023-03-30
+
+### Commits
+
+- Fixed refunded amount check. ([7ac8c62](https://github.com/pronamic/wp-pronamic-pay-memberpress/commit/7ac8c62b3c77195203f588fab847ac2cbdf764f2))
+
+### Composer
+
+- Added `woocommerce/action-scheduler` `^3.4`.
+Full set of changes: [`4.7.6...4.7.7`][4.7.7]
+
+[4.7.7]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.7.6...v4.7.7
+
 ## [4.7.6] - 2023-03-29
 
 ### Commits
