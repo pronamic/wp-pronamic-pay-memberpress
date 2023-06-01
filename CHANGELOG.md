@@ -7,6 +7,17 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.7.8] - 2023-06-01
+
+### Commits
+
+- Switch from `pronamic/wp-deployer` to `pronamic/pronamic-cli`. ([b3577e0](https://github.com/pronamic/wp-pronamic-pay-memberpress/commit/b3577e035e66b47548d02c3b4b2aba9c1d50201d))
+- Updated .gitattributes ([35fb2e0](https://github.com/pronamic/wp-pronamic-pay-memberpress/commit/35fb2e05b08fe9157d85dad25b2c3ff54ff9f240))
+
+Full set of changes: [`4.7.7...4.7.8`][4.7.8]
+
+[4.7.8]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.7.7...v4.7.8
+
 ## [4.7.7] - 2023-03-30
 
 ### Commits
