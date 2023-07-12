@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.7.9] - 2023-07-12
+
+### Commits
+
+- Added support for in3 payment method. ([d8d7ef8](https://github.com/pronamic/wp-pronamic-pay-memberpress/commit/d8d7ef8d1197383e6b727d1e498b138084ad2681))
+
+Full set of changes: [`4.7.8...4.7.9`][4.7.9]
+
+[4.7.9]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.7.8...v4.7.9
+
 ## [4.7.8] - 2023-06-01
 
 ### Commits
