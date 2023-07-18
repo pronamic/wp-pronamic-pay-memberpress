@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.7.10] - 2023-07-18
+
+### Commits
+
+- Get invoice to get updated transaction total for trial. ([af62237](https://github.com/pronamic/wp-pronamic-pay-memberpress/commit/af62237830861ca59ad8713d143c74a1bda1e4aa))
+
+Full set of changes: [`4.7.9...4.7.10`][4.7.10]
+
+[4.7.10]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.7.9...v4.7.10
+
 ## [4.7.9] - 2023-07-12
 
 ### Commits
