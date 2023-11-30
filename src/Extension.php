@@ -245,7 +245,7 @@ class Extension extends AbstractPluginIntegration {
 			throw new \Exception(
 				\sprintf(
 					'Could not find MemberPress subscription with ID: %s.',
-					$memberpress_subscription_id
+					\esc_html( $memberpress_subscription_id )
 				)
 			);
 		}

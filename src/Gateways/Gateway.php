@@ -223,7 +223,7 @@ class Gateway extends MeprBaseRealGateway {
 		 * @link https://github.com/pronamic/wp-pronamic-pay-memberpress/issues/6
 		 */
 		if ( ! $transaction->is_one_time_payment() && ! $gateway->supports( 'recurring' ) ) {
-			throw new \Exception( \__( 'This gateway only supports one time payments.', 'pronamic_ideal' ) );
+			throw new \Exception( \esc_html__( 'This gateway only supports one time payments.', 'pronamic_ideal' ) );
 		}
 
 		// Create Pronamic payment.
@@ -290,7 +290,7 @@ class Gateway extends MeprBaseRealGateway {
 		$payment = reset( $payments );
 
 		if ( false === $payment ) {
-			throw new MeprGatewayException( __( 'Unable to process refund because payment does not exist.', 'pronamic_ideal' ) );
+			throw new MeprGatewayException( \esc_html__( 'Unable to process refund because payment does not exist.', 'pronamic_ideal' ) );
 		}
 
 		try {
@@ -304,7 +304,7 @@ class Gateway extends MeprBaseRealGateway {
 
 			MeprUtils::send_refunded_txn_notices( $transaction );
 		} catch ( \Exception $exception ) {
-			throw new MeprGatewayException( $exception->getMessage() );
+			throw new MeprGatewayException( \esc_html( $exception->getMessage() ) );
 		}
 
 		$this->record_refund();
