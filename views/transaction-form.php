@@ -34,7 +34,7 @@ $query = new WP_Query(
 
 $ps = array_filter(
 	$query->posts,
-	function( $post ) {
+	function ( $post ) {
 		return $post instanceof WP_Post;
 	}
 );
