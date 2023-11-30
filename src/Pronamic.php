@@ -12,7 +12,6 @@ namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 
 use MeprSubscription;
 use MeprTransaction;
-use MeprTransactionsHelper;
 use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Money\TaxedMoney;
 use Pronamic\WordPress\Pay\AddressHelper;
@@ -47,14 +46,6 @@ class Pronamic {
 		$memberpress_user         = $memberpress_transaction->user();
 		$memberpress_product      = $memberpress_transaction->product();
 		$memberpress_subscription = $memberpress_transaction->subscription();
-
-		/**
-		 * Get invoice to get updated transaction total for trial.
-		 *
-		 * @link https://github.com/pronamic/wp-pronamic-pay-memberpress/issues/13
-		 * @link https://github.com/pronamic/memberpress/blob/v1.11.6/app/helpers/MeprTransactionsHelper.php#L252-L254
-		 */
-		MeprTransactionsHelper::get_invoice( $memberpress_transaction );
 
 		// Title.
 		$title = sprintf(
