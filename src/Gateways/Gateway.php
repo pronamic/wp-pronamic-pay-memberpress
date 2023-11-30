@@ -226,6 +226,17 @@ class Gateway extends MeprBaseRealGateway {
 			throw new \Exception( \esc_html__( 'This gateway only supports one time payments.', 'pronamic_ideal' ) );
 		}
 
+		/**
+		 * Get invoice to get updated transaction total for trial.
+		 *
+		 * @link https://github.com/pronamic/wp-pronamic-pay-memberpress/issues/13
+		 * @link https://github.com/pronamic/wp-pronamic-pay-memberpress/issues/17
+		 * @link https://github.com/pronamic/memberpress/blob/v1.11.6/app/helpers/MeprTransactionsHelper.php#L252-L254
+		 */
+		MeprTransactionsHelper::get_invoice( $transaction );
+
+		$transaction->store();
+
 		// Create Pronamic payment.
 		$payment = Pronamic::get_payment( $transaction );
 
