@@ -1,46 +1,46 @@
 {
-  "name": "memberpress",
-  "version": "4.7.10",
-  "description": "MemberPress driver for the WordPress payment processing library.",
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/wp-pay-extensions/memberpress"
-  },
-  "keywords": [
-    "wordpress",
-    "wp",
-    "pay",
-    "memberpress",
-    "gateway",
-    "pronamic"
-  ],
-  "author": {
-    "name": "Pronamic",
-    "email": "info@pronamic.nl",
-    "url": "http://www.pronamic.nl/"
-  },
-  "contributors": [
-    {
-      "name": "Remco Tolsma",
-      "email": "info@remcotolsma.nl",
-      "url": "http://www.remcotolsma.nl/"
-    }
-  ],
-  "license": "GPL-3.0",
-  "bugs": {
-    "url": "https://github.com/wp-pay-extensions/memberpress/issues"
-  },
-  "homepage": "http://www.wp-pay.org/extensions/memberpress/",
-  "devDependencies": {
-    "@wordpress/env": "^5.2.0",
-    "npm-run-all": "^4.1.5"
-  },
-  "scripts": {
-    "start": "wp-env start && npm run setup && npm run login",
-    "setup": "npm-run-all setup-*",
-    "setup-mollie": "wp-env run cli wp config set MOLLIE_API_KEY $MOLLIE_API_KEY",
-    "setup-buckaroo-website-key": "wp-env run cli wp config set BUCKAROO_WEBSITE_KEY $BUCKAROO_WEBSITE_KEY",
-    "setup-buckaroo-secret-key": "wp-env run cli wp config set BUCKAROO_SECRET_KEY $BUCKAROO_SECRET_KEY",
-    "login": "wp-env run cli wp user one-time-login admin"
-  }
+	"name": "memberpress",
+	"version": "4.7.10",
+	"description": "MemberPress driver for the WordPress payment processing library.",
+	"repository": {
+		"type": "git",
+		"url": "https://github.com/wp-pay-extensions/memberpress"
+	},
+	"keywords": [
+		"wordpress",
+		"wp",
+		"pay",
+		"memberpress",
+		"gateway",
+		"pronamic"
+	],
+	"author": {
+		"name": "Pronamic",
+		"email": "info@pronamic.nl",
+		"url": "http://www.pronamic.nl/"
+	},
+	"contributors": [
+		{
+			"name": "Remco Tolsma",
+			"email": "info@remcotolsma.nl",
+			"url": "http://www.remcotolsma.nl/"
+		}
+	],
+	"license": "GPL-3.0",
+	"bugs": {
+		"url": "https://github.com/wp-pay-extensions/memberpress/issues"
+	},
+	"homepage": "http://www.wp-pay.org/extensions/memberpress/",
+	"devDependencies": {
+		"@wordpress/env": "^5.2.0",
+		"npm-run-all": "^4.1.5"
+	},
+	"scripts": {
+		"start": "wp-env start && npm run setup && npm run login",
+		"setup": "npm-run-all setup-*",
+		"setup-mollie": "wp-env run cli wp config set MOLLIE_API_KEY $MOLLIE_API_KEY",
+		"setup-buckaroo-website-key": "wp-env run cli wp config set BUCKAROO_WEBSITE_KEY $BUCKAROO_WEBSITE_KEY",
+		"setup-buckaroo-secret-key": "wp-env run cli wp config set BUCKAROO_SECRET_KEY $BUCKAROO_SECRET_KEY",
+		"login": "wp-env run cli wp user one-time-login admin"
+	}
 }
