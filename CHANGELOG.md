@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.7.11] - 2023-12-18
+
+### Fixed
+
+- Fixed problem with taxes and coupon codes [#13](https://github.com/pronamic/wp-pronamic-pay-memberpress/issues/13) [#17](https://github.com/pronamic/wp-pronamic-pay-memberpress/issues/17)
+
+Full set of changes: [`4.7.10...4.7.11`][4.7.11]
+
+[4.7.11]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.7.10...v4.7.11
+
 ## [4.7.10] - 2023-07-18
 
 ### Commits
