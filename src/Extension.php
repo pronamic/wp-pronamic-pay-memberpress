@@ -373,10 +373,7 @@ class Extension extends AbstractPluginIntegration {
 
 		$memberpress_transaction->store();
 
-		// Send 'Transaction Refunded' notice for refund (not for chargeback).
-		if ( $amount_refunded->get_value() > 0 ) {
-			MeprUtils::send_refunded_txn_notices( $memberpress_transaction );
-		}
+		MeprUtils::send_refunded_txn_notices( $memberpress_transaction );
 	}
 
 	/**
@@ -568,7 +565,7 @@ class Extension extends AbstractPluginIntegration {
 
 				/**
 				 * Payment fulfilled.
-				 * 
+				 *
 				 * @ignore Private action for now.
 				 * @param Payment $payment Payment.
 				 * @link https://github.com/pronamic/wp-pronamic-pay-mollie/issues/18#issuecomment-1373362874
