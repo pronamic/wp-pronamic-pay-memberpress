@@ -34,7 +34,7 @@ use Pronamic\WordPress\Pay\Subscriptions\SubscriptionStatus;
  * @version 3.1.0
  * @since   1.0.0
  */
-class Gateway extends MeprBaseRealGateway {/**/
+class Gateway extends MeprBaseRealGateway {
 	/**
 	 * Payment method.
 	 *
