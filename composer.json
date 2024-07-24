@@ -42,8 +42,10 @@
 			"composer/installers": true,
 			"dealerdirect/phpcodesniffer-composer-installer": true,
 			"roots/wordpress-core-installer": true,
-			"bamarni/composer-bin-plugin": true
-		}
+			"bamarni/composer-bin-plugin": true,
+			"automattic/jetpack-autoloader": true
+		},
+		"wp-slug": "pronamic-pay-memberpress"
 	},
 	"require": {
 		"php": ">=7.4",
