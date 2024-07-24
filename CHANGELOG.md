@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.8.0] - 2024-07-24
+
+### Changed
+
+- Send refund notices also for chargebacks. ([024dd78](https://github.com/pronamic/wp-pronamic-pay-memberpress/commit/024dd78b533b12c8183b8872cd4d3d2f2efb5cde))
+
+Full set of changes: [`4.7.11...4.8.0`][4.8.0]
+
+[4.8.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.7.11...v4.8.0
+
 ## [4.7.11] - 2023-12-18
 
 ### Fixed
