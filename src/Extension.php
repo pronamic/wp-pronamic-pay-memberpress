@@ -263,8 +263,17 @@ class Extension extends AbstractPluginIntegration {
 				continue;
 			}
 
-			if ( $memberpress_gateway->get_payment_method() === $payment->get_payment_method() ) {
-				$memberpress_subscription->gateway = $memberpress_gateway->id;
+			$gateway_method = $memberpress_gateway->get_payment_method();
+			$payment_method = $payment->get_payment_method();
+
+			if ( ! \in_array( $gateway_method, [ null, $payment_method ] ) ) {
+				continue;
+			}
+
+			$memberpress_subscription->gateway = $memberpress_gateway->id;
+
+			if ( $gateway_method === $payment_method ) {
+				break;
 			}
 		}
 
