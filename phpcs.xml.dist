@@ -6,9 +6,18 @@
 	<exclude-pattern>tests/bootstrap.php</exclude-pattern>
 	<exclude-pattern>tests/wp-config.php</exclude-pattern>
 
+	<exclude-pattern type="relative">^build/*</exclude-pattern>
+	<exclude-pattern type="relative">^node_modules/*</exclude-pattern>
+	<exclude-pattern type="relative">^vendor/*</exclude-pattern>
+	<exclude-pattern type="relative">^wordpress/*</exclude-pattern>
+
 	<rule ref="PronamicWP">
 		<exclude name="WordPress.DB.SlowDBQuery.slow_db_query_meta_query" />
 
 		<exclude name="WordPressVIPMinimum.Performance.NoPaging.nopaging_nopaging" />
+	</rule>
+
+	<rule ref="Generic.CodeAnalysis.UnusedFunctionParameter.FoundAfterLastUsed">
+		<exclude-pattern>src/Upgrade310.php</exclude-pattern>
 	</rule>
 </ruleset>
