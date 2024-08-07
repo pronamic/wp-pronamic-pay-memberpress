@@ -86,6 +86,7 @@ class Extension extends AbstractPluginIntegration {
 		\add_filter( 'pronamic_payment_redirect_url_memberpress_transaction', [ $this, 'redirect_url' ], 10, 2 );
 		\add_action( 'pronamic_payment_status_update_memberpress_transaction', [ $this, 'status_update' ], 10, 1 );
 
+		\add_action( 'pronamic_payment_status_update', [ $this, 'maybe_update_memberpress_subscription_gateway' ], 10, 1 );
 		\add_action( 'pronamic_pay_new_payment', [ $this, 'maybe_create_memberpress_transaction' ], 10, 1 );
 		\add_action( 'pronamic_pay_update_payment', [ $this, 'maybe_record_memberpress_transaction_refund' ], 10, 1 );
 
@@ -208,6 +209,71 @@ class Extension extends AbstractPluginIntegration {
 	}
 
 	/**
+	 * Maybe update MemberPress subscription gateway for the Pronamic payment.
+	 *
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprSubscription.php
+	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprStripeGateway.php#L587-L714
+	 * @param Payment $payment Payment.
+	 * @return void
+	 * @throws \Exception Throws an exception when the MemberPress subscription cannot be found.
+	 */
+	public function maybe_update_memberpress_subscription_gateway( Payment $payment ) {
+		if ( 'subscription_payment_method_change' !== $payment->get_source() ) {
+			return;
+		}
+
+		if ( PaymentStatus::SUCCESS !== $payment->get_status() ) {
+			return;
+		}
+
+		$pronamic_subscriptions = $payment->get_subscriptions();
+
+		foreach ( $pronamic_subscriptions as $pronamic_subscription ) {
+			$memberpress_subscription_id = $pronamic_subscription->get_source_id();
+
+			$memberpress_subscription = MemberPress::get_subscription_by_id( $memberpress_subscription_id );
+
+			if ( null === $memberpress_subscription ) {
+				throw new \Exception(
+					\sprintf(
+						'Could not find MemberPress subscription with ID: %s.',
+						\esc_html( (string) $memberpress_subscription_id )
+					)
+				);
+			}
+
+			/**
+			 * If the payment method is changed we have to update the MemberPress
+			 * subscription.
+			 *
+			 * @link https://github.com/wp-pay-extensions/memberpress/commit/3631bcb24f376fb637c1317e15f540cb1f9136f4#diff-6f62438f6bf291e85f644dbdbb14b2a71a9a7ed205b01ce44290ed85abe2aa07L259-L290
+			 */
+			$memberpress_gateways = MeprOptions::fetch()->payment_methods();
+
+			foreach ( $memberpress_gateways as $memberpress_gateway ) {
+				if ( ! $memberpress_gateway instanceof Gateway ) {
+					continue;
+				}
+
+				if ( null === $memberpress_gateway->get_payment_method() ) {
+					$memberpress_subscription->gateway = $memberpress_gateway->id;
+				}
+
+				if ( $payment->get_payment_method() === $memberpress_gateway->get_payment_method() ) {
+					$memberpress_subscription->gateway = $memberpress_gateway->id;
+
+					break;
+				}
+			}
+
+			/**
+			 * Store the MemberPress subscription in case of gateway changes.
+			 */
+			$memberpress_subscription->store();
+		}
+	}
+
+	/**
 	 * Maybe create MemberPress transaction for the Pronamic payment.
 	 *
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprSubscription.php
@@ -250,44 +316,6 @@ class Extension extends AbstractPluginIntegration {
 			);
 		}
 
-		/**
-		 * If the payment method is changed we have to update the MemberPress
-		 * subscription.
-		 *
-		 * @link https://github.com/wp-pay-extensions/memberpress/commit/3631bcb24f376fb637c1317e15f540cb1f9136f4#diff-6f62438f6bf291e85f644dbdbb14b2a71a9a7ed205b01ce44290ed85abe2aa07L259-L290
-		 */
-		$memberpress_gateways = MeprOptions::fetch()->payment_methods();
-
-		foreach ( $memberpress_gateways as $memberpress_gateway ) {
-			if ( ! $memberpress_gateway instanceof Gateway ) {
-				continue;
-			}
-
-			if ( $memberpress_gateway->get_payment_method() === $payment->get_payment_method() ) {
-				$memberpress_subscription->gateway = $memberpress_gateway->id;
-			}
-		}
-
-		/**
-		 * Payment method.
-		 *
-		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprTransaction.php#L634-L637
-		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprOptions.php#L798-L811
-		 */
-		$memberpress_gateway = $memberpress_subscription->payment_method();
-
-		if ( ! $memberpress_gateway instanceof Gateway ) {
-			return;
-		}
-
-		/**
-		 * At this point we should call `MeprBaseRealGateway->record_subscription_payment`.
-		 *
-		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprStripeGateway.php#L587-L714
-		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/gateways/MeprAuthorizeGateway.php#L205-L255
-		 */
-		$memberpress_gateway->record_subscription_payment();
-
 		$memberpress_transaction = new MeprTransaction();
 
 		$memberpress_transaction->user_id         = $memberpress_subscription->user_id;
@@ -297,7 +325,7 @@ class Extension extends AbstractPluginIntegration {
 		$memberpress_transaction->coupon_id       = $memberpress_subscription->coupon_id;
 		$memberpress_transaction->trans_num       = $payment->get_transaction_id();
 		$memberpress_transaction->subscription_id = $memberpress_subscription->id;
-		$memberpress_transaction->gateway         = $memberpress_gateway->id;
+		$memberpress_transaction->gateway         = $memberpress_subscription->gateway;
 
 		$periods = $payment->get_periods();
 
@@ -321,11 +349,6 @@ class Extension extends AbstractPluginIntegration {
 		$memberpress_transaction->set_gross( $payment->get_total_amount()->get_value() );
 
 		$memberpress_transaction->store();
-
-		/**
-		 * Store the MemberPress subscription in case of gateway changes.
-		 */
-		$memberpress_subscription->store();
 
 		/**
 		 * Update payment source.
