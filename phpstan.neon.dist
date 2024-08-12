@@ -1,12 +1,12 @@
+includes:
+	- vendor/szepeviktor/phpstan-wordpress/extension.neon
 parameters:
 	customRulesetUsed: false
 	level: max
 	scanFiles:
-		- vendor-bin/phpstan/vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
+		- vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
 	scanDirectories:
 		- vendor/woocommerce/action-scheduler
-	bootstrapFiles:
-		- tests/phpstan/bootstrap.php
 	paths:
 		- src/
 		- views/
