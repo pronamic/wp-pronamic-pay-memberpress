@@ -75,7 +75,7 @@ foreach ( $ps as $p ) {
 				}
 
 				if ( is_string( $post_status ) ) {
-					$status_object = get_post_status_object($post_status);
+					$status_object = get_post_status_object( $post_status );
 
 					if ( null !== $status_object && isset( $status_object->label ) ) {
 						$status_label = $status_object->label;
