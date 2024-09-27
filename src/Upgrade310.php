@@ -263,13 +263,14 @@ class Upgrade310 extends Upgrade {
 			\update_post_meta( $subscription_post_id, '_pronamic_subscription_memberpress_update_source_id', $subscription_source_id );
 
 			/**
-			 * MemberPress transaction.
-			 */
-			$memberpress_subscription_id = $subscription_source_id;
-
-			/**
 			 * MemberPress subscription.
 			 */
+			if ( ! is_string( $subscription_source_id ) ) {
+				continue;
+			}
+
+			$memberpress_subscription_id = $subscription_source_id;
+
 			$memberpress_subscription = MemberPress::get_subscription_by_id( $memberpress_subscription_id );
 
 			if ( ! $memberpress_subscription ) {
@@ -320,6 +321,10 @@ class Upgrade310 extends Upgrade {
 			/**
 			 * MemberPress transaction.
 			 */
+			if ( ! is_string( $payment_source_id ) ) {
+				continue;
+			}
+
 			$memberpress_transaction_id = $payment_source_id;
 
 			$memberpress_transaction = MemberPress::get_transaction_by_id( $memberpress_transaction_id );

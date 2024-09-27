@@ -178,7 +178,11 @@ class AdminTransactions {
 		);
 
 		foreach ( $payment_posts as $payment_post ) {
-			$memberpress_transaction_id = (string) \get_post_meta( $payment_post->ID, '_pronamic_payment_source_id', true );
+			$memberpress_transaction_id = \get_post_meta( $payment_post->ID, '_pronamic_payment_source_id', true );
+
+			if ( ! is_string( $memberpress_transaction_id ) ) {
+				continue;
+			}
 
 			$this->payments_map[ $memberpress_transaction_id ] = $payment_post;
 		}

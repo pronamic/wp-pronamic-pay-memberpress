@@ -693,13 +693,19 @@ class Extension extends AbstractPluginIntegration {
 		// Add parameters.
 		$next_payment_date = $subscription->get_next_payment_date();
 
+		$date_format = \get_option( 'date_format' );
+
+		if ( ! is_string( $date_format ) ) {
+			$date_format = 'D j M Y';
+		}
+
 		return \array_merge(
 			$params,
 			[
 				'pronamic_subscription_id'           => (string) $subscription->get_id(),
 				'pronamic_subscription_cancel_url'   => $subscription->get_cancel_url(),
 				'pronamic_subscription_renewal_url'  => $subscription->get_renewal_url(),
-				'pronamic_subscription_renewal_date' => null === $next_payment_date ? '' : \date_i18n( \get_option( 'date_format' ), $next_payment_date->getTimestamp() ),
+				'pronamic_subscription_renewal_date' => null === $next_payment_date ? '' : \date_i18n( $date_format, $next_payment_date->getTimestamp() ),
 			]
 		);
 	}

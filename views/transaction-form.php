@@ -66,15 +66,21 @@ foreach ( $ps as $p ) {
 				echo '<li>';
 
 				// Status.
+				$status_label = __( 'Unknown status', 'pronamic_ideal' );
+
 				$post_status = get_post_status( $payment_id );
 
 				if ( 'trash' === $post_status ) {
 					$post_status = get_post_meta( $payment_id, '_wp_trash_meta_status', true );
 				}
 
-				$status_object = get_post_status_object( $post_status );
+				if ( is_string( $post_status ) ) {
+					$status_object = get_post_status_object( $post_status );
 
-				$status_label = isset( $status_object, $status_object->label ) ? $status_object->label : __( 'Unknown status', 'pronamic_ideal' );
+					if ( null !== $status_object && isset( $status_object->label ) ) {
+						$status_label = $status_object->label;
+					}
+				}
 
 				\printf(
 					'<a href="%s">%s</a> — %s',

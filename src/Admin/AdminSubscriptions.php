@@ -112,7 +112,11 @@ class AdminSubscriptions {
 				continue;
 			}
 
-			$memberpress_subscription_id = (string) \get_post_meta( $subscription_post->ID, '_pronamic_subscription_source_id', true );
+			$memberpress_subscription_id = \get_post_meta( $subscription_post->ID, '_pronamic_subscription_source_id', true );
+
+			if ( ! is_string( $memberpress_subscription_id ) ) {
+				continue;
+			}
 
 			$this->subscriptions_map[ $memberpress_subscription_id ] = $subscription_post;
 		}
