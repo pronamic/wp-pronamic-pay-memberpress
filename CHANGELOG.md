@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.8.1] - 2024-09-27
+
+### Fixed
+
+- Improved updating MemberPress subscription gateway only on payment method changes. ([#22](https://github.com/pronamic/wp-pronamic-pay-memberpress/issues/22))
+
+Full set of changes: [`4.8.0...4.8.1`][4.8.1]
+
+[4.8.1]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.8.0...v4.8.1
+
 ## [4.8.0] - 2024-07-24
 
 ### Changed
