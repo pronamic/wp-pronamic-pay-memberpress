@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.8.2] - 2024-12-17
+
+### Commits
+
+- Added Composer `build` and `release` scripts. ([e77c0e6](https://github.com/pronamic/wp-pronamic-pay-memberpress/commit/e77c0e6f13914c205b6da60c123d4e2c0832f5f8))
+
+Full set of changes: [`4.8.1...4.8.2`][4.8.2]
+
+[4.8.2]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.8.1...v4.8.2
+
 ## [4.8.1] - 2024-09-27
 
 ### Fixed
