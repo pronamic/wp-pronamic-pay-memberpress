@@ -235,10 +235,10 @@ class Pronamic {
 
 			$subscription->add_phase( $trial_phase );
 
-			$trail_end_date = $trial_phase->get_end_date();
+			$trial_end_date = $trial_phase->get_end_date();
 
-			if ( null !== $trail_end_date ) {
-				$start_date = $trail_end_date;
+			if ( null !== $trial_end_date ) {
+				$start_date = $trial_end_date;
 			}
 		}
 
