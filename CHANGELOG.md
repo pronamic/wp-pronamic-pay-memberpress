@@ -7,6 +7,17 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.8.3] - 2025-06-19
+
+### Commits
+
+- Updated packages. ([429fbb8](https://github.com/pronamic/wp-pronamic-pay-memberpress/commit/429fbb801cbd5f132523c7dace20c52d50b3fd1f))
+- Fixed typo. ([0837c76](https://github.com/pronamic/wp-pronamic-pay-memberpress/commit/0837c76e581e97ffd4c8008ea0cde14a61e0bb21))
+
+Full set of changes: [`4.8.2...4.8.3`][4.8.3]
+
+[4.8.3]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.8.2...v4.8.3
+
 ## [4.8.2] - 2024-12-17
 
 ### Commits
