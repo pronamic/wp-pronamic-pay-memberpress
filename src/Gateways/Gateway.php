@@ -91,34 +91,7 @@ class Gateway extends MeprBaseRealGateway {
 
 		// Set the capabilities of this gateway.
 		// @link https://gitlab.com/pronamic/memberpress/blob/1.2.4/app/lib/MeprBaseGateway.php#L36-37.
-		$capabilities = [];
-
-		// Capabilities.
-		$gateway = Plugin::get_gateway( (int) $this->get_config_id() );
-
-		if ( null !== $gateway ) {
-			$capabilities = [ 'process-payments' ];
-
-			$payment_method = $gateway->get_payment_method( (string) $this->payment_method );
-
-			if ( null !== $payment_method && $payment_method->supports( 'recurring' ) ) {
-				$capabilities = \array_merge(
-					$capabilities,
-					[
-						'create-subscriptions',
-						'cancel-subscriptions',
-						'update-subscriptions',
-						'subscription-trial-payment',
-					]
-				);
-			}
-
-			if ( $gateway->supports( 'refunds' ) ) {
-				$capabilities[] = 'process-refunds';
-			}
-		}
-
-		$this->capabilities = $capabilities;
+		$this->set_capabilities();
 
 		// Setup the notification actions for this gateway.
 		$this->notifiers = [];
@@ -148,6 +121,47 @@ class Gateway extends MeprBaseRealGateway {
 		$this->settings = (object) $settings;
 
 		$this->set_defaults();
+
+		$this->set_capabilities();
+	}
+
+	/**
+	 * Set capabilities.
+	 *
+	 * @return void
+	 */
+	public function set_capabilities() {
+		$this->capabilities = [];
+
+		$config_id = $this->get_config_id();
+
+		$gateway = Plugin::get_gateway( (int) $config_id );
+
+		if ( null === $gateway ) {
+			return;
+		}
+
+		$capabilities = [ 'process-payments' ];
+
+		$payment_method = $gateway->get_payment_method( (string) $this->payment_method );
+
+		if ( null !== $payment_method && $payment_method->supports( 'recurring' ) ) {
+			$capabilities = \array_merge(
+				$capabilities,
+				[
+					'create-subscriptions',
+					'cancel-subscriptions',
+					'update-subscriptions',
+					'subscription-trial-payment',
+				]
+			);
+		}
+
+		if ( $gateway->supports( 'refunds' ) ) {
+			$capabilities[] = 'process-refunds';
+		}
+
+		$this->capabilities = $capabilities;
 	}
 
 	/**
