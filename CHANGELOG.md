@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.8.4] - 2025-09-17
+
+### Changed
+
+- Improve setting gateway capabilities. ([760b1ec](https://github.com/pronamic/wp-pronamic-pay-memberpress/commit/760b1ec20fec03b48ae8b9abeeb706f19c5566d9))
+
+Full set of changes: [`4.8.3...4.8.4`][4.8.4]
+
+[4.8.4]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.8.3...v4.8.4
+
 ## [4.8.3] - 2025-06-19
 
 ### Commits
