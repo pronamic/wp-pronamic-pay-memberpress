@@ -47,7 +47,7 @@ class Extension extends AbstractPluginIntegration {
 		$args = wp_parse_args(
 			$args,
 			[
-				'name'                => \__( 'MemberPress', 'pronamic_ideal' ),
+				'name'                => 'MemberPress',
 				'slug'                => 'memberpress',
 				'version_option_name' => 'pronamic_pay_memberpress_version',
 			]
