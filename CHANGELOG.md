@@ -7,6 +7,16 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 ## [Unreleased][unreleased]
 -
 
+## [4.8.5] - 2025-11-11
+
+### Commits
+
+- Added this point we shoud not use translation functions. ([7bc90d5](https://github.com/pronamic/wp-pronamic-pay-memberpress/commit/7bc90d57b3cfff068c59e703a57afa32e7b1d9de))
+
+Full set of changes: [`4.8.4...4.8.5`][4.8.5]
+
+[4.8.5]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.8.4...v4.8.5
+
 ## [4.8.4] - 2025-09-17
 
 ### Changed
