@@ -14,6 +14,7 @@ use MeprSubscription;
 use MeprTransaction;
 use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Money\TaxedMoney;
+use Pronamic\WordPress\Number\Number;
 use Pronamic\WordPress\Pay\AddressHelper;
 use Pronamic\WordPress\Pay\ContactName;
 use Pronamic\WordPress\Pay\Core\Util as Core_Util;
@@ -144,7 +145,7 @@ class Pronamic {
 
 		$line->set_id( $memberpress_product->ID );
 		$line->set_name( $memberpress_product->post_title );
-		$line->set_quantity( 1 );
+		$line->set_quantity( new Number( 1 ) );
 		$line->set_unit_price( $payment->get_total_amount() );
 		$line->set_total_amount( $payment->get_total_amount() );
 
