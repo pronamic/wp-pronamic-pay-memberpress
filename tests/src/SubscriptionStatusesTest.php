@@ -16,7 +16,6 @@ use Pronamic\WordPress\Pay\Subscriptions\SubscriptionStatus;
 /**
  * Subscription statuses test
  *
- * @author  Remco Tolsma
  * @version 2.0.1
  * @since   2.0.1
  */

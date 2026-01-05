@@ -30,7 +30,6 @@ use Pronamic\WordPress\Pay\Subscriptions\SubscriptionStatus;
 /**
  * WordPress pay MemberPress gateway
  *
- * @author  Remco Tolsma
  * @version 3.1.0
  * @since   1.0.0
  */

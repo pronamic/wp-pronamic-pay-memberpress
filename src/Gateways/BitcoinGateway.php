@@ -15,7 +15,6 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
 /**
  * WordPress pay MemberPress Bitcoin gateway
  *
- * @author  Reüel van der Steege
  * @version 3.1.0
  * @since   1.0.5
  */

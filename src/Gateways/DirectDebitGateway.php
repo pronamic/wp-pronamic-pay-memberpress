@@ -15,7 +15,6 @@ use Pronamic\WordPress\Pay\Core\PaymentMethods;
 /**
  * WordPress pay MemberPress direct debit gateway
  *
- * @author  Remco Tolsma
  * @version 3.1.0
  * @since   1.0.0
  */

@@ -13,7 +13,7 @@ namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 use PHPUnit_Framework_TestCase;
 
 /**
- * Class MemberPressTest.
+ * MemberPress test class
  */
 class MemberPressTest extends PHPUnit_Framework_TestCase {
 	/**

@@ -16,7 +16,6 @@ use Pronamic\WordPress\Pay\Plugin;
 /**
  * WordPress pay MemberPress Direct Debit mandate via Sofort gateway
  *
- * @author  Reüel van der Steege
  * @version 3.1.0
  * @since   1.0.6
  */
