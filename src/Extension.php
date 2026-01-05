@@ -3,7 +3,7 @@
  * Extension
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2024 Pronamic
+ * @copyright 2005-2026 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
@@ -26,7 +26,6 @@ use Pronamic\WordPress\Pay\Subscriptions\SubscriptionStatus;
 /**
  * WordPress pay MemberPress extension
  *
- * @author  Remco Tolsma
  * @version 4.2.0
  * @since   1.0.0
  */

@@ -3,7 +3,7 @@
  * Upgrade 3.1.0
  *
  * @author    Pronamic <info@pronamic.eu>
- * @copyright 2005-2024 Pronamic
+ * @copyright 2005-2026 Pronamic
  * @license   GPL-3.0-or-later
  * @package   Pronamic\WordPress\Pay\Upgrades
  */
@@ -18,7 +18,6 @@ use WP_Query;
 /**
  * Upgrade 3.1.0
  *
- * @author  Remco Tolsma
  * @version 3.1.0
  * @since   3.1.0
  */
