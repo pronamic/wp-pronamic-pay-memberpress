@@ -10,7 +10,6 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 
-use Pronamic\WordPress\Pay\Subscriptions\SubscriptionStatus;
 use Pronamic\WordPress\Pay\Upgrades\Upgrade;
 use WP_Post;
 use WP_Query;

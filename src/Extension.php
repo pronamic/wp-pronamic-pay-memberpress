@@ -10,7 +10,6 @@
 
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress;
 
-use MeprDb;
 use MeprOptions;
 use MeprProduct;
 use MeprSubscription;

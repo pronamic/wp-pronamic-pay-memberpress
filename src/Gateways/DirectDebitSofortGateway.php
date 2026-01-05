@@ -11,7 +11,6 @@
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways;
 
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
-use Pronamic\WordPress\Pay\Plugin;
 
 /**
  * WordPress pay MemberPress Direct Debit mandate via Sofort gateway
