@@ -52,6 +52,7 @@
 	},
 	"require": {
 		"php": ">=8.2",
+		"automattic/jetpack-autoloader": "^5.0",
 		"pronamic/wp-number": "^1.4",
 		"woocommerce/action-scheduler": "^3.4",
 		"wp-pay/core": "^4.9"

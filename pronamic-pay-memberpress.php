@@ -27,7 +27,23 @@
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
 
-add_filter(
+if ( ! defined( 'ABSPATH' ) ) {
+	exit;
+}
+
+/**
+ * Autoload.
+ */
+$autoload_path = __DIR__ . '/vendor/autoload_packages.php';
+
+if ( \file_exists( $autoload_path ) ) {
+	require_once $autoload_path;
+}
+
+/**
+ * Setup.
+ */
+\add_filter(
 	'pronamic_pay_plugin_integrations',
 	function ( $integrations ) {
 		foreach ( $integrations as $integration ) {
@@ -39,5 +55,6 @@ add_filter(
 		$integrations[] = new \Pronamic\WordPress\Pay\Extensions\MemberPress\Extension();
 
 		return $integrations;
-	}
+	},
+	9
 );
