@@ -30,18 +30,12 @@ class SubscriptionStatuses {
 	 * @return string|null
 	 */
 	public static function transform( $status ) {
-		switch ( $status ) {
-			case MeprSubscription::$pending_str:
-				return SubscriptionStatus::OPEN;
-			case MeprSubscription::$active_str:
-				return SubscriptionStatus::ACTIVE;
-			case MeprSubscription::$suspended_str:
-				// @todo set to 'On hold'?
-				return null;
-			case MeprSubscription::$cancelled_str:
-				return SubscriptionStatus::CANCELLED;
-		}
-
-		return null;
+		return match ( $status ) {
+			MeprSubscription::$pending_str => SubscriptionStatus::OPEN,
+			MeprSubscription::$active_str => SubscriptionStatus::ACTIVE,
+			MeprSubscription::$suspended_str => null,
+			MeprSubscription::$cancelled_str => SubscriptionStatus::CANCELLED,
+			default => null,
+		};
 	}
 }

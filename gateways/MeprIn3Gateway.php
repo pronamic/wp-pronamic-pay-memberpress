@@ -8,4 +8,4 @@
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
 
-class_alias( 'Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways\In3Gateway', 'MeprIn3Gateway' );
+class_alias( \Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways\In3Gateway::class, 'MeprIn3Gateway' );

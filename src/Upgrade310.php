@@ -27,7 +27,7 @@ class Upgrade310 extends Upgrade {
 	public function __construct() {
 		parent::__construct( '3.1.0' );
 
-		\add_action( 'pronamic_pay_memberpress_upgrade_3_1_0', [ $this, 'upgrade' ], 10, 1 );
+		\add_action( 'pronamic_pay_memberpress_upgrade_3_1_0', $this->upgrade( ... ), 10, 1 );
 
 		if ( \defined( 'WP_CLI' ) && WP_CLI ) {
 			$this->cli_init();
@@ -144,9 +144,7 @@ class Upgrade310 extends Upgrade {
 
 		return array_filter(
 			$query->posts,
-			function ( $post ) {
-				return $post instanceof WP_Post;
-			}
+			fn( $post ) => $post instanceof WP_Post
 		);
 	}
 
@@ -175,9 +173,7 @@ class Upgrade310 extends Upgrade {
 
 		return array_filter(
 			$query->posts,
-			function ( $post ) {
-				return $post instanceof WP_Post;
-			}
+			fn( $post ) => $post instanceof WP_Post
 		);
 	}
 
@@ -218,7 +214,7 @@ class Upgrade310 extends Upgrade {
 		$query_args = [];
 
 		if ( null !== $args['post__in'] ) {
-			$query_args['post__in'] = \explode( ',', $args['post__in'] );
+			$query_args['post__in'] = \explode( ',', (string) $args['post__in'] );
 		}
 
 		$subscription_posts = $this->get_subscription_posts( $query_args );

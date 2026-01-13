@@ -8,4 +8,4 @@
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
 
-class_alias( 'Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways\Przelewy24Gateway', 'MeprPrzelewy24Gateway' );
+class_alias( \Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways\Przelewy24Gateway::class, 'MeprPrzelewy24Gateway' );

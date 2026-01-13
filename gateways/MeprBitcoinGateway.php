@@ -8,4 +8,4 @@
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
 
-class_alias( 'Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways\BitcoinGateway', 'MeprBitcoinGateway' );
+class_alias( \Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways\BitcoinGateway::class, 'MeprBitcoinGateway' );
