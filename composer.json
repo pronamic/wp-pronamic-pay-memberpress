@@ -51,7 +51,7 @@
 		"wp-slug": "pronamic-pay-memberpress"
 	},
 	"require": {
-		"php": ">=7.4",
+		"php": ">=8.2",
 		"pronamic/wp-number": "^1.4",
 		"woocommerce/action-scheduler": "^3.4",
 		"wp-pay/core": "^4.9"
