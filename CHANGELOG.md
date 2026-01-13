@@ -5,6 +5,7 @@ All notable changes to this project will be documented in this file.
 This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a CHANGELOG](http://keepachangelog.com/).
 
 ## [Unreleased][unreleased]
+
 - Updated codebase to be compatible with PHP 8.2 (via Rector).
 
 ## [4.9.0] - 2026-01-05
