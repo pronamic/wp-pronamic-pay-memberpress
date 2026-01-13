@@ -34,9 +34,7 @@ $query = new WP_Query(
 
 $ps = array_filter(
 	$query->posts,
-	function ( $post ) {
-		return $post instanceof WP_Post;
-	}
+	fn( $post ) => $post instanceof WP_Post
 );
 
 $items = [];

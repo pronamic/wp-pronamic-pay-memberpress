@@ -8,4 +8,4 @@
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
 
-class_alias( 'Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways\DirectDebitBancontactGateway', 'MeprDirectDebitBancontactGateway' );
+class_alias( \Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways\DirectDebitBancontactGateway::class, 'MeprDirectDebitBancontactGateway' );

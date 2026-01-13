@@ -8,4 +8,4 @@
  * @package   Pronamic\WordPress\Pay\Extensions\MemberPress
  */
 
-class_alias( 'Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways\DirectDebitIDealGateway', 'MeprDirectDebitIDealGateway' );
+class_alias( \Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways\DirectDebitIDealGateway::class, 'MeprDirectDebitIDealGateway' );

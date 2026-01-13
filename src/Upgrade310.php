@@ -27,7 +27,7 @@ class Upgrade310 extends Upgrade {
 	public function __construct() {
 		parent::__construct( '3.1.0' );
 
-		\add_action( 'pronamic_pay_memberpress_upgrade_3_1_0', [ $this, 'upgrade' ], 10, 1 );
+		\add_action( 'pronamic_pay_memberpress_upgrade_3_1_0', $this->upgrade( ... ), 10, 1 );
 
 		if ( \defined( 'WP_CLI' ) && WP_CLI ) {
 			$this->cli_init();
@@ -62,7 +62,7 @@ class Upgrade310 extends Upgrade {
 	public function cli_init() {
 		\WP_CLI::add_command(
 			'pronamic-pay memberpress upgrade-310 execute',
-			function ( $args, $assoc_args ) {
+			function ( $args, $assoc_args ): void {
 				\WP_CLI::log( 'Upgrade 3.1.0' );
 
 				$this->upgrade();
@@ -74,7 +74,7 @@ class Upgrade310 extends Upgrade {
 
 		\WP_CLI::add_command(
 			'pronamic-pay memberpress upgrade-310 list-subscriptions',
-			function ( $args, $assoc_args ) {
+			function ( $args, $assoc_args ): void {
 				\WP_CLI::log( 'Upgrade 3.1.0 - Subscriptions List' );
 
 				$posts = $this->get_subscription_posts();
@@ -88,7 +88,7 @@ class Upgrade310 extends Upgrade {
 
 		\WP_CLI::add_command(
 			'pronamic-pay memberpress upgrade-310 upgrade-subscriptions',
-			function ( $args, $assoc_args ) {
+			function ( $args, $assoc_args ): void {
 				\WP_CLI::log( 'Upgrade 3.1.0 - Subscriptions' );
 
 				$this->upgrade_subscriptions(
@@ -107,7 +107,7 @@ class Upgrade310 extends Upgrade {
 
 		\WP_CLI::add_command(
 			'pronamic-pay memberpress upgrade-310 list-payments',
-			function ( $args, $assoc_args ) {
+			function ( $args, $assoc_args ): void {
 				\WP_CLI::log( 'Upgrade 3.1.0 - Payments List' );
 
 				$posts = $this->get_payment_posts();
@@ -144,9 +144,7 @@ class Upgrade310 extends Upgrade {
 
 		return array_filter(
 			$query->posts,
-			function ( $post ) {
-				return $post instanceof WP_Post;
-			}
+			fn( $post ) => $post instanceof WP_Post
 		);
 	}
 
@@ -175,9 +173,7 @@ class Upgrade310 extends Upgrade {
 
 		return array_filter(
 			$query->posts,
-			function ( $post ) {
-				return $post instanceof WP_Post;
-			}
+			fn( $post ) => $post instanceof WP_Post
 		);
 	}
 
@@ -218,7 +214,7 @@ class Upgrade310 extends Upgrade {
 		$query_args = [];
 
 		if ( null !== $args['post__in'] ) {
-			$query_args['post__in'] = \explode( ',', $args['post__in'] );
+			$query_args['post__in'] = \explode( ',', (string) $args['post__in'] );
 		}
 
 		$subscription_posts = $this->get_subscription_posts( $query_args );

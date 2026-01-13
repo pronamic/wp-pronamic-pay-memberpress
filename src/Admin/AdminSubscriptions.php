@@ -40,11 +40,11 @@ class AdminSubscriptions {
 		 */
 		$hook = 'memberpress_page_memberpress-subscriptions';
 
-		add_filter( 'manage_' . $hook . '_columns', [ $this, 'manage_subscriptions_columns' ], 15 );
+		add_filter( 'manage_' . $hook . '_columns', $this->manage_subscriptions_columns( ... ), 15 );
 
-		add_action( 'mepr-admin-subscriptions-cell', [ $this, 'admin_subscriptions_cell' ], 10, 4 );
+		add_action( 'mepr-admin-subscriptions-cell', $this->admin_subscriptions_cell( ... ), 10, 4 );
 
-		add_filter( 'mepr_view_get_string', [ $this, 'extend_subscription_form' ], 10, 3 );
+		add_filter( 'mepr_view_get_string', $this->extend_subscription_form( ... ), 10, 3 );
 	}
 
 	/**

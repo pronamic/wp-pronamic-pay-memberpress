@@ -48,26 +48,26 @@ class AdminTransactions {
 		 */
 		$hook = 'memberpress_page_memberpress-trans';
 
-		\add_filter( 'manage_' . $hook . '_columns', [ $this, 'manage_transactions_columns' ], 15 );
+		\add_filter( 'manage_' . $hook . '_columns', $this->manage_transactions_columns( ... ), 15 );
 
 		/**
 		 * MemberPress admin transactions cell.
 		 *
 		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/views/admin/transactions/row.php#L196-L198
 		 */
-		\add_action( 'mepr-admin-transactions-cell', [ $this, 'admin_transactions_cell' ], 10, 3 );
+		\add_action( 'mepr-admin-transactions-cell', $this->admin_transactions_cell( ... ), 10, 3 );
 
 		/**
 		 * Load payments maps.
 		 *
 		 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/lib/MeprView.php#L23-L66
 		 */
-		\add_filter( 'mepr_view_paths_get_string', [ $this, 'maybe_load_payments_map' ], 10, 3 );
+		\add_filter( 'mepr_view_paths_get_string', $this->maybe_load_payments_map( ... ), 10, 3 );
 
 		/**
 		 * Extend transaction form.
 		 */
-		\add_filter( 'mepr_view_get_string', [ $this, 'extend_transaction_form' ], 10, 3 );
+		\add_filter( 'mepr_view_get_string', $this->extend_transaction_form( ... ), 10, 3 );
 	}
 
 	/**
@@ -171,9 +171,7 @@ class AdminTransactions {
 
 		$payment_posts = array_filter(
 			$query->posts,
-			function ( $post ) {
-				return $post instanceof WP_Post;
-			}
+			fn( $post ) => $post instanceof WP_Post
 		);
 
 		foreach ( $payment_posts as $payment_post ) {
