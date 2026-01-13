@@ -62,7 +62,7 @@ class Upgrade310 extends Upgrade {
 	public function cli_init() {
 		\WP_CLI::add_command(
 			'pronamic-pay memberpress upgrade-310 execute',
-			function ( $args, $assoc_args ) {
+			function ( $args, $assoc_args ): void {
 				\WP_CLI::log( 'Upgrade 3.1.0' );
 
 				$this->upgrade();
@@ -74,7 +74,7 @@ class Upgrade310 extends Upgrade {
 
 		\WP_CLI::add_command(
 			'pronamic-pay memberpress upgrade-310 list-subscriptions',
-			function ( $args, $assoc_args ) {
+			function ( $args, $assoc_args ): void {
 				\WP_CLI::log( 'Upgrade 3.1.0 - Subscriptions List' );
 
 				$posts = $this->get_subscription_posts();
@@ -88,7 +88,7 @@ class Upgrade310 extends Upgrade {
 
 		\WP_CLI::add_command(
 			'pronamic-pay memberpress upgrade-310 upgrade-subscriptions',
-			function ( $args, $assoc_args ) {
+			function ( $args, $assoc_args ): void {
 				\WP_CLI::log( 'Upgrade 3.1.0 - Subscriptions' );
 
 				$this->upgrade_subscriptions(
@@ -107,7 +107,7 @@ class Upgrade310 extends Upgrade {
 
 		\WP_CLI::add_command(
 			'pronamic-pay memberpress upgrade-310 list-payments',
-			function ( $args, $assoc_args ) {
+			function ( $args, $assoc_args ): void {
 				\WP_CLI::log( 'Upgrade 3.1.0 - Payments List' );
 
 				$posts = $this->get_payment_posts();
