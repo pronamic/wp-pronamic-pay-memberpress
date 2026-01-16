@@ -155,6 +155,13 @@ class Pronamic {
 		}
 
 		/*
+		 * Upgrade / downgrade.
+		 */
+		if ( $memberpress_transaction->is_upgrade_or_downgrade() ) {
+			$payment->set_meta( 'is_subscription_change', true );
+		}
+
+		/*
 		 * Return.
 		 */
 		return $payment;
