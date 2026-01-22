@@ -20,6 +20,8 @@ use MeprTransactionsHelper;
 use MeprUser;
 use MeprUtils;
 use MeprView;
+use Pronamic\WordPress\Money\TaxedMoney;
+use Pronamic\WordPress\Number\Number;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
 use Pronamic\WordPress\Pay\Extensions\MemberPress\MemberPress;
 use Pronamic\WordPress\Pay\Extensions\MemberPress\Pronamic;
@@ -186,18 +188,19 @@ class Gateway extends MeprBaseRealGateway {
 
 		$this->settings = (object) array_merge(
 			[
-				'gateway'   => $this->class_alias,
-				'id'        => $this->generate_id(),
-				'label'     => '',
-				'use_label' => true,
-				'icon'      => $this->get_icon(),
-				'use_icon'  => true,
-				'desc'      => '',
-				'use_desc'  => true,
-				'config_id' => '',
-				'email'     => '',
-				'sandbox'   => false,
-				'debug'     => false,
+				'gateway'        => $this->class_alias,
+				'id'             => $this->generate_id(),
+				'label'          => '',
+				'use_label'      => true,
+				'icon'           => $this->get_icon(),
+				'use_icon'       => true,
+				'desc'           => '',
+				'use_desc'       => true,
+				'config_id'      => '',
+				'minimum_amount' => null,
+				'email'          => '',
+				'sandbox'        => false,
+				'debug'          => false,
 			],
 			(array) $this->settings
 		);
@@ -256,6 +259,41 @@ class Gateway extends MeprBaseRealGateway {
 		$payment->config_id = $config_id;
 
 		$payment->set_payment_method( $this->payment_method );
+
+		// Minimum amount.
+		$minimum = new Number( $this->settings->minimum_amount ?: 0 );
+		$total   = new Number( $transaction->total );
+
+		$minimum_string = (string) $minimum;
+		$total_string   = (string) $total;
+
+		if ( $total_string < $minimum_string ) {
+			$lines = $payment->get_lines();
+
+			$line = $lines->new_line();
+
+			$line->set_name( \__( 'Minimum Payment Amount Adjustment', 'pronamic_ideal' ) );
+			$line->set_quantity( new Number( 1 ) );
+
+			$adjustment_amount = new TaxedMoney(
+				$minimum->subtract( $total ),
+				MemberPress::get_currency(),
+				null,
+				$transaction->tax_rate
+			);
+
+			$line->set_unit_price( $adjustment_amount );
+			$line->set_total_amount( $adjustment_amount );
+
+			$payment->set_total_amount(
+				new TaxedMoney(
+					$minimum,
+					MemberPress::get_currency(),
+					$lines->get_amount()->get_tax_amount()->get_value(),
+					$transaction->tax_rate
+				)
+			);
+		}
 
 		$payment = Plugin::start_payment( $payment );
 
@@ -868,6 +906,20 @@ class Gateway extends MeprBaseRealGateway {
 
 						?>
 					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label><?php \esc_html_e( 'Minimum Amount', 'pronamic_ideal' ); ?></label>
+				</td>
+				<td>
+					<?php
+
+					$name = \sprintf( '%s[%s][%s]', $mepr_options->integrations_str, $this->id, 'minimum_amount' );
+
+					?>
+
+					<input name="<?php echo \esc_attr( $name ); ?>" type="number" step="any" value="<?php echo \esc_attr( $this->settings->minimum_amount ); ?>" />
 				</td>
 			</tr>
 			<tr>
