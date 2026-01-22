@@ -758,28 +758,36 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return string
 	 */
 	public function spc_payment_fields() {
+		$output = '';
+
+		// Description.
+		if ( $this->settings->use_desc && '' !== $this->settings->desc ) {
+			$output = \sprintf(
+				'<div class="mp-form-row">%s</div>',
+				$this->settings->desc
+			);
+		}
+
 		// Gateway.
 		$config_id = $this->get_config_id();
 
 		$gateway = Plugin::get_gateway( (int) $config_id );
 
 		if ( null === $gateway ) {
-			return '';
+			return $output;
 		}
 
 		$payment_method = $gateway->get_payment_method( (string) $this->payment_method );
 
 		if ( null === $payment_method ) {
-			return '';
+			return $output;
 		}
 
 		$fields = $payment_method->get_fields();
 
 		if ( empty( $fields ) ) {
-			return '';
+			return $output;
 		}
-
-		$output = '';
 
 		foreach ( $fields as $field ) {
 			try {
@@ -860,6 +868,20 @@ class Gateway extends MeprBaseRealGateway {
 
 						?>
 					</select>
+				</td>
+			</tr>
+			<tr>
+				<td>
+					<label><?php \esc_html_e( 'Description', 'pronamic_ideal' ); ?></label>
+				</td>
+				<td>
+					<?php
+
+					$name = \sprintf( '%s[%s][%s]', $mepr_options->integrations_str, $this->id, 'desc' );
+
+					?>
+
+					<textarea name="<?php echo \esc_attr( $name ); ?>" rows="3" cols="45"><?php echo \stripslashes( $this->settings->desc ); ?></textarea>
 				</td>
 			</tr>
 		</table>
