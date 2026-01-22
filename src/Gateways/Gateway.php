@@ -862,6 +862,25 @@ class Gateway extends MeprBaseRealGateway {
 					</select>
 				</td>
 			</tr>
+			<tr>
+				<?php
+
+				$name = sprintf(
+					'%s[%s][%s]',
+					$mepr_options->integrations_str,
+					$this->id,
+					'desc'
+				);
+
+				?>
+				<td>
+					<?php esc_html_e( 'Description', 'pronamic_ideal' ); ?>
+				</td>
+				<td>
+					<textarea name="<?php echo esc_attr( $name ); ?>" rows="3" style="width: 100%;"><?php echo esc_textarea( $this->settings->desc ); ?></textarea>
+					<p class="description"><?php esc_html_e( 'This description will be displayed on the checkout page.', 'pronamic_ideal' ); ?></p>
+				</td>
+			</tr>
 		</table>
 		<?php
 	}
