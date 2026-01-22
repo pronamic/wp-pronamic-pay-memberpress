@@ -933,7 +933,7 @@ class Gateway extends MeprBaseRealGateway {
 
 					?>
 
-					<textarea name="<?php echo \esc_attr( $name ); ?>" rows="3" cols="45"><?php echo \stripslashes( $this->settings->desc ); ?></textarea>
+					<textarea name="<?php echo \esc_attr( $name ); ?>" rows="3" cols="45"><?php echo \esc_textarea( \stripslashes( $this->settings->desc ) ); ?></textarea>
 				</td>
 			</tr>
 		</table>
