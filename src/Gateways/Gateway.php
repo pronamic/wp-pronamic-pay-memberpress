@@ -915,7 +915,7 @@ class Gateway extends MeprBaseRealGateway {
 					<?php esc_html_e( 'Minimum Amount', 'pronamic_ideal' ); ?>
 				</td>
 				<td>
-					<input type="text" name="<?php echo esc_attr( $name ); ?>" value="<?php echo esc_attr( $this->settings->minimum_amount ); ?>" />
+					<input type="number" step="any" name="<?php echo esc_attr( $name ); ?>" value="<?php echo esc_attr( $this->settings->minimum_amount ); ?>" />
 				</td>
 			</tr>
 		</table>
@@ -939,7 +939,7 @@ class Gateway extends MeprBaseRealGateway {
 			$errors[] = __( 'Minimum Amount must be a valid number.', 'pronamic_ideal' );
 		}
 
-		if ( '' !== $minimum_amount && (float) $minimum_amount < 0 ) {
+		if ( '' !== $minimum_amount && $minimum_amount < 0 ) {
 			$errors[] = __( 'Minimum Amount must be greater than or equal to zero.', 'pronamic_ideal' );
 		}
 
@@ -950,20 +950,18 @@ class Gateway extends MeprBaseRealGateway {
 	 * Validate and parse minimum amount.
 	 *
 	 * @param mixed $value Value to validate.
-	 * @return float|null Returns the validated float value or null if invalid.
+	 * @return numeric-string|null Returns the validated numeric-string value or null if invalid.
 	 */
 	private function validate_minimum_amount( $value ) {
 		if ( ! is_numeric( $value ) ) {
 			return null;
 		}
 
-		$amount = (float) $value;
-
-		if ( $amount <= 0 ) {
+		if ( $value <= 0 ) {
 			return null;
 		}
 
-		return $amount;
+		return (string) $value;
 	}
 
 	/**
@@ -1093,7 +1091,7 @@ class Gateway extends MeprBaseRealGateway {
 			return;
 		}
 
-		$current_total_value = (float) $current_total->get_value();
+		$current_total_value = $current_total->get_value();
 
 		if ( $current_total_value >= $minimum_amount ) {
 			return;
