@@ -26,12 +26,12 @@ class GatewayTest extends PHPUnit_Framework_TestCase {
 	public function test_minimum_amount_empty_setting() {
 		$gateway = new Gateway();
 		
-		$gateway->settings = (object) [ 'minimum_amount' => '' ];
+		$gateway->settings     = (object) [ 'minimum_amount' => '' ];
 		
 		$payment = $this->create_payment( 5.00 );
 		
 		$reflection = new ReflectionClass( $gateway );
-		$method = $reflection->getMethod( 'apply_minimum_amount_to_payment' );
+		$method     = $reflection->getMethod( 'apply_minimum_amount_to_payment' );
 		$method->setAccessible( true );
 		
 		$method->invoke( $gateway, $payment );
@@ -126,6 +126,28 @@ class GatewayTest extends PHPUnit_Framework_TestCase {
 	}
 	
 	/**
+	 * Test minimum amount validation - payment below minimum with tax.
+	 */
+	public function test_minimum_amount_below_minimum_with_tax() {
+		$gateway = new Gateway();
+		
+		$gateway->settings = (object) [ 'minimum_amount' => '10.00' ];
+		
+		$payment = $this->create_payment_with_tax( 5.00, 1.05, 21.0 );
+		
+		$reflection = new ReflectionClass( $gateway );
+		$method = $reflection->getMethod( 'apply_minimum_amount_to_payment' );
+		$method->setAccessible( true );
+		
+		$method->invoke( $gateway, $payment );
+		
+		$this->assertEquals( 10.00, $payment->get_total_amount()->get_value() );
+		$this->assertEquals( 1.05, $payment->get_total_amount()->get_tax_amount()->get_value() );
+		$this->assertEquals( 21.0, $payment->get_total_amount()->get_tax_rate() );
+		$this->assertCount( 2, $payment->lines->get_lines() );
+	}
+	
+	/**
 	 * Create a test payment.
 	 *
 	 * @param float $amount Payment amount.
@@ -139,6 +161,26 @@ class GatewayTest extends PHPUnit_Framework_TestCase {
 		$payment->lines = new PaymentLines();
 		$line = $payment->lines->new_line();
 		$line->set_total_amount( new TaxedMoney( $amount, 'EUR' ) );
+		
+		return $payment;
+	}
+	
+	/**
+	 * Create a test payment with tax.
+	 *
+	 * @param float $amount     Payment amount.
+	 * @param float $tax_amount Tax amount.
+	 * @param float $tax_rate   Tax rate.
+	 * @return Payment
+	 */
+	private function create_payment_with_tax( $amount, $tax_amount, $tax_rate ) {
+		$payment = new Payment();
+		
+		$payment->set_total_amount( new TaxedMoney( $amount, 'EUR', $tax_amount, $tax_rate ) );
+		
+		$payment->lines = new PaymentLines();
+		$line = $payment->lines->new_line();
+		$line->set_total_amount( new TaxedMoney( $amount, 'EUR', $tax_amount, $tax_rate ) );
 		
 		return $payment;
 	}

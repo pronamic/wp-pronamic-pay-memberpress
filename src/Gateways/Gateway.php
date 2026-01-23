@@ -916,9 +916,6 @@ class Gateway extends MeprBaseRealGateway {
 				</td>
 				<td>
 					<input type="text" name="<?php echo esc_attr( $name ); ?>" value="<?php echo esc_attr( $this->settings->minimum_amount ); ?>" />
-					<p class="description">
-						<?php esc_html_e( 'The minimum transaction amount. If a transaction total is below this amount, an adjustment line item will be added to reach the minimum. Leave empty to disable.', 'pronamic_ideal' ); ?>
-					</p>
 				</td>
 			</tr>
 		</table>
@@ -956,7 +953,7 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return float|null Returns the validated float value or null if invalid.
 	 */
 	private function validate_minimum_amount( $value ) {
-		if ( empty( $value ) || ! is_numeric( $value ) ) {
+		if ( ! is_numeric( $value ) ) {
 			return null;
 		}
 
@@ -1083,7 +1080,7 @@ class Gateway extends MeprBaseRealGateway {
 	 * @param Payment $payment Pronamic payment object.
 	 * @return void
 	 */
-	protected function apply_minimum_amount_to_payment( $payment ) {
+	protected function apply_minimum_amount_to_payment( Payment $payment ) {
 		$minimum_amount = $this->validate_minimum_amount( $this->settings->minimum_amount );
 
 		if ( null === $minimum_amount ) {
@@ -1111,7 +1108,7 @@ class Gateway extends MeprBaseRealGateway {
 		$adjustment_line->set_unit_price( new TaxedMoney( $adjustment_amount, $current_total->get_currency() ) );
 		$adjustment_line->set_total_amount( new TaxedMoney( $adjustment_amount, $current_total->get_currency() ) );
 
-		$payment->set_total_amount( new TaxedMoney( $minimum_amount, $current_total->get_currency() ) );
+		$payment->set_total_amount( new TaxedMoney( $minimum_amount, $current_total->get_currency(), $current_total->get_tax_amount(), $current_total->get_tax_rate() ) );
 	}
 
 	/**
