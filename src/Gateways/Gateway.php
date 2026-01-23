@@ -758,28 +758,38 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return string
 	 */
 	public function spc_payment_fields() {
+		$output = '';
+
+		/**
+		 * Description.
+		 *
+		 * @link https://github.com/pronamic/memberpress/blob/3a428785b5a2b6b0581ec4080b98992aef2d5b1a/app/gateways/MeprArtificialGateway.php#L100-L108
+		 * @link https://github.com/pronamic/memberpress/blob/3a428785b5a2b6b0581ec4080b98992aef2d5b1a/app/gateways/MeprPayPalStandardGateway.php#L1026-L1036
+		 */
+		if ( $this->settings->use_desc ) {
+			$output = \wpautop( $this->settings->desc );
+		}
+
 		// Gateway.
 		$config_id = $this->get_config_id();
 
 		$gateway = Plugin::get_gateway( (int) $config_id );
 
 		if ( null === $gateway ) {
-			return '';
+			return $output;
 		}
 
 		$payment_method = $gateway->get_payment_method( (string) $this->payment_method );
 
 		if ( null === $payment_method ) {
-			return '';
+			return $output;
 		}
 
 		$fields = $payment_method->get_fields();
 
 		if ( empty( $fields ) ) {
-			return '';
+			return $output;
 		}
-
-		$output = '';
 
 		foreach ( $fields as $field ) {
 			try {
@@ -860,6 +870,27 @@ class Gateway extends MeprBaseRealGateway {
 
 						?>
 					</select>
+				</td>
+			</tr>
+			<tr>
+				<td colspan="2">
+					<label><?php esc_html_e( 'Description', 'pronamic_ideal' ); ?></label><br/>
+					<?php
+
+					/**
+					 * Follow the MemberPress artificial (Offline Payment) gateway implementation.
+					 *
+					 * @link https://github.com/pronamic/memberpress/blob/3a428785b5a2b6b0581ec4080b98992aef2d5b1a/app/gateways/MeprArtificialGateway.php#L634-L638
+					 */
+					$name = sprintf(
+						'%s[%s][%s]',
+						$mepr_options->integrations_str,
+						$this->id,
+						'desc'
+					);
+
+					?>
+					<textarea name="<?php echo \esc_attr( $name ); ?>" rows="3" cols="45"><?php echo \esc_textarea( $this->settings->desc ); ?></textarea>
 				</td>
 			</tr>
 		</table>
