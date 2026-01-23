@@ -874,7 +874,7 @@ class Gateway extends MeprBaseRealGateway {
 			</tr>
 			<tr>
 				<td colspan="2">
-					<label><?php esc_html_e('Description', 'pronamic_ideal'); ?></label><br/>
+					<label><?php esc_html_e( 'Description', 'pronamic_ideal' ); ?></label><br/>
 					<?php
 
 					/**
@@ -891,7 +891,7 @@ class Gateway extends MeprBaseRealGateway {
 
 					?>
 					<textarea name="<?php echo \esc_attr( $name ); ?>" rows="3" cols="45"><?php echo \esc_textarea( $this->settings->desc ); ?></textarea>
-        		</td>
+				</td>
 			</tr>
 		</table>
 		<?php
