@@ -20,6 +20,7 @@ use MeprTransactionsHelper;
 use MeprUser;
 use MeprUtils;
 use MeprView;
+use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Money\TaxedMoney;
 use Pronamic\WordPress\Number\Number;
 use Pronamic\WordPress\Pay\Core\PaymentMethods;
@@ -1097,37 +1098,39 @@ class Gateway extends MeprBaseRealGateway {
 			return;
 		}
 
+		$currency = $current_total->get_currency();
+
 		$adjustment_amount = $minimum_amount - $current_total_value;
 
-		// Calculate tax for adjustment line if tax rate exists.
-		$tax_rate   = $current_total->get_tax_rate();
+		$tax_value      = null;
+		$tax_percentage = null;
+
+		$adjustment_tax_value  = null;
 		$adjustment_tax_amount = null;
 
-		if ( null !== $tax_rate && $tax_rate > 0 ) {
-			// Calculate tax-exclusive adjustment amount.
-			// adjustment_amount = adjustment_excl_tax + adjustment_tax
-			// adjustment_amount = adjustment_excl_tax * (1 + tax_rate)
-			// adjustment_excl_tax = adjustment_amount / (1 + tax_rate)
-			$adjustment_excl_tax = $adjustment_amount / ( 1 + $tax_rate );
-			$adjustment_tax_amount = $adjustment_amount - $adjustment_excl_tax;
+		if ( $current_total instanceof TaxedMoney ) {
+			$tax_value      = $current_total->get_tax_amount();
+			$tax_percentage = $current_total->get_tax_percentage();
+
+			if ( null !== $tax_percentage ) {
+				$adjustment_tax_value = ( $adjustment_amount / 100 ) * $tax_percentage;
+
+				$adjustment_tax_amount = new Money( $adjustment_tax_value, $currency );
+			}
 		}
 
 		$adjustment_line = $payment->lines->new_line();
 
-		$adjustment_line->set_name( __( 'Minimum amount adjustment', 'pronamic_ideal' ) );
+		$adjustment_line->set_name( \__( 'Minimum amount adjustment', 'pronamic_ideal' ) );
 		$adjustment_line->set_quantity( new Number( 1 ) );
-		$adjustment_line->set_unit_price( new TaxedMoney( $adjustment_amount, $current_total->get_currency(), $adjustment_tax_amount, $tax_rate ) );
-		$adjustment_line->set_total_amount( new TaxedMoney( $adjustment_amount, $current_total->get_currency(), $adjustment_tax_amount, $tax_rate ) );
+		$adjustment_line->set_unit_price( new TaxedMoney( $adjustment_amount, $currency, $adjustment_tax_value, $tax_percentage ) );
+		$adjustment_line->set_total_amount( new TaxedMoney( $adjustment_amount, $currency, $adjustment_tax_value, $tax_percentage ) );
 
-		// Calculate new total tax amount.
-		$new_tax_amount = null;
-		if ( null !== $current_total->get_tax_amount() && null !== $adjustment_tax_amount ) {
-			$new_tax_amount = $current_total->get_tax_amount()->get_value() + $adjustment_tax_amount;
-		} elseif ( null !== $current_total->get_tax_amount() ) {
-			$new_tax_amount = $current_total->get_tax_amount();
+		if ( null !== $tax_value && null !== $adjustment_tax_amount ) {
+			$tax_value = $tax_value->add( $adjustment_tax_amount );
 		}
 
-		$payment->set_total_amount( new TaxedMoney( $minimum_amount, $current_total->get_currency(), $new_tax_amount, $tax_rate ) );
+		$payment->set_total_amount( new TaxedMoney( $minimum_amount, $currency, $tax_value, $tax_percentage ) );
 	}
 
 	/**
