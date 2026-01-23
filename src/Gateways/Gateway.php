@@ -950,6 +950,26 @@ class Gateway extends MeprBaseRealGateway {
 	}
 
 	/**
+	 * Validate and parse minimum amount.
+	 *
+	 * @param mixed $value Value to validate.
+	 * @return float|null Returns the validated float value or null if invalid.
+	 */
+	private function validate_minimum_amount( $value ) {
+		if ( empty( $value ) || ! is_numeric( $value ) ) {
+			return null;
+		}
+
+		$amount = (float) $value;
+
+		if ( $amount <= 0 ) {
+			return null;
+		}
+
+		return $amount;
+	}
+
+	/**
 	 * Enqueue user account scripts.
 	 *
 	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/controllers/MeprAccountCtrl.php#L126
@@ -1064,15 +1084,9 @@ class Gateway extends MeprBaseRealGateway {
 	 * @return void
 	 */
 	protected function apply_minimum_amount_to_payment( $payment ) {
-		$minimum_amount = $this->settings->minimum_amount;
+		$minimum_amount = $this->validate_minimum_amount( $this->settings->minimum_amount );
 
-		if ( empty( $minimum_amount ) || ! is_numeric( $minimum_amount ) ) {
-			return;
-		}
-
-		$minimum_amount = (float) $minimum_amount;
-
-		if ( $minimum_amount <= 0 ) {
+		if ( null === $minimum_amount ) {
 			return;
 		}
 
