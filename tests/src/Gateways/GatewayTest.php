@@ -133,7 +133,7 @@ class GatewayTest extends PHPUnit_Framework_TestCase {
 		
 		$gateway->settings = (object) [ 'minimum_amount' => '10.00' ];
 		
-		$payment = $this->create_payment_with_tax( 5.00, 1.05, 21.0 );
+		$payment = $this->create_payment_with_tax( 5.00, 1.05, 0.21 );
 		
 		$reflection = new ReflectionClass( $gateway );
 		$method = $reflection->getMethod( 'apply_minimum_amount_to_payment' );
@@ -141,10 +141,25 @@ class GatewayTest extends PHPUnit_Framework_TestCase {
 		
 		$method->invoke( $gateway, $payment );
 		
+		// Total should be the minimum amount.
 		$this->assertEquals( 10.00, $payment->get_total_amount()->get_value() );
-		$this->assertEquals( 1.05, $payment->get_total_amount()->get_tax_amount()->get_value() );
-		$this->assertEquals( 21.0, $payment->get_total_amount()->get_tax_rate() );
+		
+		// Tax should be recalculated: original tax (1.05) + adjustment tax (5.00 / 1.21 * 0.21 ≈ 0.87).
+		// Total tax ≈ 1.92 (with some floating point variance).
+		$expected_tax = 1.05 + ( 5.00 / 1.21 * 0.21 );
+		$this->assertEqualsWithDelta( $expected_tax, $payment->get_total_amount()->get_tax_amount()->get_value(), 0.01 );
+		
+		// Tax rate should remain the same.
+		$this->assertEquals( 0.21, $payment->get_total_amount()->get_tax_rate() );
+		
+		// Should have 2 lines: original + adjustment.
 		$this->assertCount( 2, $payment->lines->get_lines() );
+		
+		// Verify adjustment line has tax applied.
+		$lines = $payment->lines->get_lines();
+		$adjustment_line = $lines[1];
+		$this->assertNotNull( $adjustment_line->get_total_amount()->get_tax_amount() );
+		$this->assertEquals( 0.21, $adjustment_line->get_total_amount()->get_tax_rate() );
 	}
 	
 	/**

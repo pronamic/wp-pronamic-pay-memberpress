@@ -1099,14 +1099,35 @@ class Gateway extends MeprBaseRealGateway {
 
 		$adjustment_amount = $minimum_amount - $current_total_value;
 
+		// Calculate tax for adjustment line if tax rate exists.
+		$tax_rate   = $current_total->get_tax_rate();
+		$adjustment_tax_amount = null;
+
+		if ( null !== $tax_rate && $tax_rate > 0 ) {
+			// Calculate tax-exclusive adjustment amount.
+			// adjustment_amount = adjustment_excl_tax + adjustment_tax
+			// adjustment_amount = adjustment_excl_tax * (1 + tax_rate)
+			// adjustment_excl_tax = adjustment_amount / (1 + tax_rate)
+			$adjustment_excl_tax = $adjustment_amount / ( 1 + $tax_rate );
+			$adjustment_tax_amount = $adjustment_amount - $adjustment_excl_tax;
+		}
+
 		$adjustment_line = $payment->lines->new_line();
 
 		$adjustment_line->set_name( __( 'Minimum amount adjustment', 'pronamic_ideal' ) );
 		$adjustment_line->set_quantity( new Number( 1 ) );
-		$adjustment_line->set_unit_price( new TaxedMoney( $adjustment_amount, $current_total->get_currency() ) );
-		$adjustment_line->set_total_amount( new TaxedMoney( $adjustment_amount, $current_total->get_currency() ) );
+		$adjustment_line->set_unit_price( new TaxedMoney( $adjustment_amount, $current_total->get_currency(), $adjustment_tax_amount, $tax_rate ) );
+		$adjustment_line->set_total_amount( new TaxedMoney( $adjustment_amount, $current_total->get_currency(), $adjustment_tax_amount, $tax_rate ) );
 
-		$payment->set_total_amount( new TaxedMoney( $minimum_amount, $current_total->get_currency(), $current_total->get_tax_amount(), $current_total->get_tax_rate() ) );
+		// Calculate new total tax amount.
+		$new_tax_amount = null;
+		if ( null !== $current_total->get_tax_amount() && null !== $adjustment_tax_amount ) {
+			$new_tax_amount = $current_total->get_tax_amount()->get_value() + $adjustment_tax_amount;
+		} elseif ( null !== $current_total->get_tax_amount() ) {
+			$new_tax_amount = $current_total->get_tax_amount();
+		}
+
+		$payment->set_total_amount( new TaxedMoney( $minimum_amount, $current_total->get_currency(), $new_tax_amount, $tax_rate ) );
 	}
 
 	/**
