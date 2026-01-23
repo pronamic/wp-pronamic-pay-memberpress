@@ -11,7 +11,6 @@
 namespace Pronamic\WordPress\Pay\Extensions\MemberPress\Gateways;
 
 use PHPUnit_Framework_TestCase;
-use Pronamic\WordPress\Money\Money;
 use Pronamic\WordPress\Money\TaxedMoney;
 use Pronamic\WordPress\Pay\Payments\Payment;
 use Pronamic\WordPress\Pay\Payments\PaymentLines;
