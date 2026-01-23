@@ -880,6 +880,24 @@ class Gateway extends MeprBaseRealGateway {
 				</td>
 			</tr>
 			<tr>
+				<?php
+
+				$name = sprintf(
+					'%s[%s][%s]',
+					$mepr_options->integrations_str,
+					$this->id,
+					'minimum_amount'
+				);
+
+				?>
+				<td>
+					<?php esc_html_e( 'Minimum Amount', 'pronamic_ideal' ); ?>
+				</td>
+				<td>
+					<input type="number" step="any" name="<?php echo esc_attr( $name ); ?>" value="<?php echo esc_attr( $this->settings->minimum_amount ); ?>" />
+				</td>
+			</tr>
+			<tr>
 				<td colspan="2">
 					<label><?php esc_html_e( 'Description', 'pronamic_ideal' ); ?></label><br/>
 					<?php
@@ -898,24 +916,6 @@ class Gateway extends MeprBaseRealGateway {
 
 					?>
 					<textarea name="<?php echo \esc_attr( $name ); ?>" rows="3" cols="45"><?php echo \esc_textarea( $this->settings->desc ); ?></textarea>
-				</td>
-			</tr>
-			<tr>
-				<?php
-
-				$name = sprintf(
-					'%s[%s][%s]',
-					$mepr_options->integrations_str,
-					$this->id,
-					'minimum_amount'
-				);
-
-				?>
-				<td>
-					<?php esc_html_e( 'Minimum Amount', 'pronamic_ideal' ); ?>
-				</td>
-				<td>
-					<input type="number" step="any" name="<?php echo esc_attr( $name ); ?>" value="<?php echo esc_attr( $this->settings->minimum_amount ); ?>" />
 				</td>
 			</tr>
 		</table>
