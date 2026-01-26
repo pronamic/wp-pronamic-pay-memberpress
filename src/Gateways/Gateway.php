@@ -258,7 +258,6 @@ class Gateway extends MeprBaseRealGateway {
 		// Create Pronamic payment.
 		$payment = Pronamic::get_payment( $transaction );
 
-		// Apply minimum amount adjustment if needed.
 		$this->apply_minimum_amount_to_payment( $payment );
 
 		$payment->config_id = $config_id;
@@ -1098,39 +1097,21 @@ class Gateway extends MeprBaseRealGateway {
 			return;
 		}
 
-		$currency = $current_total->get_currency();
-
-		$adjustment_amount = $minimum_amount - $current_total_value;
-
-		$tax_value      = null;
-		$tax_percentage = null;
-
-		$adjustment_tax_value  = null;
-		$adjustment_tax_amount = null;
-
-		if ( $current_total instanceof TaxedMoney ) {
-			$tax_value      = $current_total->get_tax_amount();
-			$tax_percentage = $current_total->get_tax_percentage();
-
-			if ( null !== $tax_percentage ) {
-				$adjustment_tax_value = ( $adjustment_amount / 100 ) * $tax_percentage;
-
-				$adjustment_tax_amount = new Money( $adjustment_tax_value, $currency );
-			}
-		}
+		$adjustment_amount = new TaxedMoney(
+			$minimum_amount - $current_total_value,
+			$current_total->get_currency(),
+			null,
+			$current_total instanceof TaxedMoney ? $current_total->get_tax_percentage() : null
+		);
 
 		$adjustment_line = $payment->lines->new_line();
 
 		$adjustment_line->set_name( \__( 'Minimum amount adjustment', 'pronamic_ideal' ) );
 		$adjustment_line->set_quantity( new Number( 1 ) );
-		$adjustment_line->set_unit_price( new TaxedMoney( $adjustment_amount, $currency, $adjustment_tax_value, $tax_percentage ) );
-		$adjustment_line->set_total_amount( new TaxedMoney( $adjustment_amount, $currency, $adjustment_tax_value, $tax_percentage ) );
+		$adjustment_line->set_unit_price( $adjustment_amount );
+		$adjustment_line->set_total_amount( $adjustment_amount );
 
-		if ( null !== $tax_value && null !== $adjustment_tax_amount ) {
-			$tax_value = $tax_value->add( $adjustment_tax_amount );
-		}
-
-		$payment->set_total_amount( new TaxedMoney( $minimum_amount, $currency, $tax_value, $tax_percentage ) );
+		$payment->set_total_amount( $payment->lines->get_amount() );
 	}
 
 	/**
