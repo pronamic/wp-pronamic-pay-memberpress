@@ -8,6 +8,26 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 
 - Updated codebase to be compatible with PHP 8.2 (via Rector).
 
+## [4.10.0] - 2026-01-27
+
+### Added
+
+- Added checkout description setting.
+- Added minimum payment amount setting.
+
+### Commits
+
+- Require PHP 8.2 or higher ([6257141](https://github.com/pronamic/wp-pronamic-pay-memberpress/commit/62571416aa25a59422d398a53d2e7191720051b4))
+
+### Composer
+
+- Added `automattic/jetpack-autoloader` `^5.0`.
+- Changed `php` from `>=7.4` to `>=8.2`.
+
+Full set of changes: [`4.9.0...4.10.0`][4.10.0]
+
+[4.10.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.9.0...v4.10.0
+
 ## [4.9.0] - 2026-01-05
 
 ### Commits
