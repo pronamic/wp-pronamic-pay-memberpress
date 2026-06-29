@@ -857,5 +857,4 @@ class Extension extends AbstractPluginIntegration {
 
 		return $url;
 	}
-
 }
