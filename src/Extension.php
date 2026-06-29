@@ -858,33 +858,4 @@ class Extension extends AbstractPluginIntegration {
 		return $url;
 	}
 
-	/**
-	 * MemberPress update subscription.
-	 *
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/controllers/MeprSubscriptionsCtrl.php#L92-L111
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprSubscription.php#L100-L123
-	 * @link https://github.com/wp-premium/memberpress-basic/blob/1.3.18/app/models/MeprSubscription.php#L112
-	 * @link https://github.com/wp-premium/memberpress/blob/1.9.21/app/models/MeprSubscription.php#L122
-	 * @param string           $status_old               Old status identifier.
-	 * @param string           $status_new               New status identifier.
-	 * @param MeprSubscription $memberpress_subscription MemberPress subscription object.
-	 * @return void
-	 */
-	public function memberpress_subscription_transition_status( $status_old, $status_new, $memberpress_subscription ) {
-		$subscription = get_pronamic_subscription_by_meta( '_pronamic_subscription_source_id', $memberpress_subscription->id );
-
-		if ( empty( $subscription ) ) {
-			return;
-		}
-
-		$status = SubscriptionStatuses::transform( $status_new );
-
-		if ( null === $status ) {
-			return;
-		}
-
-		$subscription->set_status( $status );
-
-		$subscription->save();
-	}
 }
