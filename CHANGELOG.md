@@ -6,7 +6,24 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 
 ## [Unreleased][unreleased]
 
+## [4.11.0] - 2026-07-31
+
+### Changed
+
 - Updated codebase to be compatible with PHP 8.2 (via Rector).
+
+### Removed
+
+- Removed the unused `memberpress_subscription_transition_status()` method.
+
+### Composer
+
+- Changed `woocommerce/action-scheduler` from `^3.4` to `^3.4 || ^4.0`.
+  - Action Scheduler `4.0.0` introduces breaking changes: action arguments are now taken into account when scheduling unique actions, and failed actions are automatically purged after 3 months by default (configurable via the `action_scheduler_retention_period_for_failed` filter). It also improves cleanup performance and raises the minimum WordPress version to 6.8. See the [Action Scheduler 4.0.0 release notes](https://github.com/woocommerce/action-scheduler/releases/tag/4.0.0).
+
+Full set of changes: [`4.10.0...4.11.0`][4.11.0]
+
+[4.11.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.10.0...v4.11.0
 
 ## [4.10.0] - 2026-01-27
 
