@@ -6,6 +6,10 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 
 ## [Unreleased][unreleased]
 
+### Fixed
+
+- Fixed subscription cancellation for payment methods without recurring support ([#42](https://github.com/pronamic/wp-pronamic-pay-memberpress/issues/42)).
+
 ## [4.11.0] - 2026-07-31
 
 ### Changed
