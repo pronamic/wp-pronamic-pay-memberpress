@@ -144,7 +144,10 @@ class Gateway extends MeprBaseRealGateway {
 			return;
 		}
 
-		$capabilities = [ 'process-payments' ];
+		$capabilities = [
+			'process-payments',
+			'cancel-subscriptions',
+		];
 
 		$payment_method = $gateway->get_payment_method( (string) $this->payment_method );
 
@@ -153,7 +156,6 @@ class Gateway extends MeprBaseRealGateway {
 				$capabilities,
 				[
 					'create-subscriptions',
-					'cancel-subscriptions',
 					'update-subscriptions',
 					'subscription-trial-payment',
 				]
