@@ -6,9 +6,17 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 
 ## [Unreleased][unreleased]
 
+-
+
+## [4.11.1] - 2026-10-21
+
 ### Fixed
 
 - Fixed subscription cancellation for payment methods without recurring support ([#42](https://github.com/pronamic/wp-pronamic-pay-memberpress/issues/42)).
+
+Full Changelog: [`4.11.0...4.11.1`][4.11.1]
+
+[4.11.1]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.11.0...v4.11.1
 
 ## [4.11.0] - 2026-07-31
 
@@ -438,7 +446,7 @@ Full set of changes: [`4.6.0...4.7.0`][4.7.0]
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.6.0...HEAD
+[unreleased]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.11.1...HEAD
 [4.6.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.5.1...4.6.0
 [4.5.1]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.5.0...4.5.1
 [4.5.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.4.0...4.5.0
