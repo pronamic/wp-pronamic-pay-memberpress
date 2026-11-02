@@ -6,9 +6,15 @@ This projects adheres to [Semantic Versioning](http://semver.org/) and [Keep a C
 
 ## [Unreleased][unreleased]
 
+## [4.11.2] - 2026-11-02
+
 ### Composer
 
-- Allow `automattic/jetpack-autoloader` `^5.0` and `^6.0`.
+- Changed `automattic/jetpack-autoloader` from `^5.0` to `^5.0 || ^6.0` to allow Jetpack Autoloader 6.x. Jetpack Autoloader 6.0.0 only raises its minimum PHP version to 7.4. Release notes: https://github.com/Automattic/jetpack-autoloader/blob/v6.0.0/CHANGELOG.md
+
+Full set of changes: [`4.11.1...4.11.2`][4.11.2]
+
+[4.11.2]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.11.1...v4.11.2
 
 ## [4.11.1] - 2026-10-21
 
@@ -448,7 +454,7 @@ Full set of changes: [`4.6.0...4.7.0`][4.7.0]
 ## 1.0.0 - 2016-02-01
 - First release.
 
-[unreleased]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.11.1...HEAD
+[unreleased]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/v4.11.2...HEAD
 [4.6.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.5.1...4.6.0
 [4.5.1]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.5.0...4.5.1
 [4.5.0]: https://github.com/pronamic/wp-pronamic-pay-memberpress/compare/4.4.0...4.5.0
